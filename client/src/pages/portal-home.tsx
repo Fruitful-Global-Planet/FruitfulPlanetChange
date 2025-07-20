@@ -1,0 +1,167 @@
+import { useState, useEffect } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { Rocket, HelpCircle, Plus } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { SearchFilters } from "@/components/portal/search-filters"
+import { BrandCard } from "@/components/portal/brand-card"
+import type { Brand, Sector } from "@shared/schema"
+
+export default function PortalHome() {
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedSector, setSelectedSector] = useState<number | null>(null)
+  const [displayLimit, setDisplayLimit] = useState(8)
+
+  // Build query parameters
+  const queryParams = new URLSearchParams()
+  if (searchQuery) queryParams.set("search", searchQuery)
+  if (selectedSector) queryParams.set("sectorId", selectedSector.toString())
+
+  const { data: brands = [], isLoading } = useQuery<Brand[]>({
+    queryKey: ["/api/brands", queryParams.toString()],
+  })
+
+  const { data: sectors = [] } = useQuery<Sector[]>({
+    queryKey: ["/api/sectors"],
+  })
+
+  // Create sector lookup map
+  const sectorMap = sectors.reduce((map, sector) => {
+    map[sector.id] = sector
+    return map
+  }, {} as Record<number, Sector>)
+
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.metaKey && e.key === 'k') {
+        e.preventDefault()
+        const searchInput = document.querySelector('input[placeholder*="Search"]') as HTMLInputElement
+        searchInput?.focus()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
+  const displayedBrands = brands.slice(0, displayLimit)
+  const remainingCount = brands.length - displayLimit
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Header */}
+      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent">
+              Enhanced Brand Portal
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              Discover and manage 6,005+ brand elements across 33 sectors
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-xs px-3 py-1 rounded-full font-semibold flex items-center gap-1">
+              <span className="w-2 h-2 bg-white rounded-full"></span>
+              VaultMesh™ Secured
+            </div>
+            <div className="w-10 h-10 bg-cyan-500 rounded-full flex items-center justify-center text-white font-bold">
+              FG
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Search and Filters */}
+      <section className="p-6">
+        <SearchFilters
+          onSearch={setSearchQuery}
+          onSectorFilter={setSelectedSector}
+          selectedSector={selectedSector}
+        />
+      </section>
+
+      {/* Brand Elements Grid */}
+      <section className="p-6">
+        <div className="mb-6">
+          <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">
+            Brand Elements
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400">
+            Explore and discover brand elements across all sectors
+          </p>
+        </div>
+
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="bg-white dark:bg-gray-800 rounded-xl p-6 animate-pulse">
+                <div className="w-12 h-12 bg-gray-300 dark:bg-gray-600 rounded-lg mb-4"></div>
+                <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded mb-2"></div>
+                <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded mb-4"></div>
+                <div className="flex justify-between">
+                  <div className="h-3 w-20 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                  <div className="h-3 w-16 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {displayedBrands.map((brand) => (
+              <BrandCard
+                key={brand.id}
+                brand={brand}
+                sector={brand.sectorId ? sectorMap[brand.sectorId] : undefined}
+                onClick={() => console.log('Brand clicked:', brand.name)}
+              />
+            ))}
+
+            {/* Load More Button */}
+            {remainingCount > 0 && (
+              <div className="col-span-full flex justify-center mt-8">
+                <Button
+                  onClick={() => setDisplayLimit(prev => prev + 8)}
+                  className="bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-3 rounded-lg font-medium"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Load More Brands ({remainingCount.toLocaleString()}+ remaining)
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+      </section>
+
+      {/* Quick Actions */}
+      <section className="p-6">
+        <div className="bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl p-8 text-white">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div>
+              <h2 className="text-2xl font-bold mb-2">Ready to Get Started?</h2>
+              <p className="opacity-90">
+                Explore the full ecosystem or connect with our development team.
+              </p>
+            </div>
+            <div className="flex gap-4">
+              <Button
+                variant="secondary"
+                className="bg-white text-cyan-500 hover:bg-gray-100"
+              >
+                <Rocket className="w-4 h-4 mr-2" />
+                Launch Project
+              </Button>
+              <Button
+                variant="ghost"
+                className="bg-white bg-opacity-20 text-white hover:bg-white hover:bg-opacity-30"
+              >
+                <HelpCircle className="w-4 h-4 mr-2" />
+                Get Support
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  )
+}
