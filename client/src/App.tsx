@@ -9,6 +9,7 @@ import { GlobalPulse } from "@/components/portal/global-pulse"
 import { SeedwaveAdmin } from "@/components/portal/seedwave-admin"
 import EcosystemExplorer from "@/components/portal/ecosystem-explorer"
 import { LegalHub } from "@/components/portal/legal-hub"
+import { LegalDocumentation } from "@/components/portal/legal-documentation"
 import { PaymentHub } from "@/components/portal/payment-hub"
 import { VaultMeshCheckout } from "@/components/portal/vaultmesh-checkout"
 import { FruitfulMarketplace } from "@/components/portal/fruitful-marketplace"
@@ -70,11 +71,7 @@ function PageRouter({ activePage }: { activePage: string }) {
         </div>
       )
     case "legal-hub":
-      return (
-        <div className="p-8">
-          <LegalHub />
-        </div>
-      )
+      return <LegalDocumentation />
     case "fruitful-marketplace":
       return (
         <div className="p-8">
@@ -111,7 +108,10 @@ function PageRouter({ activePage }: { activePage: string }) {
           <PaymentHub />
         </div>
       )
-    case "vaultmesh":
+    case "vaultmesh-dashboard":
+    case "vaultmesh-about":
+    case "vaultmesh-products":
+    case "vaultmesh-brands":
       return <VaultMeshPage />
     case "vaultmesh-checkout":
       return (

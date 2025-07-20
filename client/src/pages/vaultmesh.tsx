@@ -23,7 +23,18 @@ interface VaultMeshMetrics {
 export default function VaultMeshPage() {
   const [selectedProtocol, setSelectedProtocol] = useState("core")
   const [activeView, setActiveView] = useState("overview")
-  const [selectedSection, setSelectedSection] = useState("dashboard")
+  
+  // Get section from the activePage in the global state or default to dashboard
+  const getInitialSection = () => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search)
+      const section = urlParams.get('section')
+      if (section) return section
+    }
+    return "dashboard"
+  }
+  
+  const [selectedSection, setSelectedSection] = useState(getInitialSection)
   const [metrics, setMetrics] = useState<VaultMeshMetrics>({
     totalConnections: 15847,
     activeNodes: 892,

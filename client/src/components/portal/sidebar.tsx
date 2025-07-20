@@ -31,17 +31,26 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
     { id: "settings", label: "Settings", icon: "⚙️" },
   ]
 
-  const ecosystemItems = [
+  const mainSections = [
     { id: "global-dashboard", label: "📊 Global Dashboard", icon: "📈", badge: "Live Analytics" },
     { id: "ecosystem-explorer", label: "🌐 Ecosystem Explorer", icon: "🗺️", badge: "45 Sectors" },
-    { id: "fruitful-marketplace", label: "🛒 Fruitful™ Marketplace", icon: "🛍️", badge: "610 Core Brands" },
-    { id: "hotstack-codenest", label: "🔥 HotStack + CodeNest", icon: "💻", badge: "Independent Repos" },
     { id: "global-pulse", label: "Global Pulse", icon: "🌍", badge: "Analytics" },
     { id: "seedwave-admin", label: "🦁 Seedwave™ Admin", icon: "⚙️", badge: "1,967 Brands" },
+  ]
+
+  const vaultmeshSections = [
+    { id: "vaultmesh-dashboard", label: "🌐 VaultMesh™ Dashboard", icon: "📊", badge: "Infrastructure" },
+    { id: "vaultmesh-about", label: "ℹ️ About VaultMesh™", icon: "📋", badge: "Core Info" },
+    { id: "vaultmesh-products", label: "📦 VaultMesh™ Products", icon: "🛠️", badge: "8 Solutions" },
+    { id: "vaultmesh-brands", label: "🎯 Brand Packages", icon: "📊", badge: "610 Brands" },
+    { id: "vaultmesh-checkout", label: "🔐 VaultMesh™ Checkout", icon: "💳", badge: "Enterprise" },
+  ]
+
+  const ecosystemItems = [
+    { id: "fruitful-marketplace", label: "🛒 Fruitful™ Marketplace", icon: "🛍️", badge: "610 Core Brands" },
+    { id: "hotstack-codenest", label: "🔥 HotStack + CodeNest", icon: "💻", badge: "Independent Repos" },
     { id: "legal-hub", label: "Legal Hub", icon: "⚖️", badge: "Legal Docs" },
     { id: "payment-hub", label: "Payment Portal", icon: "💳", badge: "SSO" },
-    { id: "vaultmesh", label: "VaultMesh™ Core", icon: "🌐", badge: "Infrastructure" },
-    { id: "vaultmesh-checkout", label: "VaultMesh™ Checkout", icon: "🔐", badge: "Banimal Loop" },
   ]
 
   const adminItems = [
@@ -73,8 +82,8 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
           <div>
             <h2 className="text-xl font-bold">
               <span className="text-cyan-500">Seedwave™</span> Portal
+              <div className="text-xs text-gray-500 font-normal">Powered by VaultMesh™</div>
             </h2>
-            <p className="text-sm text-cyan-500 opacity-75">Powered by VaultMesh™</p>
           </div>
           <div className="flex items-center gap-2">
             {/* Theme Toggle */}
@@ -134,9 +143,71 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
           ))}
         </nav>
 
-        {/* Ecosystem Section */}
+        {/* Main Sections */}
         <div className="pt-6 border-t border-gray-200 dark:border-gray-800 mb-8">
-          <h3 className="text-sm font-semibold text-gray-500 mb-3">FRUITFUL ECOSYSTEM</h3>
+          <h3 className="text-sm font-semibold text-gray-500 mb-3">MAIN SECTIONS</h3>
+          <div className="space-y-2">
+            {mainSections.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  onPageChange(item.id)
+                  setIsMobileOpen(false)
+                }}
+                className={`
+                  w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left
+                  ${activePage === item.id
+                    ? 'bg-cyan-500 bg-opacity-10 text-cyan-500'
+                    : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }
+                `}
+              >
+                <span className="text-lg">{item.icon}</span>
+                <span className="font-medium flex-1">{item.label}</span>
+                {item.badge && (
+                  <span className="text-xs bg-cyan-500 text-white px-2 py-1 rounded-full">
+                    {item.badge}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* VaultMesh™ Core Infrastructure */}
+        <div className="pt-6 border-t border-gray-200 dark:border-gray-800 mb-8">
+          <h3 className="text-sm font-semibold text-gray-500 mb-3">VAULTMESH™ CORE</h3>
+          <div className="space-y-2">
+            {vaultmeshSections.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  onPageChange(item.id)
+                  setIsMobileOpen(false)
+                }}
+                className={`
+                  w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left
+                  ${activePage === item.id
+                    ? 'bg-blue-500 bg-opacity-10 text-blue-500'
+                    : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }
+                `}
+              >
+                <span className="text-lg">{item.icon}</span>
+                <span className="font-medium flex-1">{item.label}</span>
+                {item.badge && (
+                  <span className="text-xs bg-blue-500 text-white px-2 py-1 rounded-full">
+                    {item.badge}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Ecosystem Projects */}
+        <div className="pt-6 border-t border-gray-200 dark:border-gray-800 mb-8">
+          <h3 className="text-sm font-semibold text-gray-500 mb-3">ECOSYSTEM PROJECTS</h3>
           <div className="space-y-2">
             {ecosystemItems.map((item) => (
               <button
