@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { Menu, X } from "lucide-react"
 import { useTheme } from "@/hooks/use-theme"
-import { SystemStatus } from "./system-status"
+// import { SystemStatus } from "./system-status"
 import type { Sector } from "@shared/schema"
 
 interface SidebarProps {
@@ -20,6 +20,7 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
 
   const navItems = [
     { id: "home", label: "Portal Home", icon: "🏠" },
+    { id: "brand-identity-manager", label: "Brand Identity Manager", icon: "🏢", badge: "6,005 Individual Sites" },
     { id: "brands", label: "Brand Elements", icon: "🧩", badge: "6,005" },
     { id: "sectors", label: "Sectors", icon: "🗂️", badge: "33" },
     { id: "marketplace", label: "Marketplace", icon: "🛒" },
@@ -99,7 +100,7 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
         </div>
 
         {/* System Status */}
-        <SystemStatus />
+        {/* <SystemStatus /> */}
 
         {/* Navigation */}
         <nav className="space-y-2 mb-8">
