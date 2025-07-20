@@ -52,6 +52,7 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
     { id: "hotstack-codenest", label: "🔥 HotStack + CodeNest", icon: "💻", badge: "Independent Repos" },
     { id: "omnilevel", label: "🧠 Omnilevel AI Logic", icon: "🤖", badge: "31 Sectors" },
     { id: "omnigrid-faa-zone", label: "🌐 OmniGrid™ FAA.zone™", icon: "🔋", badge: "PulseTrade™" },
+    { id: "buildnest-dashboard", label: "🏗️ BuildNest Dashboard", icon: "🖥️", badge: "Live Metrics" },
     { id: "legal-hub", label: "📋 Legal Documentation Hub", icon: "📄", badge: "8 Documents" },
     { id: "api-keys", label: "🔑 API Key Manager", icon: "🔐", badge: "8 Keys" },
     { id: "payment-hub", label: "Payment Portal", icon: "💳", badge: "SSO" },

@@ -18,6 +18,7 @@ import { HotStackCodeNest } from "@/components/portal/hotstack-codenest"
 import { BrandIdentityManager } from "@/components/portal/brand-identity-manager"
 import { GlobalDashboard } from "@/components/portal/global-dashboard"
 import { FruitfulSmartToys } from "@/components/portal/fruitful-smart-toys"
+import BuildNestDashboardPage from "@/pages/buildnest-dashboard"
 import PortalHome from "@/pages/portal-home"
 import BrandsPage from "@/pages/brands"
 import SectorsPage from "@/pages/sectors"
@@ -150,6 +151,8 @@ function PageRouter({ activePage }: { activePage: string }) {
       return <OmnilevelPage />
     case "omnigrid-faa-zone":
       return <OmniGridFAAZonePage />
+    case "buildnest-dashboard":
+      return <BuildNestDashboardPage />
     case "fruitful-smart-toys":
       return <FruitfulSmartToys />
     default:
