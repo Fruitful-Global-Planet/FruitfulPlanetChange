@@ -245,7 +245,7 @@ export function LegalDocumentation() {
     return (
       <DocumentViewer 
         document={viewingDocument} 
-        onBack={() => setViewingDocument(null)} 
+        onClose={() => setViewingDocument(null)} 
       />
     )
   }
