@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { OmnilevelSelector } from '@/components/portal/omnilevel-selector';
+import { OmnilevelSelector, allSectorsData } from '@/components/portal/omnilevel-selector';
+import { RecommendationPanel } from '@/components/portal/recommendation-panel';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Brain, Sparkles, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Brain, Sparkles, CheckCircle, Zap } from 'lucide-react';
 import { Link } from 'wouter';
 
 export function OmnilevelPage() {
@@ -18,6 +19,13 @@ export function OmnilevelPage() {
       }
       return [...prev, { key: sectorKey, data: sectorData }];
     });
+  };
+
+  const handleRecommendedSectorAdd = (sectorKey: string) => {
+    const sectorData = allSectorsData[sectorKey as keyof typeof allSectorsData];
+    if (sectorData) {
+      handleSectorSelect(sectorKey, sectorData);
+    }
   };
 
   const processCompletionLogic = () => {
@@ -145,6 +153,25 @@ export function OmnilevelPage() {
         </Card>
       )}
 
+      {/* AI Recommendation Panel */}
+      {selectedSectors.length > 0 && (
+        <div className="mb-6">
+          <RecommendationPanel
+            selectedSectors={selectedSectors.map(s => s.key)}
+            onSectorRecommend={handleRecommendedSectorAdd}
+            userProfile={{
+              searchHistory: [],
+              interactionHistory: [],
+              preferences: {
+                businessStage: 'growth',
+                riskTolerance: 'medium',
+                focusAreas: ['ai', 'automation', 'ecosystem']
+              }
+            }}
+          />
+        </div>
+      )}
+
       {/* Main Selector */}
       <OmnilevelSelector
         onSectorSelect={handleSectorSelect}
@@ -161,17 +188,23 @@ export function OmnilevelPage() {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-semibold text-gray-900 dark:text-white mb-2">AI-Powered Selection</h4>
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+                <Brain className="w-4 h-4" />
+                AI-Powered Recommendations
+              </h4>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                The omnilevel system uses advanced AI logic extracted from ai-logic.seedwave.faa.zone 
-                to provide intelligent sector completion and cross-sector relationship mapping.
+                Advanced recommendation engine analyzes sector synergies, business compatibility, 
+                and strategic value to suggest optimal sector combinations for your ecosystem.
               </p>
             </div>
             <div>
-              <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Complete Ecosystem</h4>
+              <h4 className="font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+                <Zap className="w-4 h-4" />
+                Intelligent Analysis
+              </h4>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                All 31 sectors from the Fruitful Global ecosystem are available for selection, 
-                with comprehensive brand and subnode information for each sector.
+                Real-time analysis of cross-sector relationships, technology stack overlaps, 
+                and supply chain completeness to maximize ecosystem efficiency.
               </p>
             </div>
           </div>

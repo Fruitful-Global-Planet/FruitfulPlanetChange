@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Search, ChevronRight, CheckCircle, Brain, Sparkles } from 'lucide-react';
 
 // Complete omnilevel sector data from AI logic
-const sectorList = {
+export const sectorList = {
   "agriculture": { name: "🌱 Agriculture & Biotech" },
   "fsf": { name: "🥦 Food, Soil & Farming" },
   "banking": { name: "🏦 Banking & Finance" },
@@ -41,7 +41,7 @@ const sectorList = {
   "admin-panel": { name: "⚙️ Admin Panel" }
 };
 
-const allSectorsData = {
+export const allSectorsData = {
   "ai-logic": {
     name: "🧠 AI, Logic & Grid",
     repoName: "ai-logic-seedwave-admin",
