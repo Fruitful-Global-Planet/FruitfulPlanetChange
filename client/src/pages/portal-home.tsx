@@ -57,7 +57,7 @@ export default function PortalHome() {
               Fruitful Global Brand Portal
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              Complete ecosystem with 6,005+ brands, SecureSign™ VIP, and deployment infrastructure
+              Complete ecosystem with {brands.length || 610} brands across {sectors.length || 45} sectors, SecureSign™ VIP, and deployment infrastructure
             </p>
           </div>
           <div className="flex items-center gap-4">

@@ -55,43 +55,15 @@ export function GlobalDashboard() {
     setAnimationKey(prev => prev + 1)
   }, [selectedView])
 
-  // Use actual sector data from database or fallback to reference data
+  // Use actual sector data from database - ensure all sectors render properly
   const comprehensiveSectors = sectors.length > 0 ? 
     sectors.map(sector => ({
       name: sector.name,
       icon: sector.emoji,
-      brands: sector.brandCount,
-      nodes: sector.subnodeCount,
+      brands: sector.brandCount || 0,
+      nodes: sector.subnodeCount || 0,
       key: sector.name.toLowerCase().replace(/[^a-z]/g, '')
-    })) :
-    [
-      { name: "Agriculture & Biotech", icon: "🌱", brands: 84, nodes: 28, key: "agriculture" },
-      { name: "Banking & Finance", icon: "🏦", brands: 60, nodes: 20, key: "banking" },
-      { name: "Food & Farming", icon: "🥦", brands: 48, nodes: 16, key: "food" },
-      { name: "Logistics & Packaging", icon: "📦", brands: 30, nodes: 10, key: "logistics" },
-      { name: "Professional Services", icon: "💼", brands: 30, nodes: 10, key: "professional" },
-      { name: "Education & IP", icon: "📚", brands: 28, nodes: 10, key: "education" },
-      { name: "Fashion & Identity", icon: "✂️", brands: 25, nodes: 9, key: "fashion" },
-      { name: "Gaming & Simulation", icon: "🎮", brands: 22, nodes: 8, key: "gaming" },
-      { name: "SaaS & Licensing", icon: "💻", brands: 20, nodes: 7, key: "saas" },
-      { name: "NFT & Ownership", icon: "🎨", brands: 20, nodes: 7, key: "nft" },
-      { name: "Quantum Protocols", icon: "⚛️", brands: 20, nodes: 7, key: "quantum" },
-      { name: "Ritual & Culture", icon: "🎭", brands: 20, nodes: 7, key: "ritual" },
-      { name: "Nutrition & Food Chain", icon: "🍎", brands: 20, nodes: 7, key: "nutrition" },
-      { name: "Health & Hygiene", icon: "🧠", brands: 20, nodes: 7, key: "health" },
-      { name: "Zero Waste", icon: "♻️", brands: 20, nodes: 7, key: "zerowaste" },
-      { name: "Housing & Infrastructure", icon: "🏗️", brands: 18, nodes: 6, key: "housing" },
-      { name: "AI, Logic & Grid", icon: "🤖", brands: 16, nodes: 6, key: "ai" },
-      { name: "Media & Sonic", icon: "📺", brands: 15, nodes: 5, key: "media" },
-      { name: "Transport & Mobility", icon: "🚗", brands: 14, nodes: 5, key: "transport" },
-      { name: "Mining & Resources", icon: "⛏️", brands: 13, nodes: 5, key: "mining" },
-      { name: "Voice & Audio", icon: "🎤", brands: 12, nodes: 4, key: "voice" },
-      { name: "Wellness Tech & Nodes", icon: "🧘", brands: 12, nodes: 4, key: "wellness" },
-      { name: "Utilities & Energy", icon: "⚡", brands: 12, nodes: 4, key: "utilities" },
-      { name: "Justice & Legal", icon: "⚖️", brands: 12, nodes: 4, key: "justice" },
-      { name: "Retail & Commerce", icon: "🛍️", brands: 11, nodes: 4, key: "retail" },
-      { name: "Creative Tech", icon: "🎨", brands: 10, nodes: 3, key: "creative" }
-    ];
+    })).sort((a, b) => (b.brands || 0) - (a.brands || 0)) : [];
 
   // Calculate sector distribution from comprehensive data
   const sectorDistribution = comprehensiveSectors.map(sector => ({

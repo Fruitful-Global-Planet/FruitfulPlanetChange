@@ -33,11 +33,11 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
 
   const ecosystemItems = [
     { id: "global-dashboard", label: "📊 Global Dashboard", icon: "📈", badge: "Live Analytics" },
-    { id: "ecosystem-explorer", label: "🌐 Ecosystem Explorer", icon: "🗺️", badge: "PLAN V1-9" },
-    { id: "fruitful-marketplace", label: "🛒 Fruitful™ Marketplace", icon: "🛍️", badge: "6,005+ Brands" },
+    { id: "ecosystem-explorer", label: "🌐 Ecosystem Explorer", icon: "🗺️", badge: "45 Sectors" },
+    { id: "fruitful-marketplace", label: "🛒 Fruitful™ Marketplace", icon: "🛍️", badge: "610 Core Brands" },
     { id: "hotstack-codenest", label: "🔥 HotStack + CodeNest", icon: "💻", badge: "Independent Repos" },
     { id: "global-pulse", label: "Global Pulse", icon: "🌍", badge: "Analytics" },
-    { id: "seedwave-admin", label: "🦁 Seedwave™ Admin", icon: "⚙️", badge: "7,038 Brands" },
+    { id: "seedwave-admin", label: "🦁 Seedwave™ Admin", icon: "⚙️", badge: "1,967 Brands" },
     { id: "legal-hub", label: "Legal Hub", icon: "⚖️", badge: "Legal Docs" },
     { id: "payment-hub", label: "Payment Portal", icon: "💳", badge: "SSO" },
     { id: "vaultmesh-checkout", label: "VaultMesh™ Checkout", icon: "🔐", badge: "Banimal Loop" },

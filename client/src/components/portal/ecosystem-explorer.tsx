@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, ExternalLink, Activity, Layers, Database } from "lucide-react";
+import type { Brand, Sector } from "@shared/schema";
 
 interface SectorZone {
   key: string;
@@ -20,7 +22,16 @@ interface SectorZone {
 }
 
 export default function EcosystemExplorer() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("")
+  
+  // Fetch brands and sectors data
+  const { data: brands = [] } = useQuery<Brand[]>({
+    queryKey: ["/api/brands"],
+  })
+
+  const { data: sectors = [] } = useQuery<Sector[]>({
+    queryKey: ["/api/sectors"],
+  });
   const [selectedZone, setSelectedZone] = useState<string | null>(null);
 
   // Comprehensive sector zones following codenest ecosystem map logic
@@ -200,9 +211,10 @@ export default function EcosystemExplorer() {
     zone.subdomain.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const totalBrands = 598; // Match reference screenshot
-  const totalActive = 477; // Match reference screenshot  
-  const totalNodes = 660; // Match reference screenshot
+  // Calculate real totals from database
+  const totalBrands = brands.length;
+  const totalActive = brands.filter(b => b.status === "active").length;
+  const totalNodes = sectors.reduce((sum, s) => sum + (s.subnodeCount || 0), 0);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -278,7 +290,7 @@ export default function EcosystemExplorer() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Total Sectors</p>
-                <p className="text-2xl font-bold text-purple-600">26</p>
+                <p className="text-2xl font-bold text-purple-600">{sectors.length}</p>
               </div>
               <Layers className="h-8 w-8 text-purple-500" />
             </div>
