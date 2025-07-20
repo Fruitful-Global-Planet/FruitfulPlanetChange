@@ -197,8 +197,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { id } = req.params;
       
-      // Map document IDs to actual file paths from your legal repository
+      // Map document IDs to actual file paths from legal.faa.zone repository
       const documentPaths: Record<string, string> = {
+        // Map by document ID for direct access
+        '1': 'attached_assets/legal-main/public/fruitful_holdings_nda.pdf',
+        '2': 'attached_assets/legal-main/public/securesign_portal.html',
+        '3': 'attached_assets/legal-main/public/fruitful_seedwave_deployment_manual.html',
+        '4': 'attached_assets/legal-main/public/respitories/faa_zone_minutes_of_meeting.html',
+        '5': 'attached_assets/legal-main/public/firebase_core_minutes.html',
+        '6': 'attached_assets/legal-main/public/paypal_setup.html',
+        '7': 'attached_assets/legal-main/public/respitories/index.html',
+        '8': 'attached_assets/legal-main/public/respitories/codenest_settings.html',
+        // Legacy string-based mappings for backward compatibility
         'fruitful-holdings-nda': 'attached_assets/legal-main/public/fruitful_holdings_nda.pdf',
         'securesign-portal': 'attached_assets/legal-main/public/securesign_portal.html',
         'seedwave-deployment': 'attached_assets/legal-main/public/fruitful_seedwave_deployment_manual.html',
@@ -236,8 +246,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { id } = req.params;
       
-      // Map document IDs to actual file paths from your legal repository
+      // Map document IDs to actual file paths from legal.faa.zone repository
       const documentPaths: Record<string, string> = {
+        // Map by document ID for direct access
+        '1': 'attached_assets/legal-main/public/fruitful_holdings_nda.pdf',
+        '2': 'attached_assets/legal-main/public/securesign_portal.html',
+        '3': 'attached_assets/legal-main/public/fruitful_seedwave_deployment_manual.html',
+        '4': 'attached_assets/legal-main/public/respitories/faa_zone_minutes_of_meeting.html',
+        '5': 'attached_assets/legal-main/public/firebase_core_minutes.html',
+        '6': 'attached_assets/legal-main/public/paypal_setup.html',
+        '7': 'attached_assets/legal-main/public/respitories/index.html',
+        '8': 'attached_assets/legal-main/public/respitories/codenest_settings.html',
+        // Legacy string-based mappings for backward compatibility
         'fruitful-holdings-nda': 'attached_assets/legal-main/public/fruitful_holdings_nda.pdf',
         'securesign-portal': 'attached_assets/legal-main/public/securesign_portal.html',
         'seedwave-deployment': 'attached_assets/legal-main/public/fruitful_seedwave_deployment_manual.html',
