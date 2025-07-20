@@ -32,7 +32,7 @@ export default function SectorsPage() {
   const sectorStats = sectors.map(sector => {
     const sectorBrands = brands.filter(brand => brand.sectorId === sector.id)
     const activeBrands = sectorBrands.filter(brand => brand.status === "active")
-    const integrations = [...new Set(sectorBrands.map(brand => brand.integration))]
+    const integrations = Array.from(new Set(sectorBrands.map(brand => brand.integration)))
     
     return {
       ...sector,
@@ -45,7 +45,7 @@ export default function SectorsPage() {
 
   const totalBrands = brands.length
   const totalActiveBrands = brands.filter(b => b.status === "active").length
-  const totalIntegrations = [...new Set(brands.map(b => b.integration))].length
+  const totalIntegrations = Array.from(new Set(brands.map(b => b.integration))).length
 
   const toggleSectorExpansion = (sectorId: number) => {
     setExpandedSector(expandedSector === sectorId ? null : sectorId)

@@ -60,11 +60,7 @@ export function SecureSign() {
 
   // Create NDA mutation
   const createNDAMutation = useMutation({
-    mutationFn: (data: any) => apiRequest("/api/securesign/nda-records", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    }),
+    mutationFn: (data: any) => apiRequest("/api/securesign/nda-records", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/securesign/nda-records"] })
       toast({ title: "Success", description: "NDA submitted successfully!" })

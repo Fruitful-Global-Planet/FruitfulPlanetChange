@@ -35,7 +35,7 @@ import {
 } from "@shared/securesign-schema";
 import { db } from "./db";
 import { eq, ilike, or } from "drizzle-orm";
-import { update } from "drizzle-orm/pg-core";
+// Remove invalid import - update is not exported from drizzle-orm/pg-core
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -180,9 +180,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createLegalDocument(insertDoc: InsertLegalDocument): Promise<LegalDocument> {
+    const docToInsert = {
+      ...insertDoc,
+      tags: Array.isArray(insertDoc.tags) ? [...insertDoc.tags] : []
+    };
     const [doc] = await db
       .insert(legalDocuments)
-      .values(insertDoc)
+      .values([docToInsert])
       .returning();
     return doc;
   }
@@ -372,7 +376,13 @@ export class MemStorage implements IStorage {
 
   async createSector(insertSector: InsertSector): Promise<Sector> {
     const id = this.currentSectorId++;
-    const sector: Sector = { ...insertSector, id };
+    const sector: Sector = { 
+      ...insertSector, 
+      id,
+      description: insertSector.description || null,
+      brandCount: insertSector.brandCount || null,
+      subnodeCount: insertSector.subnodeCount || null
+    };
     this.sectors.set(id, sector);
     return sector;
   }
@@ -405,7 +415,13 @@ export class MemStorage implements IStorage {
     const brand: Brand = { 
       ...insertBrand, 
       id,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      description: insertBrand.description || null,
+      sectorId: insertBrand.sectorId || null,
+      status: insertBrand.status || "active",
+      isCore: insertBrand.isCore || null,
+      parentId: insertBrand.parentId || null,
+      metadata: insertBrand.metadata || null
     };
     this.brands.set(id, brand);
     return brand;
@@ -444,7 +460,7 @@ export class MemStorage implements IStorage {
       createdAt: new Date().toISOString(),
       icon: insertDoc.icon || "📄",
       category: insertDoc.category || "legal",
-      tags: insertDoc.tags || []
+      tags: Array.isArray(insertDoc.tags) ? [...insertDoc.tags] : []
     };
     this.legalDocuments.set(id.toString(), doc);
     return doc;
@@ -480,9 +496,11 @@ export class MemStorage implements IStorage {
       ...insertPayment,
       id,
       createdAt: new Date().toISOString(),
-      metadata: insertPayment.metadata || {},
+      metadata: insertPayment.metadata || null,
       status: insertPayment.status || "pending",
-      currency: insertPayment.currency || "USD"
+      currency: insertPayment.currency || null,
+      userId: insertPayment.userId || null,
+      paypalOrderId: insertPayment.paypalOrderId || null
     };
     this.payments.set(id.toString(), payment);
     return payment;

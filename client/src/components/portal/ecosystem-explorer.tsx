@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
+import { VersionSelector } from './version-selector';
 import { 
   Search,
   Filter,
@@ -44,6 +45,7 @@ export function EcosystemExplorer() {
   const [selectedSector, setSelectedSector] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'tree'>('grid');
   const [activeTab, setActiveTab] = useState('overview');
+  const [selectedVersion, setSelectedVersion] = useState('V1');
 
   // Flatten all brands and nodes from the comprehensive data
   const allBrandNodes = useMemo(() => {

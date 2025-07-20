@@ -55,21 +55,23 @@ export default function BrandsPage() {
       case "name":
         return a.name.localeCompare(b.name)
       case "sector":
-        const sectorA = sectorMap[a.sectorId]?.name || ""
-        const sectorB = sectorMap[b.sectorId]?.name || ""
+        const sectorA = a.sectorId ? sectorMap[a.sectorId]?.name || "" : ""
+        const sectorB = b.sectorId ? sectorMap[b.sectorId]?.name || "" : ""
         return sectorA.localeCompare(sectorB)
       case "integration":
         return a.integration.localeCompare(b.integration)
       case "created":
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0
+        return dateB - dateA
       default:
         return 0
     }
   })
 
   // Get unique integrations and statuses for filters
-  const uniqueIntegrations = [...new Set(brands.map(brand => brand.integration))]
-  const uniqueStatuses = [...new Set(brands.map(brand => brand.status))]
+  const uniqueIntegrations = Array.from(new Set(brands.map(brand => brand.integration)))
+  const uniqueStatuses = Array.from(new Set(brands.map(brand => brand.status)))
 
   const handleIntegrationToggle = (integration: string, checked: boolean) => {
     if (checked) {
