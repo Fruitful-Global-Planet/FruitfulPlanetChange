@@ -1,6 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import fs from 'fs';
+import path from 'path';
 import { 
   insertBrandSchema, 
   insertSectorSchema, 
@@ -192,7 +194,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Legal document viewing and download endpoints
+  // Legal document viewing and download endpoints (public access for documents)
   app.get("/api/legal-documents/:id/download", async (req, res) => {
     try {
       const { id } = req.params;
@@ -224,9 +226,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Document file not found" });
       }
 
-      const fs = require('fs');
-      const path = require('path');
-      
       const fullPath = path.resolve(filePath);
       if (!fs.existsSync(fullPath)) {
         return res.status(404).json({ error: "Document file not found on disk" });
@@ -273,9 +272,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).send("<h1>Document not found</h1>");
       }
 
-      const fs = require('fs');
-      const path = require('path');
-      
       const fullPath = path.resolve(filePath);
       if (!fs.existsSync(fullPath)) {
         return res.status(404).send("<h1>Document file not found</h1>");
