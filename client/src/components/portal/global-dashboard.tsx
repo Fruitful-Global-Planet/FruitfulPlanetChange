@@ -55,12 +55,30 @@ export function GlobalDashboard() {
     setAnimationKey(prev => prev + 1)
   }, [selectedView])
 
-  // Calculate sector distribution from COMPREHENSIVE_BRAND_DATA
-  const sectorDistribution = Object.entries(COMPREHENSIVE_BRAND_DATA).map(([key, sector]) => ({
+  // Comprehensive sector definitions matching the reference HTML
+  const comprehensiveSectors = [
+    { name: "Agriculture & Biotech", icon: "🌱", brands: 84, nodes: 12, key: "agriculture" },
+    { name: "Banking & Finance", icon: "🏦", brands: 60, nodes: 10, key: "banking" },
+    { name: "Logistics & Packaging", icon: "📦", brands: 30, nodes: 10, key: "logistics" },
+    { name: "Professional Services", icon: "💼", brands: 30, nodes: 8, key: "professional" },
+    { name: "SaaS & Licensing", icon: "💻", brands: 20, nodes: 8, key: "saas" },
+    { name: "NFT & Ownership", icon: "🎨", brands: 20, nodes: 8, key: "nft" },
+    { name: "Quantum Protocols", icon: "⚛️", brands: 20, nodes: 8, key: "quantum" },
+    { name: "Ritual & Culture", icon: "🎭", brands: 20, nodes: 8, key: "ritual" },
+    { name: "Nutrition & Food Chain", icon: "🍎", brands: 20, nodes: 8, key: "nutrition" },
+    { name: "Zero Waste", icon: "♻️", brands: 20, nodes: 8, key: "zerowaste" },
+    { name: "Voice & Audio", icon: "🎤", brands: 12, nodes: 8, key: "voice" },
+    { name: "Wellness Tech & Nodes", icon: "🧘", brands: 12, nodes: 8, key: "wellness" },
+    { name: "Utilities & Energy", icon: "⚡", brands: 12, nodes: 8, key: "utilities" },
+    { name: "Creative Tech", icon: "🎨", brands: 10, nodes: 10, key: "creative" }
+  ];
+
+  // Calculate sector distribution from comprehensive data
+  const sectorDistribution = comprehensiveSectors.map(sector => ({
     name: sector.name,
-    count: sector.brands.length,
-    nodes: sector.nodes?.length || 0,
-    key
+    count: sector.brands,
+    nodes: sector.nodes,
+    key: sector.key
   })).sort((a, b) => b.count - a.count)
 
   // Calculate integration tier data
@@ -259,27 +277,29 @@ export function GlobalDashboard() {
 
         <TabsContent value="sectors" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {sectorDistribution.map((sector, index) => (
-              <Card key={sector.key} className="hover:shadow-lg transition-shadow">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    {sector.name}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
+            {comprehensiveSectors.map((sector, index) => (
+              <Card key={sector.key} className="hover:shadow-lg transition-shadow border-l-4 border-l-blue-500">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">{sector.icon}</span>
+                      <h4 className="font-semibold text-sm">{sector.name}</h4>
+                    </div>
+                    <span className="text-xl font-bold">{sector.brands}</span>
+                  </div>
                   <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Brands</span>
-                      <Badge variant="secondary">{sector.count}</Badge>
+                    <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400">
+                      <span>Brands</span>
+                      <span className="font-bold">{sector.brands}</span>
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Nodes</span>
-                      <Badge variant="outline">{sector.nodes}</Badge>
+                    <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400">
+                      <span>Nodes</span>
+                      <span className="font-bold">{sector.nodes}</span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 mt-2">
                       <div 
-                        className="bg-cyan-500 h-2 rounded-full transition-all duration-1000"
-                        style={{ width: `${(sector.count / Math.max(...sectorDistribution.map(s => s.count))) * 100}%` }}
+                        className="bg-gradient-to-r from-blue-500 to-cyan-500 h-1.5 rounded-full transition-all duration-1000"
+                        style={{ width: `${(sector.brands / comprehensiveSectors[0]?.brands) * 100}%` }}
                       />
                     </div>
                   </div>

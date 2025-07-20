@@ -19,37 +19,37 @@ export async function seedDatabase() {
     await db.delete(sectors);
     await db.delete(systemStatus);
 
-    // Create sectors from comprehensive data
-    const sectorMappings = [
-      { key: "agriculture", name: "🌱 Agriculture & Biotech", emoji: "🌱", description: "Advanced biotech solutions for sustainable farming" },
-      { key: "food", name: "🥦 Food, Soil & Farming", emoji: "🥦", description: "Food production and soil management systems" },
-      { key: "banking", name: "🏦 Banking & Finance", emoji: "🏦", description: "Secure financial services and banking infrastructure" },
-      { key: "creative", name: "🎨 Creative Tech", emoji: "🎨", description: "Creative technology and digital art solutions" },
-      { key: "packaging", name: "📦 Logistics & Packaging", emoji: "📦", description: "Supply chain and packaging innovations" },
-      { key: "education", name: "📚 Education & IP", emoji: "📚", description: "Educational technology and intellectual property" },
-      { key: "fashion", name: "✂️ Fashion & Identity", emoji: "✂️", description: "Fashion technology and identity solutions" },
-      { key: "gaming", name: "🎮 Gaming & Simulation", emoji: "🎮", description: "Interactive gaming and simulation platforms" },
-      { key: "health", name: "🧠 Health & Hygiene", emoji: "🧠", description: "Healthcare and hygiene management systems" },
-      { key: "housing", name: "🏗️ Housing & Infrastructure", emoji: "🏗️", description: "Smart housing and infrastructure solutions" },
-      { key: "ai", name: "🤖 AI, Logic & Grid", emoji: "🤖", description: "Artificial intelligence and logic systems" },
+    // Comprehensive sector definitions matching the reference HTML
+    const comprehensiveSectorMappings = [
+      { key: "agriculture", name: "Agriculture & Biotech", emoji: "🌱", brands: 84, nodes: 12 },
+      { key: "banking", name: "Banking & Finance", emoji: "🏦", brands: 60, nodes: 10 },
+      { key: "logistics", name: "Logistics & Packaging", emoji: "📦", brands: 30, nodes: 10 },
+      { key: "professional", name: "Professional Services", emoji: "💼", brands: 30, nodes: 8 },
+      { key: "saas", name: "SaaS & Licensing", emoji: "💻", brands: 20, nodes: 8 },
+      { key: "nft", name: "NFT & Ownership", emoji: "🎨", brands: 20, nodes: 8 },
+      { key: "quantum", name: "Quantum Protocols", emoji: "⚛️", brands: 20, nodes: 8 },
+      { key: "ritual", name: "Ritual & Culture", emoji: "🎭", brands: 20, nodes: 8 },
+      { key: "nutrition", name: "Nutrition & Food Chain", emoji: "🍎", brands: 20, nodes: 8 },
+      { key: "zerowaste", name: "Zero Waste", emoji: "♻️", brands: 20, nodes: 8 },
+      { key: "voice", name: "Voice & Audio", emoji: "🎤", brands: 12, nodes: 8 },
+      { key: "wellness", name: "Wellness Tech & Nodes", emoji: "🧘", brands: 12, nodes: 8 },
+      { key: "utilities", name: "Utilities & Energy", emoji: "⚡", brands: 12, nodes: 8 },
+      { key: "creative", name: "Creative Tech", emoji: "🎨", brands: 10, nodes: 10 }
     ];
 
     const createdSectors = new Map();
 
-    // Insert sectors from comprehensive brand data
-    for (const [sectorKey, sectorData] of Object.entries(COMPREHENSIVE_BRAND_DATA)) {
-      const mapping = sectorMappings.find(m => sectorKey.toLowerCase().includes(m.key)) || 
-                     { key: sectorKey, name: sectorData.name, emoji: "🔧", description: `${sectorData.name} solutions` };
-      
+    // Insert comprehensive sectors matching the reference HTML
+    for (const mapping of comprehensiveSectorMappings) {
       const [sector] = await db.insert(sectors).values({
         name: mapping.name,
         emoji: mapping.emoji,
-        description: mapping.description,
-        brandCount: sectorData.brands.length,
-        subnodeCount: sectorData.nodes.length
+        description: `${mapping.name} solutions and infrastructure`,
+        brandCount: mapping.brands,
+        subnodeCount: mapping.nodes
       }).returning();
 
-      createdSectors.set(sectorKey, sector);
+      createdSectors.set(mapping.key, sector);
     }
 
     // Add Fruitful Crate Dance sectors
