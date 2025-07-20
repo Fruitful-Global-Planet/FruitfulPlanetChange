@@ -26,9 +26,7 @@ import {
 import { 
   COMPREHENSIVE_SECTOR_LIST, 
   COMPREHENSIVE_BRAND_DATA, 
-  GLOBAL_ECOSYSTEM_METRICS,
-  TECH_STACK_DATA,
-  LICENSE_LEDGER_DATA
+  GLOBAL_ECOSYSTEM_METRICS
 } from '@shared/schema';
 
 interface BrandNode {
@@ -159,6 +157,49 @@ export function EcosystemExplorer() {
               <CardDescription className="text-lg">
                 Complete omnilevel integration: {GLOBAL_ECOSYSTEM_METRICS.totalBrands.toLocaleString()} brands across {GLOBAL_ECOSYSTEM_METRICS.totalSectors} sectors
               </CardDescription>
+              {/* LIVE DOMAIN INTEGRATION - ALL PLAN V1-9 PLATFORMS */}
+              <div className="flex flex-wrap gap-2 mt-3">
+                <a 
+                  href="https://faa.zone" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-xs bg-blue-100 hover:bg-blue-200 px-2 py-1 rounded-full text-blue-800 hover:text-blue-900 transition-colors"
+                >
+                  🦍 FAA.ZONE™
+                </a>
+                <a 
+                  href="https://seedwave.faa.zone/admin" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-xs bg-purple-100 hover:bg-purple-200 px-2 py-1 rounded-full text-purple-800 hover:text-purple-900 transition-colors"
+                >
+                  🦁 Seedwave™
+                </a>
+                <a 
+                  href="https://fruitful.faa.zone" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-xs bg-green-100 hover:bg-green-200 px-2 py-1 rounded-full text-green-800 hover:text-green-900 transition-colors"
+                >
+                  🍎 Fruitful
+                </a>
+                <a 
+                  href="https://vaultmesh.faa.zone" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-xs bg-indigo-100 hover:bg-indigo-200 px-2 py-1 rounded-full text-indigo-800 hover:text-indigo-900 transition-colors"
+                >
+                  🔐 VaultMesh™
+                </a>
+                <a 
+                  href="https://hotstack.faa.zone" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-xs bg-red-100 hover:bg-red-200 px-2 py-1 rounded-full text-red-800 hover:text-red-900 transition-colors"
+                >
+                  🔥 HotStack
+                </a>
+              </div>
             </div>
             <div className="text-right">
               <div className="flex items-center gap-4">
@@ -169,6 +210,9 @@ export function EcosystemExplorer() {
                 <Badge variant="secondary">
                   <Network className="w-3 h-3 mr-1" />
                   {GLOBAL_ECOSYSTEM_METRICS.totalNodes} Nodes
+                </Badge>
+                <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                  PLAN V1-9 ✓
                 </Badge>
               </div>
             </div>
@@ -445,8 +489,33 @@ export function EcosystemExplorer() {
         {/* Tech Stack Tab */}
         <TabsContent value="integrations" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {Object.entries(TECH_STACK_DATA).map(([key, tech]) => (
-              <Card key={key}>
+            {[
+              {
+                icon: "🔥",
+                title: "HotStack",
+                details: "High-performance infrastructure platform",
+                features: ["Real-time processing", "Auto-scaling", "Multi-cloud deployment", "Edge computing"]
+              },
+              {
+                icon: "🔒",
+                title: "VaultMesh™",
+                details: "Secure mesh networking and data sovereignty",
+                features: ["End-to-end encryption", "Zero-trust architecture", "Sovereign data control", "Mesh networking"]
+              },
+              {
+                icon: "✈️",
+                title: "FAA.ZONE™",
+                details: "Aviation and aerospace domain management",
+                features: ["Flight data processing", "Aerospace protocols", "Aviation compliance", "Real-time tracking"]
+              },
+              {
+                icon: "🌱",
+                title: "Seedwave™",
+                details: "Brand lifecycle management platform",
+                features: ["Brand orchestration", "Licensing automation", "Ecosystem integration", "Real-time analytics"]
+              }
+            ].map((tech, index) => (
+              <Card key={index}>
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">{tech.icon}</span>
@@ -460,8 +529,8 @@ export function EcosystemExplorer() {
                   <div className="space-y-3">
                     <h4 className="font-semibold text-sm">Key Features:</h4>
                     <ul className="space-y-1">
-                      {tech.features.map((feature, index) => (
-                        <li key={index} className="flex items-start gap-2 text-sm">
+                      {tech.features.map((feature, featureIndex) => (
+                        <li key={featureIndex} className="flex items-start gap-2 text-sm">
                           <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0" />
                           <span className="text-muted-foreground">{feature}</span>
                         </li>
@@ -486,10 +555,14 @@ export function EcosystemExplorer() {
                 <div>
                   <h4 className="font-semibold mb-3">Tier Distribution</h4>
                   <div className="space-y-2">
-                    {LICENSE_LEDGER_DATA.growth.datasets.map((tier, index) => (
+                    {[
+                      { label: "Tier 1 - Retail", value: 204 },
+                      { label: "Tier 2 - GovMesh", value: 117 },
+                      { label: "Tier 3 - Enterprise", value: 80 }
+                    ].map((tier, index) => (
                       <div key={index} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
                         <span className="text-sm">{tier.label}</span>
-                        <Badge variant="outline">{tier.data[tier.data.length - 1]}</Badge>
+                        <Badge variant="outline">{tier.value}</Badge>
                       </div>
                     ))}
                   </div>
@@ -497,10 +570,15 @@ export function EcosystemExplorer() {
                 <div>
                   <h4 className="font-semibold mb-3">Active Clauses</h4>
                   <div className="space-y-2">
-                    {LICENSE_LEDGER_DATA.clauses.labels.map((clause, index) => (
+                    {[
+                      { clause: "Brand Sovereignty", value: "6,005" },
+                      { clause: "Domain Rights", value: "1,481" },
+                      { clause: "Tech Licensing", value: "4,524" },
+                      { clause: "Usage Clauses", value: "33" }
+                    ].map((item, index) => (
                       <div key={index} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
-                        <span className="text-sm">{clause}</span>
-                        <Badge variant="outline">{LICENSE_LEDGER_DATA.clauses.data[index]}</Badge>
+                        <span className="text-sm">{item.clause}</span>
+                        <Badge variant="outline">{item.value}</Badge>
                       </div>
                     ))}
                   </div>
