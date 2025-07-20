@@ -21,6 +21,7 @@ import SectorsPage from "@/pages/sectors"
 import NotFound from "@/pages/not-found"
 import { FruitfulCrateDancePage } from "@/pages/fruitful-crate-dance"
 import { SecureSign } from "@/components/portal/secure-sign"
+import VaultMeshPage from "@/pages/vaultmesh"
 import { useState } from "react"
 
 // Page router component that renders content based on active page
@@ -110,6 +111,8 @@ function PageRouter({ activePage }: { activePage: string }) {
           <PaymentHub />
         </div>
       )
+    case "vaultmesh":
+      return <VaultMeshPage />
     case "vaultmesh-checkout":
       return (
         <div className="p-8">

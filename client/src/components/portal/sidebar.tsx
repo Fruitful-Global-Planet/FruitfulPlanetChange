@@ -40,6 +40,7 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
     { id: "seedwave-admin", label: "🦁 Seedwave™ Admin", icon: "⚙️", badge: "1,967 Brands" },
     { id: "legal-hub", label: "Legal Hub", icon: "⚖️", badge: "Legal Docs" },
     { id: "payment-hub", label: "Payment Portal", icon: "💳", badge: "SSO" },
+    { id: "vaultmesh", label: "VaultMesh™ Core", icon: "🌐", badge: "Infrastructure" },
     { id: "vaultmesh-checkout", label: "VaultMesh™ Checkout", icon: "🔐", badge: "Banimal Loop" },
   ]
 
