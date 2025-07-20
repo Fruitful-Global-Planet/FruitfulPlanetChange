@@ -19,7 +19,8 @@ import {
   type Repository,
   type InsertRepository,
   type Payment,
-  type InsertPayment
+  type InsertPayment,
+  COMPREHENSIVE_BRAND_DATA
 } from "@shared/schema";
 
 export interface IStorage {
@@ -92,25 +93,33 @@ export class MemStorage implements IStorage {
   }
 
   private initializeSampleData() {
-    // Initialize sectors
-    const sectorData = [
-      { name: "Agriculture & Biotech", emoji: "🌱", description: "Advanced biotech solutions for sustainable farming", brandCount: 84, subnodeCount: 190 },
-      { name: "Food, Soil & Farming", emoji: "🥦", description: "Food production and soil management systems", brandCount: 83, subnodeCount: 328 },
-      { name: "Banking & Finance", emoji: "🏦", description: "Secure financial services and banking infrastructure", brandCount: 136, subnodeCount: 136 },
-      { name: "Creative Tech", emoji: "🖋️", description: "Creative technology and digital art solutions", brandCount: 10, subnodeCount: 30 },
-      { name: "Logistics & Packaging", emoji: "📦", description: "Supply chain and packaging innovations", brandCount: 101, subnodeCount: 364 },
-      { name: "Education & IP", emoji: "📚", description: "Educational technology and intellectual property", brandCount: 66, subnodeCount: 330 },
-      { name: "Fashion & Identity", emoji: "✂", description: "Fashion technology and identity solutions", brandCount: 138, subnodeCount: 198 },
-      { name: "Gaming & Simulation", emoji: "🎮", description: "Interactive gaming and simulation platforms", brandCount: 10, subnodeCount: 30 },
-      { name: "Health & Hygiene", emoji: "🧠", description: "Healthcare and hygiene management systems", brandCount: 93, subnodeCount: 372 },
-      { name: "Housing & Infrastructure", emoji: "🏗️", description: "Smart housing and infrastructure solutions", brandCount: 91, subnodeCount: 364 },
-      { name: "AI, Logic & Grid", emoji: "🧠", description: "Artificial intelligence and logic systems", brandCount: 188, subnodeCount: 484 },
+    // Initialize sectors from comprehensive data
+    const sectorMappings = [
+      { key: "agriculture", name: "Agriculture & Biotech", emoji: "🌱", description: "Advanced biotech solutions for sustainable farming" },
+      { key: "food", name: "Food, Soil & Farming", emoji: "🥦", description: "Food production and soil management systems" },
+      { key: "banking", name: "Banking & Finance", emoji: "🏦", description: "Secure financial services and banking infrastructure" },
+      { key: "creative", name: "Creative Tech", emoji: "🖋️", description: "Creative technology and digital art solutions" },
+      { key: "packaging", name: "Logistics & Packaging", emoji: "📦", description: "Supply chain and packaging innovations" },
+      { key: "education", name: "Education & IP", emoji: "📚", description: "Educational technology and intellectual property" },
+      { key: "fashion", name: "Fashion & Identity", emoji: "✂", description: "Fashion technology and identity solutions" },
+      { key: "gaming", name: "Gaming & Simulation", emoji: "🎮", description: "Interactive gaming and simulation platforms" },
+      { key: "health", name: "Health & Hygiene", emoji: "🧠", description: "Healthcare and hygiene management systems" },
+      { key: "housing", name: "Housing & Infrastructure", emoji: "🏗️", description: "Smart housing and infrastructure solutions" },
+      { key: "ai-logic", name: "AI, Logic & Grid", emoji: "🧠", description: "Artificial intelligence and logic systems" },
     ];
 
-    sectorData.forEach(sector => {
+    // Create sectors based on actual comprehensive data
+    Object.entries(COMPREHENSIVE_BRAND_DATA).forEach(([sectorKey, sectorData]) => {
+      const mapping = sectorMappings.find(m => sectorKey.includes(m.key)) || 
+                     { key: sectorKey, name: sectorData.name, emoji: "🔧", description: `${sectorData.name} solutions` };
+      
       const newSector: Sector = {
         id: this.currentSectorId++,
-        ...sector
+        name: mapping.name,
+        emoji: mapping.emoji,
+        description: mapping.description,
+        brandCount: sectorData.brands.length,
+        subnodeCount: sectorData.nodes.length
       };
       this.sectors.set(newSector.id, newSector);
     });
@@ -131,25 +140,39 @@ export class MemStorage implements IStorage {
       this.systemStatuses.set(status.service, newStatus);
     });
 
-    // Initialize sample brands for each sector
-    Array.from(this.sectors.values()).forEach(sector => {
-      // Create core brands
-      for (let i = 0; i < Math.min(sector.brandCount, 20); i++) {
-        const brand: Brand = {
-          id: this.currentBrandId++,
-          name: `${sector.name.split(' ')[0]} Brand ${i + 1}`,
-          description: `Advanced ${sector.name.toLowerCase()} solution for enterprise needs`,
-          sectorId: sector.id,
-          integration: ["VaultMesh™", "HotStack", "FAA.ZONE™"][i % 3],
-          status: ["active", "maintenance", "active"][i % 3],
-          isCore: true,
-          parentId: null,
-          metadata: { featured: i < 3 },
-          createdAt: new Date().toISOString()
-        };
-        this.brands.set(brand.id, brand);
+    // Initialize authentic brands from comprehensive schema data
+    let brandId = 1;
+    Object.entries(COMPREHENSIVE_BRAND_DATA).forEach(([sectorKey, sectorData]) => {
+      // Find the matching sector
+      const sector = Array.from(this.sectors.values()).find(s => 
+        s.name.toLowerCase().includes(sectorKey.toLowerCase()) || 
+        s.name.toLowerCase().includes(sectorData.name.toLowerCase().replace(/[🔥🌱🏭🧠⚡🏦💊🎨🛡️🌐🏢🚗🎓📱🧪🔬⚖️🏠🌍🍎🌿📊🎯🛒📦🧮💼🔌⚙️🌊💡🎮🔒]/g, '').trim())
+      );
+      
+      if (sector) {
+        // Create brands using authentic names
+        sectorData.brands.forEach((brandName, index) => {
+          const brand: Brand = {
+            id: brandId++,
+            name: brandName, // Using authentic brand names
+            description: `Professional ${sectorData.name.replace(/[🔥🌱🏭🧠⚡🏦💊🎨🛡️🌐🏢🚗🎓📱🧪🔬⚖️🏠🌍🍎🌿📊🎯🛒📦🧮💼🔌⚙️🌊💡🎮🔒]/g, '').trim()} solution powered by ${brandName}`,
+            sectorId: sector.id,
+            integration: ["VaultMesh™", "HotStack", "FAA.ZONE™"][index % 3],
+            status: ["active", "maintenance", "active"][index % 3],
+            isCore: true,
+            parentId: null,
+            metadata: { 
+              featured: index < 3,
+              sector: sectorKey,
+              planVersions: sectorData.planVersions
+            },
+            createdAt: new Date().toISOString()
+          };
+          this.brands.set(brand.id, brand);
+        });
       }
     });
+    this.currentBrandId = brandId;
   }
 
   async getUser(id: number): Promise<User | undefined> {
