@@ -124,11 +124,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Dashboard stats API
+  // Dashboard stats API - includes legal document statistics for 24/7 sync
   app.get("/api/dashboard/stats", async (req, res) => {
     try {
       const brands = await storage.getAllBrands();
       const sectors = await storage.getAllSectors();
+      const legalDocs = await storage.getLegalDocuments();
       
       const coreWands = brands.filter(b => b.isCore).length;
       const subnodes = brands.filter(b => !b.isCore).length;
@@ -137,7 +138,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         totalElements: brands.length,
         coreBrands: coreWands,
         subnodes: subnodes,
-        sectors: sectors.length
+        sectors: sectors.length,
+        legalDocuments: legalDocs.length,
+        activeContracts: legalDocs.filter(d => d.category === 'contracts').length,
+        technicalDocs: legalDocs.filter(d => d.category === 'technical').length,
+        meetingMinutes: legalDocs.filter(d => d.category === 'minutes').length
       };
       
       res.json(stats);

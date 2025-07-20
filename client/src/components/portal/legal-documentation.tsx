@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -16,7 +17,8 @@ import {
   BookOpen,
   Gavel,
   Building2,
-  Globe
+  Globe,
+  RefreshCw
 } from "lucide-react"
 
 interface LegalDocument {
@@ -37,8 +39,14 @@ export function LegalDocumentation() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
   const [viewingDocument, setViewingDocument] = useState<LegalDocument | null>(null)
 
-  // Legal documents from your repository structure
-  const legalDocuments: LegalDocument[] = [
+  // Fetch real-time legal documents from the database
+  const { data: legalDocs = [], isLoading } = useQuery({
+    queryKey: ["/api/legal-documents"],
+    refetchInterval: 5000 // Sync every 5 seconds for 24/7 updates
+  })
+
+  // Use real-time data if available, fallback to static data for offline mode
+  const staticDocuments: LegalDocument[] = [
     {
       id: "fruitful-holdings-nda",
       title: "Fruitful Holdings NDA",
@@ -145,20 +153,23 @@ export function LegalDocumentation() {
     { id: "index", label: "Index & Reference", icon: Building2 }
   ]
 
-  const filteredDocuments = legalDocuments.filter(doc => {
+  // Combine real-time data with static documents for 24/7 sync
+  const allDocuments = legalDocs.length > 0 ? legalDocs : staticDocuments
+  
+  const filteredDocuments = allDocuments.filter(doc => {
     const matchesSearch = doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          doc.description.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesCategory = selectedCategory === "all" || doc.category === selectedCategory
     return matchesSearch && matchesCategory
   })
 
-  // Calculate statistics
+  // Calculate statistics with real-time data for 24/7 sync
   const getStatistics = () => {
     return {
-      totalDocuments: legalDocuments.length,
-      activeContracts: legalDocuments.filter(d => d.status === 'active' && d.category === 'contracts').length,
-      technicalDocs: legalDocuments.filter(d => d.category === 'technical').length,
-      meetingMinutes: legalDocuments.filter(d => d.category === 'minutes').length
+      totalDocuments: allDocuments.length,
+      activeContracts: allDocuments.filter(d => d.category === 'contracts').length,
+      technicalDocs: allDocuments.filter(d => d.category === 'technical').length,
+      meetingMinutes: allDocuments.filter(d => d.category === 'minutes').length
     }
   }
 
@@ -231,6 +242,16 @@ export function LegalDocumentation() {
               <FileText className="w-3 h-3 mr-1" />
               {statistics.totalDocuments} Documents
             </Badge>
+            <Button 
+              size="sm" 
+              variant="outline"
+              onClick={() => window.location.reload()}
+              className="flex items-center gap-2"
+              disabled={isLoading}
+            >
+              <RefreshCw className={`w-3 h-3 ${isLoading ? 'animate-spin' : ''}`} />
+              {isLoading ? 'Syncing...' : 'Sync 24/7'}
+            </Button>
           </div>
         </div>
       </div>

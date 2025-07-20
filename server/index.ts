@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { seedDatabase } from "./seed-data";
+import { seedLegalDocuments } from "./seed-legal";
 
 const app = express();
 app.use(express.json());
@@ -44,6 +45,7 @@ app.use((req, res, next) => {
   if (app.get("env") === "development") {
     try {
       await seedDatabase();
+      await seedLegalDocuments();
     } catch (error) {
       console.error("Failed to seed database:", error);
     }
