@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { VaultMeshGlobalCheckout } from "@/components/portal/vaultmesh-global-checkout"
+import { VaultMeshAbout } from "@/components/portal/vaultmesh-about"
+import { VaultMeshProducts } from "@/components/portal/vaultmesh-products"
+import { VaultMeshBrandPackages } from "@/components/portal/vaultmesh-brand-packages"
 import type { Brand, Sector } from "@shared/schema"
 
 interface VaultMeshMetrics {
@@ -20,6 +23,7 @@ interface VaultMeshMetrics {
 export default function VaultMeshPage() {
   const [selectedProtocol, setSelectedProtocol] = useState("core")
   const [activeView, setActiveView] = useState("overview")
+  const [selectedSection, setSelectedSection] = useState("dashboard")
   const [metrics, setMetrics] = useState<VaultMeshMetrics>({
     totalConnections: 15847,
     activeNodes: 892,
@@ -90,17 +94,9 @@ export default function VaultMeshPage() {
     }
   ]
 
-  const ecosystemConnections = [
-    { name: "Fruitful™", status: "Connected", type: "Primary Portal", uptime: 99.99 },
-    { name: "Baobab Network", status: "Connected", type: "Security Layer", uptime: 99.97 },
-    { name: "Fruitful Crate Dance", status: "Connected", type: "Logistics", uptime: 99.95 },
-    { name: "BuildNest™", status: "Connected", type: "Enterprise Solutions", uptime: 99.98 },
-    { name: "Seedwave™", status: "Connected", type: "Analytics Portal", uptime: 99.96 },
-    { name: "PayPal Integration", status: "Connected", type: "Financial", uptime: 99.92 },
-    { name: "Vercel Deployment", status: "Connected", type: "Infrastructure", uptime: 99.99 },
-    { name: "GitHub Repository", status: "Connected", type: "Development", uptime: 99.94 },
-    { name: "Cloudflare CDN", status: "Connected", type: "Performance", uptime: 99.98 }
-  ]
+  if (activeView === "checkout") {
+    return <VaultMeshGlobalCheckout />
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -116,217 +112,240 @@ export default function VaultMeshPage() {
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-              <Activity className="w-3 h-3 mr-1" />
-              {metrics.uptime}% Uptime
-            </Badge>
-            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-              <Shield className="w-3 h-3 mr-1" />
-              {metrics.securityLevel}
-            </Badge>
+            <div className="flex gap-2">
+              <Button 
+                variant={selectedSection === "dashboard" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedSection("dashboard")}
+                className="bg-cyan-500 hover:bg-cyan-600 text-white"
+              >
+                Dashboard
+              </Button>
+              <Button 
+                variant={selectedSection === "about" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedSection("about")}
+              >
+                About
+              </Button>
+              <Button 
+                variant={selectedSection === "products" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedSection("products")}
+              >
+                Products
+              </Button>
+              <Button 
+                variant={selectedSection === "fruitful-brands" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedSection("fruitful-brands")}
+              >
+                Brand Packages
+              </Button>
+            </div>
+            <div className="flex gap-2">
+              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                <Activity className="w-3 h-3 mr-1" />
+                {metrics.uptime}% Uptime
+              </Badge>
+              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                <Shield className="w-3 h-3 mr-1" />
+                {metrics.securityLevel}
+              </Badge>
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Real-time Metrics Dashboard */}
-      <section className="p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-cyan-100 text-sm">Total Connections</p>
-                  <p className="text-2xl font-bold">{metrics.totalConnections.toLocaleString()}</p>
-                </div>
-                <Database className="h-8 w-8 text-cyan-200" />
-              </div>
-            </CardContent>
-          </Card>
+      {/* Section Content */}
+      {selectedSection === "about" && (
+        <section className="p-6">
+          <VaultMeshAbout />
+        </section>
+      )}
 
-          <Card className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-green-100 text-sm">Active Nodes</p>
-                  <p className="text-2xl font-bold">{metrics.activeNodes.toLocaleString()}</p>
-                </div>
-                <Cpu className="h-8 w-8 text-green-200" />
-              </div>
-            </CardContent>
-          </Card>
+      {selectedSection === "products" && (
+        <section className="p-6">
+          <VaultMeshProducts />
+        </section>
+      )}
 
-          <Card className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-purple-100 text-sm">Data Integrity</p>
-                  <p className="text-2xl font-bold">{metrics.dataIntegrity.toFixed(2)}%</p>
-                </div>
-                <Lock className="h-8 w-8 text-purple-200" />
-              </div>
-            </CardContent>
-          </Card>
+      {selectedSection === "fruitful-brands" && (
+        <section className="p-6">
+          <VaultMeshBrandPackages />
+        </section>
+      )}
 
-          <Card className="bg-gradient-to-r from-orange-500 to-red-500 text-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-orange-100 text-sm">Protocols</p>
-                  <p className="text-2xl font-bold">{metrics.protocolsSupported}</p>
-                </div>
-                <Network className="h-8 w-8 text-orange-200" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Core Protocols & Components */}
-      <section className="p-6">
-        <Tabs value={selectedProtocol} onValueChange={setSelectedProtocol} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            {protocols.map((protocol) => (
-              <TabsTrigger key={protocol.id} value={protocol.id} className="text-xs">
-                <protocol.icon className="w-4 h-4 mr-1" />
-                {protocol.name.split(' ')[0]}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          {protocols.map((protocol) => (
-            <TabsContent key={protocol.id} value={protocol.id} className="mt-6">
-              <Card>
-                <CardHeader>
+      {/* Dashboard Content */}
+      {selectedSection === "dashboard" && (
+        <div>
+          {/* Real-time Metrics Dashboard */}
+          <section className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <Card className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white">
+                <CardContent className="p-6">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <protocol.icon className="h-8 w-8 text-cyan-500" />
-                      <div>
-                        <CardTitle className="text-xl">{protocol.name}</CardTitle>
-                        <p className="text-gray-600 dark:text-gray-400">{protocol.description}</p>
-                      </div>
+                    <div>
+                      <p className="text-cyan-100 text-sm">Total Connections</p>
+                      <p className="text-2xl font-bold">{metrics.totalConnections.toLocaleString()}</p>
                     </div>
-                    <div className="text-right">
-                      <Badge variant="outline" className="bg-green-50 text-green-700">
-                        {protocol.status}
-                      </Badge>
-                      <p className="text-sm text-gray-500 mt-1">
-                        {protocol.connections.toLocaleString()} connections
-                      </p>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {protocol.features.map((feature, index) => (
-                      <div key={index} className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-                        <p className="font-medium text-gray-900 dark:text-white">{feature}</p>
-                      </div>
-                    ))}
+                    <Database className="h-8 w-8 text-cyan-200" />
                   </div>
                 </CardContent>
               </Card>
-            </TabsContent>
-          ))}
-        </Tabs>
-      </section>
 
-      {/* Ecosystem Connections */}
-      <section className="p-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Globe className="h-6 w-6 text-cyan-500" />
-              Ecosystem Connections
-            </CardTitle>
-            <p className="text-gray-600 dark:text-gray-400">
-              Connected services and platforms within the FAA.ZONE™ ecosystem
-            </p>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {ecosystemConnections.map((connection, index) => (
-                <div key={index} className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold text-gray-900 dark:text-white">{connection.name}</h3>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 text-xs">
-                      {connection.status}
-                    </Badge>
+              <Card className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-green-100 text-sm">Active Nodes</p>
+                      <p className="text-2xl font-bold">{metrics.activeNodes.toLocaleString()}</p>
+                    </div>
+                    <Cpu className="h-8 w-8 text-green-200" />
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{connection.type}</p>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-gray-500">Uptime:</span>
-                    <span className="font-medium">{connection.uptime}%</span>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-purple-100 text-sm">Data Integrity</p>
+                      <p className="text-2xl font-bold">{metrics.dataIntegrity.toFixed(2)}%</p>
+                    </div>
+                    <Lock className="h-8 w-8 text-purple-200" />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-r from-orange-500 to-red-500 text-white">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-orange-100 text-sm">Protocols</p>
+                      <p className="text-2xl font-bold">{metrics.protocolsSupported}</p>
+                    </div>
+                    <Network className="h-8 w-8 text-orange-200" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </section>
+
+          {/* Core Protocols & Components */}
+          <section className="p-6">
+            <Tabs value={selectedProtocol} onValueChange={setSelectedProtocol} className="w-full">
+              <TabsList className="grid w-full grid-cols-4">
+                {protocols.map((protocol) => (
+                  <TabsTrigger key={protocol.id} value={protocol.id} className="text-xs">
+                    <protocol.icon className="w-4 h-4 mr-1" />
+                    {protocol.name.split(' ')[0]}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+
+              {protocols.map((protocol) => (
+                <TabsContent key={protocol.id} value={protocol.id} className="mt-6">
+                  <Card>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <protocol.icon className="h-8 w-8 text-cyan-500" />
+                          <div>
+                            <CardTitle className="text-xl">{protocol.name}</CardTitle>
+                            <p className="text-gray-600 dark:text-gray-400">{protocol.description}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <Badge variant="outline" className="bg-green-50 text-green-700">
+                            {protocol.status}
+                          </Badge>
+                          <p className="text-sm text-gray-500 mt-1">
+                            {protocol.connections.toLocaleString()} connections
+                          </p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {protocol.features.map((feature, index) => (
+                          <div key={index} className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                            <p className="font-medium text-gray-900 dark:text-white">{feature}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              ))}
+            </Tabs>
+          </section>
+
+          {/* Brand Integration Status */}
+          <section className="p-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-6 w-6 text-cyan-500" />
+                  Brand Integration Status
+                </CardTitle>
+                <p className="text-gray-600 dark:text-gray-400">
+                  VaultMesh™ integration across {brands.length} brands in {sectors.length} sectors
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-cyan-500">{brands.length}</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Connected Brands</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-green-500">{sectors.length}</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Integrated Sectors</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-purple-500">100%</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Coverage Rate</div>
                   </div>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </section>
+              </CardContent>
+            </Card>
+          </section>
 
-      {/* Brand Integration Status */}
-      <section className="p-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-6 w-6 text-cyan-500" />
-              Brand Integration Status
-            </CardTitle>
-            <p className="text-gray-600 dark:text-gray-400">
-              VaultMesh™ integration across {brands.length} brands in {sectors.length} sectors
-            </p>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-cyan-500">{brands.length}</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Connected Brands</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-green-500">{sectors.length}</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Integrated Sectors</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-purple-500">100%</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Coverage Rate</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </section>
-
-      {/* Quick Actions */}
-      <section className="p-6">
-        <Card className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white">
-          <CardContent className="p-8">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div>
-                <h2 className="text-2xl font-bold mb-2">VaultMesh™ Administration</h2>
-                <p className="opacity-90">
-                  Manage the core infrastructure and monitor ecosystem health
-                </p>
-              </div>
-              <div className="flex gap-4">
-                <Button
-                  variant="secondary"
-                  className="bg-white text-cyan-500 hover:bg-gray-100"
-                  onClick={() => setActiveView("checkout")}
-                >
-                  <Cloud className="w-4 h-4 mr-2" />
-                  Get VaultMesh™
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="bg-white bg-opacity-20 text-white hover:bg-white hover:bg-opacity-30"
-                >
-                  <Zap className="w-4 h-4 mr-2" />
-                  System Health
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </section>
+          {/* Quick Actions */}
+          <section className="p-6">
+            <Card className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white">
+              <CardContent className="p-8">
+                <div className="flex items-center justify-between flex-wrap gap-4">
+                  <div>
+                    <h2 className="text-2xl font-bold mb-2">VaultMesh™ Administration</h2>
+                    <p className="opacity-90">
+                      Manage the core infrastructure and monitor ecosystem health
+                    </p>
+                  </div>
+                  <div className="flex gap-4">
+                    <Button
+                      variant="secondary"
+                      className="bg-white text-cyan-500 hover:bg-gray-100"
+                      onClick={() => setActiveView("checkout")}
+                    >
+                      <Cloud className="w-4 h-4 mr-2" />
+                      Get VaultMesh™
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="bg-white bg-opacity-20 text-white hover:bg-white hover:bg-opacity-30"
+                    >
+                      <Zap className="w-4 h-4 mr-2" />
+                      System Health
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+        </div>
+      )}
     </div>
   )
 }
