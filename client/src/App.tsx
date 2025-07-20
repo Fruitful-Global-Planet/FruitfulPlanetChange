@@ -14,6 +14,7 @@ import { VaultMeshCheckout } from "@/components/portal/vaultmesh-checkout"
 import { FruitfulMarketplace } from "@/components/portal/fruitful-marketplace"
 import { HotStackCodeNest } from "@/components/portal/hotstack-codenest"
 import { BrandIdentityManager } from "@/components/portal/brand-identity-manager"
+import { GlobalDashboard } from "@/components/portal/global-dashboard"
 import PortalHome from "@/pages/portal-home"
 import BrandsPage from "@/pages/brands"
 import SectorsPage from "@/pages/sectors"
@@ -53,6 +54,12 @@ function PageRouter({ activePage }: { activePage: string }) {
       return (
         <div className="p-8">
           <SeedwaveAdmin />
+        </div>
+      )
+    case "global-dashboard":
+      return (
+        <div className="p-8">
+          <GlobalDashboard />
         </div>
       )
     case "ecosystem-explorer":

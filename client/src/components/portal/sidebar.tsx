@@ -32,6 +32,7 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
   ]
 
   const ecosystemItems = [
+    { id: "global-dashboard", label: "📊 Global Dashboard", icon: "📈", badge: "Live Analytics" },
     { id: "ecosystem-explorer", label: "🌐 Ecosystem Explorer", icon: "🗺️", badge: "PLAN V1-9" },
     { id: "fruitful-marketplace", label: "🛒 Fruitful™ Marketplace", icon: "🛍️", badge: "6,005+ Brands" },
     { id: "hotstack-codenest", label: "🔥 HotStack + CodeNest", icon: "💻", badge: "Independent Repos" },
