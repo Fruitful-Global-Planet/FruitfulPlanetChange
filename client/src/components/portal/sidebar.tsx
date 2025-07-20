@@ -49,6 +49,7 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
   const ecosystemItems = [
     { id: "fruitful-marketplace", label: "🛒 Fruitful™ Marketplace", icon: "🛍️", badge: "610 Core Brands" },
     { id: "hotstack-codenest", label: "🔥 HotStack + CodeNest", icon: "💻", badge: "Independent Repos" },
+    { id: "omnilevel", label: "🧠 Omnilevel AI Logic", icon: "🤖", badge: "31 Sectors" },
     { id: "legal-hub", label: "📋 Legal Documentation Hub", icon: "📄", badge: "8 Documents" },
     { id: "api-keys", label: "🔑 API Key Manager", icon: "🔐", badge: "8 Keys" },
     { id: "payment-hub", label: "Payment Portal", icon: "💳", badge: "SSO" },
