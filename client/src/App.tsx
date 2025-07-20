@@ -15,6 +15,8 @@ import { FruitfulMarketplace } from "@/components/portal/fruitful-marketplace"
 import { HotStackCodeNest } from "@/components/portal/hotstack-codenest"
 import { BrandIdentityManager } from "@/components/portal/brand-identity-manager"
 import PortalHome from "@/pages/portal-home"
+import BrandsPage from "@/pages/brands"
+import SectorsPage from "@/pages/sectors"
 import NotFound from "@/pages/not-found"
 import { FruitfulCrateDancePage } from "@/pages/fruitful-crate-dance"
 import { SecureSign } from "@/components/portal/secure-sign"
@@ -24,13 +26,23 @@ import { useState } from "react"
 function PageRouter({ activePage }: { activePage: string }) {
   switch (activePage) {
     case "home":
-    case "brands":
-    case "sectors":
     case "marketplace":
     case "analytics":
     case "integrations":
     case "settings":
       return <PortalHome />
+    case "brands":
+      return (
+        <div className="p-8">
+          <BrandsPage />
+        </div>
+      )
+    case "sectors":
+      return (
+        <div className="p-8">
+          <SectorsPage />
+        </div>
+      )
     case "global-pulse":
       return (
         <div className="p-8">

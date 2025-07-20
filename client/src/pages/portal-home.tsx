@@ -54,10 +54,10 @@ export default function PortalHome() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent">
-              Enhanced Brand Portal
+              Fruitful Global Brand Portal
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              Discover and manage 6,005+ brand elements across 33 sectors
+              Complete ecosystem with 6,005+ brands, SecureSign™ VIP, and deployment infrastructure
             </p>
           </div>
           <div className="flex items-center gap-4">
