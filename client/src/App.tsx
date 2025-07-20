@@ -24,6 +24,8 @@ import NotFound from "@/pages/not-found"
 import { FruitfulCrateDancePage } from "@/pages/fruitful-crate-dance"
 import { SecureSign } from "@/components/portal/secure-sign"
 import VaultMeshPage from "@/pages/vaultmesh"
+import Landing from "@/pages/landing"
+import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
 
 // Page router component that renders content based on active page
@@ -146,13 +148,21 @@ function PageRouter({ activePage }: { activePage: string }) {
 }
 
 function Router() {
+  const { isAuthenticated, isLoading } = useAuth();
+
   return (
     <Switch>
-      <Route path="/" component={PortalHome} />
-      <Route path="/portal-home" component={PortalHome} />
+      {isLoading || !isAuthenticated ? (
+        <Route path="/" component={Landing} />
+      ) : (
+        <>
+          <Route path="/" component={PortalHome} />
+          <Route path="/portal-home" component={PortalHome} />
+        </>
+      )}
       <Route component={NotFound} />
     </Switch>
-  )
+  );
 }
 
 function App() {
@@ -162,17 +172,29 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="seedwave-ui-theme">
         <TooltipProvider>
-          <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
-            <Sidebar activePage={activePage} onPageChange={setActivePage} />
-            <main className="flex-1 ml-0 md:ml-80 transition-all duration-300">
-              <PageRouter activePage={activePage} />
-            </main>
-          </div>
+          <AuthenticatedApp activePage={activePage} setActivePage={setActivePage} />
           <Toaster />
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
   )
+}
+
+function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; setActivePage: (page: string) => void }) {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading || !isAuthenticated) {
+    return <Router />;
+  }
+
+  return (
+    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
+      <Sidebar activePage={activePage} onPageChange={setActivePage} />
+      <main className="flex-1 ml-0 md:ml-80 transition-all duration-300">
+        <PageRouter activePage={activePage} />
+      </main>
+    </div>
+  );
 }
 
 export default App

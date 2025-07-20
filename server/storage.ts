@@ -38,9 +38,8 @@ import { eq, ilike, or } from "drizzle-orm";
 // Remove invalid import - update is not exported from drizzle-orm/pg-core
 
 export interface IStorage {
-  getUser(id: number): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  getUser(id: string): Promise<User | undefined>;
+  upsertUser(user: UpsertUser): Promise<User>;
   
   // Sectors
   getAllSectors(): Promise<Sector[]>;
@@ -73,20 +72,22 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  async getUser(id: number): Promise<User | undefined> {
+  async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user || undefined;
+    return user;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
+  async upsertUser(userData: UpsertUser): Promise<User> {
     const [user] = await db
       .insert(users)
-      .values(insertUser)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
       .returning();
     return user;
   }
@@ -219,14 +220,14 @@ export class DatabaseStorage implements IStorage {
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<number, User>;
+  private users: Map<string, User>;
   private sectors: Map<number, Sector>;
   private brands: Map<number, Brand>;
   private systemStatuses: Map<string, SystemStatus>;
   private legalDocuments: Map<string, LegalDocument>;
   private repositories: Map<string, Repository>;
   private payments: Map<string, Payment>;
-  private currentUserId: number;
+  private currentUserId: string;
   private currentSectorId: number;
   private currentBrandId: number;
   private currentDocId: number;
@@ -241,7 +242,7 @@ export class MemStorage implements IStorage {
     this.legalDocuments = new Map();
     this.repositories = new Map();
     this.payments = new Map();
-    this.currentUserId = 1;
+    this.currentUserId = "1";
     this.currentSectorId = 1;
     this.currentBrandId = 1;
     this.currentDocId = 1;
@@ -349,20 +350,17 @@ export class MemStorage implements IStorage {
     this.currentBrandId = brandId;
   }
 
-  async getUser(id: number): Promise<User | undefined> {
+  async getUser(id: string): Promise<User | undefined> {
     return this.users.get(id);
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentUserId++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const user: User = {
+      ...userData,
+      createdAt: userData.createdAt || new Date(),
+      updatedAt: new Date(),
+    };
+    this.users.set(userData.id, user);
     return user;
   }
 
