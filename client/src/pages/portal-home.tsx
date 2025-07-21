@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query"
 import { Rocket, HelpCircle, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SearchFilters } from "@/components/portal/search-filters"
-import { BrandCard } from "@/components/portal/brand-card"
+import { InteractiveBrandCard } from "@/components/interactive-brand-card"
+import { GlobalButtonActivator } from "@/components/global-button-activator"
 import { motion } from "framer-motion"
 import { MorphingButton, SparkleEffect, PulseIndicator } from "@/components/ui/micro-interactions"
 import type { Brand, Sector } from "@shared/schema"
@@ -51,6 +52,9 @@ export default function PortalHome() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Global Button Activation System - Makes ALL buttons functional */}
+      <GlobalButtonActivator />
+      
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6">
         <div className="flex items-center justify-between">
@@ -112,10 +116,9 @@ export default function PortalHome() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {displayedBrands.map((brand, index) => (
               <div key={brand.id} data-tour={index === 0 ? "sector-card" : undefined}>
-                <BrandCard
+                <InteractiveBrandCard
                   brand={brand}
                   sector={brand.sectorId ? sectorMap[brand.sectorId] : undefined}
-                  onClick={() => console.log('Brand clicked:', brand.name)}
                 />
               </div>
             ))}
@@ -150,6 +153,10 @@ export default function PortalHome() {
               <Button
                 variant="secondary"
                 className="bg-white text-cyan-500 hover:bg-gray-100"
+                onClick={() => {
+                  console.log("🚀 Launching new project...")
+                  window.open("/dashboard", "_blank")
+                }}
               >
                 <Rocket className="w-4 h-4 mr-2" />
                 Launch Project
@@ -157,6 +164,10 @@ export default function PortalHome() {
               <Button
                 variant="ghost"
                 className="bg-white bg-opacity-20 text-white hover:bg-white hover:bg-opacity-30"
+                onClick={() => {
+                  console.log("❓ Opening support portal...")
+                  window.open("mailto:support@seedwave.com", "_blank")
+                }}
               >
                 <HelpCircle className="w-4 h-4 mr-2" />
                 Get Support
