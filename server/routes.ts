@@ -13,6 +13,7 @@ import {
 import { IntegrationManager } from "./services/integration-manager";
 import { getAPIConfig } from "../shared/api-config";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { ExtensionScanner } from "./extension-scanner";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
@@ -734,6 +735,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error updating global config:', error);
       res.status(500).json({ message: 'Failed to update global config' });
+    }
+  });
+
+  // Extension scanning API endpoints
+  const extensionScanner = new ExtensionScanner();
+
+  app.get("/api/extensions/installed", isAuthenticated, async (req, res) => {
+    try {
+      const extensions = await extensionScanner.scanInstalledExtensions();
+      res.json(extensions);
+    } catch (error) {
+      console.error("Error scanning extensions:", error);
+      res.status(500).json({ message: "Failed to scan extensions" });
+    }
+  });
+
+  app.get("/api/extensions/stats", isAuthenticated, async (req, res) => {
+    try {
+      const stats = await extensionScanner.getExtensionStats();
+      res.json(stats);
+    } catch (error) {
+      console.error("Error getting extension stats:", error);
+      res.status(500).json({ message: "Failed to get extension stats" });
+    }
+  });
+
+  // Manual extension refresh endpoint
+  app.post("/api/extensions/refresh", isAuthenticated, async (req, res) => {
+    try {
+      const extensions = await extensionScanner.scanInstalledExtensions();
+      const stats = await extensionScanner.getExtensionStats();
+      res.json({
+        message: "Extensions refreshed successfully",
+        extensions,
+        stats
+      });
+    } catch (error) {
+      console.error("Error refreshing extensions:", error);
+      res.status(500).json({ message: "Failed to refresh extensions" });
     }
   });
 

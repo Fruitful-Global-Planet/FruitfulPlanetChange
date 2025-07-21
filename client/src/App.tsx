@@ -19,6 +19,7 @@ import { APIKeyManager } from "@/components/portal/api-key-manager"
 import { PaymentHub } from "@/components/portal/payment-hub"
 import { VaultMeshCheckout } from "@/components/portal/vaultmesh-checkout"
 import { FruitfulMarketplace } from "@/components/portal/fruitful-marketplace"
+import { IntegrationsDashboard } from "@/components/portal/integrations-dashboard"
 import { HotStackCodeNest } from "@/components/portal/hotstack-codenest"
 import { BrandIdentityManager } from "@/components/portal/brand-identity-manager"
 import { GlobalDashboard } from "@/components/portal/global-dashboard"
@@ -50,9 +51,14 @@ function PageRouter({ activePage }: { activePage: string }) {
     case "home":
     case "marketplace":
     case "analytics":
-    case "integrations":
     case "settings":
       return <PortalHome />
+    case "integrations":
+      return (
+        <div className="p-8">
+          <IntegrationsDashboard />
+        </div>
+      )
     case "brands":
       return (
         <div className="p-8">
