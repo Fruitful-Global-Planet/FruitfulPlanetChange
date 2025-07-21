@@ -4,8 +4,9 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { FileText, Download, ExternalLink, Plus, Shield, BookOpen, Search, Filter } from "lucide-react"
+import { FileText, Download, ExternalLink, Plus, Shield, BookOpen, Search, Filter, Trees, Globe } from "lucide-react"
 import { motion } from "framer-motion"
+import { BaobabEnvironmentalLawHub } from "./baobab-environmental-law-hub"
 
 interface LegalDocument {
   id: string
@@ -208,147 +209,90 @@ export function LegalRepositoryHub({ sectorId, sectorName, className = "" }: Leg
             {sectorName && <Badge variant="outline" className="ml-2">{sectorName}</Badge>}
           </h2>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
-            Comprehensive legal documentation and SecureSign™ VIP integration
+            Comprehensive legal documentation, SecureSign™ VIP integration, and Baobab Environmental Law mega centre for law firms supporting Fruitful Crate Dance and Banimal giving loop initiatives
           </p>
         </div>
-        <Button 
-          onClick={() => setShowAddForm(!showAddForm)}
-          className="bg-purple-600 hover:bg-purple-700"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Add Document
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            onClick={() => setShowAddForm(false)}
+            variant={!showAddForm ? "default" : "outline"}
+            className="bg-purple-600 hover:bg-purple-700"
+          >
+            <Shield className="h-4 w-4 mr-2" />
+            Legal Documents
+          </Button>
+          <Button 
+            onClick={() => setShowAddForm(true)}
+            variant={showAddForm ? "default" : "outline"}
+            className="bg-green-600 hover:bg-green-700"
+          >
+            <Trees className="h-4 w-4 mr-2" />
+            Environmental Law
+          </Button>
+        </div>
       </div>
 
-      {/* Search and Filters */}
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex flex-col lg:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Search legal documents..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-            <div className="flex gap-2 overflow-x-auto">
-              {categories.map((category) => (
-                <Button
-                  key={category.value}
-                  variant={selectedCategory === category.value ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedCategory(category.value)}
-                  className="whitespace-nowrap"
-                >
-                  {category.label} ({category.count})
-                </Button>
-              ))}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Enhanced Navigation Tabs */}
+      <div className="border-b">
+        <nav className="flex space-x-8" aria-label="Legal Hub Sections">
+          <button 
+            onClick={() => setShowAddForm(false)}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              !showAddForm ? 'border-purple-500 text-purple-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            <Shield className="inline-block w-4 h-4 mr-2" />
+            Document Repository
+          </button>
+          <button 
+            onClick={() => setShowAddForm(true)}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              showAddForm ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            <Trees className="inline-block w-4 h-4 mr-2" />
+            Baobab Environmental Law
+          </button>
+        </nav>
+      </div>
 
-      {/* Add Document Form */}
-      {showAddForm && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-4"
-        >
+      {/* Conditional Content Rendering */}
+      {!showAddForm ? (
+        <>
+          {/* Search and Filters */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Plus className="h-5 w-5" />
-                Add New Legal Document
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Document Title</label>
-                  <Input
-                    value={newDoc.title}
-                    onChange={(e) => setNewDoc(prev => ({ ...prev, title: e.target.value }))}
-                    placeholder="Enter document title"
-                  />
+            <CardContent className="p-6">
+              <div className="flex flex-col lg:flex-row gap-4">
+                <div className="flex-1">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <Input
+                      placeholder="Search legal documents..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Category</label>
-                  <select
-                    value={newDoc.category}
-                    onChange={(e) => setNewDoc(prev => ({ ...prev, category: e.target.value }))}
-                    className="w-full p-2 border rounded-md bg-background"
-                  >
-                    <option value="general">General</option>
-                    <option value="contracts">Contracts</option>
-                    <option value="nda">NDAs</option>
-                    <option value="partnerships">Partnerships</option>
-                    <option value="ip">Intellectual Property</option>
-                    <option value="integration">Integrations</option>
-                    <option value="templates">Templates</option>
-                  </select>
+                <div className="flex gap-2 overflow-x-auto">
+                  {categories.map((category) => (
+                    <Button
+                      key={category.value}
+                      variant={selectedCategory === category.value ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setSelectedCategory(category.value)}
+                      className="whitespace-nowrap"
+                    >
+                      {category.label} ({category.count})
+                    </Button>
+                  ))}
                 </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Description</label>
-                <Textarea
-                  value={newDoc.description}
-                  onChange={(e) => setNewDoc(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="Enter document description"
-                  rows={3}
-                />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">URL</label>
-                  <Input
-                    value={newDoc.url}
-                    onChange={(e) => setNewDoc(prev => ({ ...prev, url: e.target.value }))}
-                    placeholder="/legal/document.pdf"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Icon</label>
-                  <Input
-                    value={newDoc.icon}
-                    onChange={(e) => setNewDoc(prev => ({ ...prev, icon: e.target.value }))}
-                    placeholder="📄"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Type</label>
-                  <select
-                    value={newDoc.type}
-                    onChange={(e) => setNewDoc(prev => ({ ...prev, type: e.target.value as LegalDocument["type"] }))}
-                    className="w-full p-2 border rounded-md bg-background"
-                  >
-                    <option value="pdf">PDF</option>
-                    <option value="doc">Document</option>
-                    <option value="contract">Contract</option>
-                    <option value="nda">NDA</option>
-                    <option value="template">Template</option>
-                  </select>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Button onClick={handleAddDocument} className="bg-green-600 hover:bg-green-700">
-                  Add Document
-                </Button>
-                <Button variant="outline" onClick={() => setShowAddForm(false)}>
-                  Cancel
-                </Button>
               </div>
             </CardContent>
           </Card>
-        </motion.div>
-      )}
 
-      {/* Documents Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Documents Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Document List */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold flex items-center gap-2">
@@ -505,31 +449,40 @@ export function LegalRepositoryHub({ sectorId, sectorName, className = "" }: Leg
         </div>
       </div>
 
-      {/* SecureSign™ Integration Status */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5 text-green-600" />
-            SecureSign™ VIP Integration Status
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">Active</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Integration Status</div>
-            </div>
-            <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">{documents.length}</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Secured Documents</div>
-            </div>
-            <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">VIP</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Access Level</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          {/* SecureSign™ Integration Status */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="h-5 w-5 text-green-600" />
+                SecureSign™ VIP Integration Status
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                  <div className="text-2xl font-bold text-green-600">Active</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Integration Status</div>
+                </div>
+                <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600">{documents.length}</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Secured Documents</div>
+                </div>
+                <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                  <div className="text-2xl font-bold text-purple-600">VIP</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Access Level</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </>
+      ) : (
+        /* Baobab Environmental Law Hub */
+        <BaobabEnvironmentalLawHub 
+          sectorId={sectorId} 
+          sectorName={sectorName}
+          className="mt-6"
+        />
+      )}
     </div>
   )
 }
