@@ -34,6 +34,7 @@ import VaultMeshPage from "@/pages/vaultmesh"
 import { OmnilevelPage } from "@/pages/omnilevel"
 import { OmniGridFAAZonePage } from "@/pages/omnigrid-faa-zone"
 import SamFoxCreativeStudio from "@/pages/samfox-creative-studio"
+import FAAQuantumNexus from "@/pages/faa-quantum-nexus"
 import Landing from "@/pages/landing"
 import SectorDashboard from "@/pages/sector-dashboard"
 import SectorList from "@/pages/sector-list"
@@ -173,6 +174,8 @@ function PageRouter({ activePage }: { activePage: string }) {
       return <FruitfulSmartToys />
     case "samfox-creative-studio":
       return <SamFoxCreativeStudio />
+    case "faa-quantum-nexus":
+      return <FAAQuantumNexus />
     default:
       return <NotFound />
   }

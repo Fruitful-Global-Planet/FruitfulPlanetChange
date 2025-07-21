@@ -50,6 +50,7 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
   ]
 
   const ecosystemItems = [
+    { id: "faa-quantum-nexus", label: "⚡ FAA Quantum Nexus™", icon: "🚀", badge: "AI Expansion" },
     { id: "samfox-creative-studio", label: "🎨 SamFox Creative Studio", icon: "✨", badge: "Featured" },
     { id: "fruitful-marketplace", label: "🛒 Fruitful™ Marketplace", icon: "🛍️", badge: "610 Core Brands" },
     { id: "fruitful-smart-toys", label: "🧸 Fruitful Smart Toys™", icon: "🎮", badge: "5 Products" },
@@ -61,7 +62,7 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
     { id: "banimal-integration", label: "🍼 Banimal™ Global", icon: "💝", badge: "Charitable" },
     { id: "motion-media-sonic", label: "🎬 Motion, Media & Sonic", icon: "🎵", badge: "Processing Studio" },
     { id: "omnilevel-interstellar", label: "🚀 Omnilevel Interstellar", icon: "🌌", badge: "Quantum Space" },
-    { id: "legal-hub", label: "📋 Legal Documentation Hub", icon: "📄", badge: "8 Documents" },
+    { id: "legal-hub", label: "📋 Legal Documentation Hub", icon: "📄", badge: "9 Documents" },
     { id: "api-keys", label: "🔑 API Key Manager", icon: "🔐", badge: "8 Keys" },
     { id: "payment-hub", label: "Payment Portal", icon: "💳", badge: "SSO" },
   ]
@@ -298,12 +299,13 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
                         : 'hover:bg-gray-100 dark:hover:bg-gray-800'
                       }
                       ${item.id === 'samfox-creative-studio' ? 'ring-2 ring-rose-400 ring-opacity-50' : ''}
+                      ${item.id === 'faa-quantum-nexus' ? 'ring-2 ring-blue-400 ring-opacity-50' : ''}
                     `}
                     variant={activePage === item.id ? "success" : "default"}
                   >
                     <motion.span 
                       className="text-lg"
-                      whileHover={{ scale: 1.2, rotate: item.id === 'samfox-creative-studio' ? 360 : -10 }}
+                      whileHover={{ scale: 1.2, rotate: item.id === 'samfox-creative-studio' ? 360 : item.id === 'faa-quantum-nexus' ? 180 : -10 }}
                       transition={{ type: "spring", stiffness: 400 }}
                     >
                       {item.icon}
@@ -314,6 +316,8 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
                         className={`text-xs px-2 py-1 rounded-full ${
                           item.id === 'samfox-creative-studio' 
                             ? 'bg-gradient-to-r from-rose-500 to-purple-500 text-white' 
+                            : item.id === 'faa-quantum-nexus'
+                            ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white'
                             : 'bg-orange-500 text-white'
                         }`}
                         whileHover={{ scale: 1.1, rotate: 5 }}

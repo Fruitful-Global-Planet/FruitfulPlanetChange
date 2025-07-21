@@ -12,6 +12,14 @@ export async function seedLegalDocuments() {
 
   const legalDocs = [
     {
+      title: "FAA Quantum Nexus™ - Water the Seed 24/7 AI Economic Expansion Model",
+      description: "Revolutionary AI-powered economic expansion framework for autonomous business scaling from inception to IPO readiness using quantum AI and blockchain technology with interstellar capabilities",
+      url: "/legal-docs/FAA Quantum Nexus_1753063073243.pdf",
+      category: "strategic",
+      tags: ["quantum", "ai", "economic", "expansion", "blockchain", "interstellar"],
+      icon: "🚀"
+    },
+    {
       title: "Fruitful Holdings NDA",
       description: "Non-disclosure agreement for Fruitful Holdings operations and partnerships",
       url: "/legal-docs/fruitful-holdings-nda",
