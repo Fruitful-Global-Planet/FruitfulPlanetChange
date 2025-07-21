@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -19,6 +19,25 @@ interface CheckoutPackage {
 export function VaultMeshGlobalCheckout() {
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null)
   const [paymentMethod, setPaymentMethod] = useState("paypal")
+  const [selectedProduct, setSelectedProduct] = useState<any>(null)
+
+  // Check for marketplace product selection
+  useEffect(() => {
+    const productData = localStorage.getItem('selectedProduct');
+    if (productData) {
+      try {
+        const product = JSON.parse(productData);
+        setSelectedProduct(product);
+        // Auto-select appropriate package based on product price
+        if (product.price <= 99) setSelectedPackage('starter');
+        else if (product.price <= 299) setSelectedPackage('professional'); 
+        else setSelectedPackage('enterprise');
+        localStorage.removeItem('selectedProduct'); // Clear after use
+      } catch (error) {
+        console.error('Error parsing selected product:', error);
+      }
+    }
+  }, [])
 
   const packages: CheckoutPackage[] = [
     {

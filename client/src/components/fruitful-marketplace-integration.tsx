@@ -97,18 +97,13 @@ export function FruitfulMarketplaceIntegration() {
   }))
 
   function generateProductPrice(brandName: string): number {
-    // Generate realistic pricing based on brand complexity
-    const priceRanges = {
-      'basic': [99, 299],
-      'professional': [299, 899],
-      'enterprise': [899, 2999]
-    }
+    // Use Payment Portal pricing tiers: $29.99, $89.99, $299.99
+    const paymentPortalTiers = [29.99, 89.99, 299.99];
     
-    const tier = brandName.includes('Pro') || brandName.includes('Enterprise') ? 'enterprise' :
-                 brandName.includes('Plus') || brandName.includes('Advanced') ? 'professional' : 'basic'
+    const tier = brandName.includes('Pro') || brandName.includes('Enterprise') || brandName.includes('FAA.ZONE') ? 2 :
+                 brandName.includes('Plus') || brandName.includes('Advanced') || brandName.includes('VaultMesh') ? 1 : 0;
     
-    const [min, max] = priceRanges[tier]
-    return Math.floor(Math.random() * (max - min) + min)
+    return paymentPortalTiers[tier];
   }
 
   function generateProductFeatures(name: string, description: string): string[] {
@@ -164,13 +159,35 @@ export function FruitfulMarketplaceIntegration() {
   }
 
   const handlePurchase = (product: any) => {
-    purchaseMutation.mutate({
-      productId: product.id,
-      productName: product.name,
+    // Use existing Payment Portal in sidebar navigation
+    toast({
+      title: "Opening Payment Portal",
+      description: `Processing ${product.name} through VaultMesh™ secure payment system`,
+    })
+    
+    // Set the product details for checkout and open payment portal
+    localStorage.setItem('selectedProduct', JSON.stringify({
+      id: product.id,
+      name: product.name,
       price: product.price,
       category: product.sector,
-      timestamp: new Date().toISOString(),
-    })
+      description: product.description
+    }));
+    
+    // Navigate directly to the existing Payment Portal in the sidebar
+    setTimeout(() => {
+      // Find and click the Payment Portal button in sidebar
+      const paymentButton = document.querySelector('[data-sidebar-item="payment-portal"]') as HTMLElement;
+      if (paymentButton) {
+        paymentButton.click();
+      } else {
+        // Fallback: Show toast if button not found
+        toast({
+          title: "Navigate to Payment Portal",
+          description: "Click 'Payment Portal' in the sidebar to complete your purchase",
+        });
+      }
+    }, 1000);
   }
 
   const categories = sectors.map((sector: any) => ({
@@ -189,7 +206,7 @@ export function FruitfulMarketplaceIntegration() {
               🛒 Fruitful Global Marketplace
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mt-2">
-              {brands.length} products available • Real PayPal payments • Live deployment to production servers
+              {brands.length} products available • Payment Portal integration • Real payment processing ($29.99, $89.99, $299.99)
             </p>
           </div>
           <div className="text-right">
@@ -329,7 +346,7 @@ export function FruitfulMarketplaceIntegration() {
                         ) : (
                           <CreditCard className="h-4 w-4 mr-2" />
                         )}
-                        Pay with PayPal
+                        Buy via Payment Portal
                       </Button>
                     </div>
                   </CardContent>
