@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { FRUITFUL_CRATE_DANCE_ECOSYSTEM, FRUITFUL_CRATE_DANCE_SECTORS } from "@shared/fruitful-crate-dance-ecosystem"
+import { ClickableBrandName } from "@/components/clickable-brand-name"
 
 export function FruitfulCrateDancePage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -165,13 +166,12 @@ export function FruitfulCrateDancePage() {
               <CardContent>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
                   {sector.brands.slice(0, 9).map((brand, index) => (
-                    <div 
+                    <ClickableBrandName 
                       key={index}
+                      brandName={brand}
+                      variant="button"
                       className="flex items-center gap-2 p-2 rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                    >
-                      <div className="w-2 h-2 bg-gradient-to-r from-orange-400 to-red-500 rounded-full" />
-                      <span className="text-sm font-medium truncate">{brand}</span>
-                    </div>
+                    />
                   ))}
                   {sector.brands.length > 9 && (
                     <div className="flex items-center gap-2 p-2 rounded-lg bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600">

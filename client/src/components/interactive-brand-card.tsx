@@ -22,7 +22,7 @@ import {
   Activity,
   Shield
 } from "lucide-react"
-import { BrandDetailModal } from "@/components/brand-detail-modal"
+import { WildlifeProductModal } from "@/components/wildlife-product-modal"
 import type { Brand, Sector } from "@shared/schema"
 import { useToast } from "@/hooks/use-toast"
 
@@ -301,8 +301,8 @@ export function InteractiveBrandCard({ brand, sector }: InteractiveBrandCardProp
         </Card>
       </motion.div>
 
-      {/* Detailed modal */}
-      <BrandDetailModal
+      {/* Detailed modal with Wildlife data */}
+      <WildlifeProductModal
         brand={brand}
         sector={sector || null}
         isOpen={isDetailModalOpen}
