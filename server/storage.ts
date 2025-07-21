@@ -91,6 +91,7 @@ export interface IStorage {
   createRepository(repo: InsertRepository): Promise<Repository>;
   
   // Payments
+  getAllPayments(): Promise<Payment[]>;
   getPayments(): Promise<Payment[]>;
   createPayment(payment: InsertPayment): Promise<Payment>;
 
@@ -260,6 +261,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Payments
+  async getAllPayments(): Promise<Payment[]> {
+    return await db.select().from(payments);
+  }
+
   async getPayments(): Promise<Payment[]> {
     return await db.select().from(payments);
   }

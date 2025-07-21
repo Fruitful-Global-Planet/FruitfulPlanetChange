@@ -256,26 +256,38 @@ export function OmniGridFAAZone({ className }: OmniGridFAAZoneProps) {
   const [selectedEngine, setSelectedEngine] = useState<string>("");
   const [monitoringActive, setMonitoringActive] = useState(false);
   const [systemMetrics, setSystemMetrics] = useState({
-    performance: 87,
-    security: 94,
-    efficiency: 91,
-    uptime: 99.8
+    performance: 0,
+    security: 0,
+    efficiency: 0,
+    uptime: 0
   });
   const [selectedUser, setSelectedUser] = useState<any>(null);
 
   const queryClient = useQueryClient();
 
-  // Simulate real-time metrics updates
+  // Real system metrics from database monitoring
   useEffect(() => {
     if (monitoringActive) {
-      const interval = setInterval(() => {
-        setSystemMetrics(prev => ({
-          performance: Math.max(80, Math.min(100, prev.performance + (Math.random() - 0.5) * 4)),
-          security: Math.max(85, Math.min(100, prev.security + (Math.random() - 0.5) * 2)),
-          efficiency: Math.max(75, Math.min(100, prev.efficiency + (Math.random() - 0.5) * 3)),
-          uptime: Math.max(95, Math.min(100, prev.uptime + (Math.random() - 0.5) * 0.1))
-        }));
-      }, 2000);
+      // Real business monitoring - fetch actual system metrics from database
+      const fetchRealMetrics = async () => {
+        try {
+          const response = await fetch('/api/system-metrics');
+          if (response.ok) {
+            const metrics = await response.json();
+            setSystemMetrics({
+              performance: metrics.performance || 0,
+              security: metrics.security || 0,
+              efficiency: metrics.efficiency || 0,
+              uptime: metrics.uptime || 0
+            });
+          }
+        } catch (error) {
+          console.error('Failed to fetch real system metrics:', error);
+        }
+      };
+      
+      fetchRealMetrics(); // Initial fetch
+      const interval = setInterval(fetchRealMetrics, 30000); // Real business monitoring every 30 seconds
 
       return () => clearInterval(interval);
     }
