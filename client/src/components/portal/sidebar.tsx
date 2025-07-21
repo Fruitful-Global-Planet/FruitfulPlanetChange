@@ -53,7 +53,7 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
     { id: "faa-quantum-nexus", label: "🚀 FAA Quantum Nexus™", icon: "⚡", badge: "AI Economic" },
     { id: "fruitful-business-plan", label: "💼 Fruitful Business Plan", icon: "📊", badge: "R391M Strategy" },
     { id: "samfox-creative-studio", label: "🎨 SamFox Creative Studio", icon: "✨", badge: "Featured" },
-    { id: "fruitful-marketplace", label: "🛒 Fruitful™ Marketplace", icon: "🛍️", badge: "610 Core Brands" },
+    { id: "fruitful-marketplace-marketing", label: "🛒 Fruitful™ Marketplace", icon: "🛍️", badge: "Live Store" },
     { id: "fruitful-smart-toys", label: "🧸 Fruitful Smart Toys™", icon: "🎮", badge: "5 Products" },
     { id: "hotstack-codenest", label: "🔥 HotStack + CodeNest", icon: "💻", badge: "Independent Repos" },
     { id: "omnilevel", label: "🧠 Omnilevel AI Logic", icon: "🤖", badge: "31 Sectors" },
