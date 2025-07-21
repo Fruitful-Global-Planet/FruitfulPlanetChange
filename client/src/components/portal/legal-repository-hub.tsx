@@ -34,6 +34,7 @@ export function LegalRepositoryHub({ sectorId, sectorName, className = "" }: Leg
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
   const [showAddForm, setShowAddForm] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [activeHub, setActiveHub] = useState<"legal" | "environmental">("legal")
   
   // New document form state
   const [newDoc, setNewDoc] = useState({
@@ -214,50 +215,26 @@ export function LegalRepositoryHub({ sectorId, sectorName, className = "" }: Leg
         </div>
         <div className="flex gap-2">
           <Button 
-            onClick={() => setShowAddForm(false)}
-            variant={!showAddForm ? "default" : "outline"}
-            className="bg-purple-600 hover:bg-purple-700"
+            onClick={() => setActiveHub("legal")}
+            variant={activeHub === "legal" ? "default" : "outline"}
+            className={activeHub === "legal" ? "bg-purple-600 hover:bg-purple-700" : ""}
           >
             <Shield className="h-4 w-4 mr-2" />
             Legal Documents
           </Button>
           <Button 
-            onClick={() => setShowAddForm(true)}
-            variant={showAddForm ? "default" : "outline"}
-            className="bg-green-600 hover:bg-green-700"
+            onClick={() => setActiveHub("environmental")}
+            variant={activeHub === "environmental" ? "default" : "outline"}
+            className={activeHub === "environmental" ? "bg-green-600 hover:bg-green-700" : ""}
           >
             <Trees className="h-4 w-4 mr-2" />
-            Environmental Law
+            Baobab Environmental Law
           </Button>
         </div>
       </div>
 
-      {/* Enhanced Navigation Tabs */}
-      <div className="border-b">
-        <nav className="flex space-x-8" aria-label="Legal Hub Sections">
-          <button 
-            onClick={() => setShowAddForm(false)}
-            className={`py-2 px-1 border-b-2 font-medium text-sm ${
-              !showAddForm ? 'border-purple-500 text-purple-600' : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            <Shield className="inline-block w-4 h-4 mr-2" />
-            Document Repository
-          </button>
-          <button 
-            onClick={() => setShowAddForm(true)}
-            className={`py-2 px-1 border-b-2 font-medium text-sm ${
-              showAddForm ? 'border-green-500 text-green-600' : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            <Trees className="inline-block w-4 h-4 mr-2" />
-            Baobab Environmental Law
-          </button>
-        </nav>
-      </div>
-
-      {/* Conditional Content Rendering */}
-      {!showAddForm ? (
+      {/* Content based on active hub */}
+      {activeHub === "legal" ? (
         <>
           {/* Search and Filters */}
           <Card>
