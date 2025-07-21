@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { Search, Grid, List, Eye, EyeOff, BarChart3, Layers, TrendingUp, Users } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { SectorNavigationCard } from "@/components/portal/sector-navigation-card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -217,7 +218,13 @@ export default function SectorsPage() {
               const stats = sectorStats.find(s => s.id === sector.id)
               const completionPercentage = stats ? Math.round((stats.activeBrands / Math.max(stats.totalBrands, 1)) * 100) : 0
               
-              return (
+              return viewMode === "grid" ? (
+                <SectorNavigationCard 
+                  key={sector.id} 
+                  sector={sector}
+                  className="hover:shadow-lg transition-all"
+                />
+              ) : (
                 <Card key={sector.id} className="hover:shadow-lg transition-all cursor-pointer group">
                   <CardHeader className="pb-4">
                     <div className="flex items-center justify-between">

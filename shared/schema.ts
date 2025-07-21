@@ -32,6 +32,7 @@ export const sectors = pgTable("sectors", {
   description: text("description"),
   brandCount: integer("brand_count").default(0),
   subnodeCount: integer("subnode_count").default(0),
+  metadata: jsonb("metadata"),
 });
 
 export const brands = pgTable("brands", {

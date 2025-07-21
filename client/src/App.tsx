@@ -33,6 +33,7 @@ import VaultMeshPage from "@/pages/vaultmesh"
 import { OmnilevelPage } from "@/pages/omnilevel"
 import { OmniGridFAAZonePage } from "@/pages/omnigrid-faa-zone"
 import Landing from "@/pages/landing"
+import SectorDashboard from "@/pages/sector-dashboard"
 import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
 import { GlobalFooter } from "@/components/ui/global-footer"
@@ -183,6 +184,7 @@ function Router() {
         <>
           <Route path="/" component={PortalHome} />
           <Route path="/portal-home" component={PortalHome} />
+          <Route path="/sector/:sectorId" component={SectorDashboard} />
         </>
       )}
       <Route component={NotFound} />
