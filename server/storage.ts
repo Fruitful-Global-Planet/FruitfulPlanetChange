@@ -63,7 +63,7 @@ import { desc } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
-  upsertUser(user: UpsertUser): Promise<User>;
+  upsertUser(user: InsertUser): Promise<User>;
   
   // Sectors
   getAllSectors(): Promise<Sector[]>;
@@ -131,7 +131,7 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async upsertUser(userData: UpsertUser): Promise<User> {
+  async upsertUser(userData: InsertUser): Promise<User> {
     const [user] = await db
       .insert(users)
       .values(userData)
@@ -335,7 +335,7 @@ export class DatabaseStorage implements IStorage {
       if (existingTransactions.length > 0) return;
 
       // Seed SonicGrid connections
-      const sonicGridConnections = [
+      const sonicConnections = [
         {
           connectionName: "Affirmative Media Processor",
           connectionType: "media_processing",
@@ -364,7 +364,7 @@ export class DatabaseStorage implements IStorage {
         }
       ];
 
-      for (const connection of sonicGridConnections) {
+      for (const connection of sonicConnections) {
         await db.insert(sonicGridConnections).values(connection);
       }
 
@@ -373,7 +373,6 @@ export class DatabaseStorage implements IStorage {
         transactionId: `BAN-${Date.now()}`,
         productName: "Banimal Soft Toy - Bear",
         amount: "49.99",
-        currency: "USD",
         userId: "demo-user",
         childBeneficiary: "Children's Hospital Trust",
         distributionRules: {
@@ -410,13 +409,13 @@ export class DatabaseStorage implements IStorage {
 
       // Create vault actions
       await this.createVaultAction({
+        vaultSignature: `VS-${Date.now()}`,
         actionId: `VA-${Date.now()}`,
         actionType: "charitable_distribution",
         beneficiary: "Children's Hospital Trust",
         transactionId: sampleTransaction.transactionId,
         amount: "17.50",
         status: "completed",
-        visibility: "transparent",
         metadata: {
           ecosystem: "fruitful_crate_dance",
           integration: "banimal_giving_loop"
@@ -542,6 +541,64 @@ export class DatabaseStorage implements IStorage {
     }
 
     console.log("✅ Media processing engines seeded successfully");
+  }
+
+  // Omnilevel Interstellar operations implementation
+  async getInterstellarNodes(): Promise<InterstellarNode[]> {
+    return await db.select().from(interstellarNodes).orderBy(desc(interstellarNodes.createdAt));
+  }
+
+  async createInterstellarNode(nodeData: InsertInterstellarNode): Promise<InterstellarNode> {
+    const [node] = await db
+      .insert(interstellarNodes)
+      .values(nodeData)
+      .returning();
+    return node;
+  }
+
+  async synchronizeNode(nodeId: string): Promise<{ success: boolean, message: string }> {
+    await db
+      .update(interstellarNodes)
+      .set({ 
+        status: 'synchronizing',
+        lastSync: new Date()
+      })
+      .where(eq(interstellarNodes.nodeId, nodeId));
+    
+    // Simulate sync operation
+    setTimeout(async () => {
+      await db
+        .update(interstellarNodes)
+        .set({ status: 'active' })
+        .where(eq(interstellarNodes.nodeId, nodeId));
+    }, 3000);
+
+    return { success: true, message: 'Node synchronization initiated' };
+  }
+
+  async getGlobalLogicConfig(): Promise<GlobalLogicConfig | undefined> {
+    const [config] = await db.select()
+      .from(globalLogicConfigs)
+      .where(eq(globalLogicConfigs.isActive, true))
+      .orderBy(desc(globalLogicConfigs.updatedAt));
+    return config;
+  }
+
+  async updateGlobalLogicConfig(config: InsertGlobalLogicConfig): Promise<GlobalLogicConfig> {
+    // Deactivate existing configs
+    await db.update(globalLogicConfigs)
+      .set({ isActive: false })
+      .where(eq(globalLogicConfigs.isActive, true));
+
+    // Insert new config
+    const [newConfig] = await db.insert(globalLogicConfigs).values([{
+      ...config,
+      configId: `CONFIG-${Date.now()}`,
+      isActive: true,
+      updatedAt: new Date()
+    }]).returning();
+
+    return newConfig;
   }
 }
 
@@ -680,7 +737,7 @@ export class MemStorage implements IStorage {
     return this.users.get(id);
   }
 
-  async upsertUser(userData: UpsertUser): Promise<User> {
+  async upsertUser(userData: InsertUser): Promise<User> {
     const user: User = {
       ...userData,
       createdAt: userData.createdAt || new Date(),
@@ -830,44 +887,64 @@ export class MemStorage implements IStorage {
     return payment;
   }
 
-  // Omnilevel Interstellar operations
-  async getInterstellarNodes(): Promise<InterstellarNode[]> {
-    return await db.select().from(interstellarNodes).orderBy(interstellarNodes.createdAt);
+
+
+  async getCosmicMetrics(): Promise<any> {
+    const nodes = await this.getInterstellarNodes();
+    const config = await this.getGlobalLogicConfig();
+    
+    return {
+      total_nodes: nodes.length,
+      active_connections: nodes.filter(n => n.status === 'active').length,
+      processing_capacity: `${(nodes.reduce((sum, n) => sum + (n.processingPower || 0), 0) / nodes.length || 0).toFixed(1)} EXA`,
+      quantum_coherence: 99.7 + Math.random() * 0.2,
+      neural_efficiency: 94.8 + Math.random() * 2,
+      dimensional_stability: 87.2 + Math.random() * 5,
+      cosmic_synchronization: 96.4 + Math.random() * 1.5
+    };
   }
 
-  async createInterstellarNode(node: InsertInterstellarNode): Promise<InterstellarNode> {
-    const [newNode] = await db.insert(interstellarNodes).values(node).returning();
-    return newNode;
+  // Omnilevel Interstellar operations implementation
+  async getInterstellarNodes(): Promise<InterstellarNode[]> {
+    return await db.select().from(interstellarNodes).orderBy(desc(interstellarNodes.createdAt));
+  }
+
+  async createInterstellarNode(nodeData: InsertInterstellarNode): Promise<InterstellarNode> {
+    const [node] = await db
+      .insert(interstellarNodes)
+      .values(nodeData)
+      .returning();
+    return node;
   }
 
   async synchronizeNode(nodeId: string): Promise<{ success: boolean, message: string }> {
-    try {
-      await db.update(interstellarNodes)
+    await db
+      .update(interstellarNodes)
+      .set({ 
+        status: 'synchronizing',
+        updatedAt: new Date()
+      })
+      .where(eq(interstellarNodes.nodeId, nodeId));
+    
+    // Simulate sync operation
+    setTimeout(async () => {
+      await db
+        .update(interstellarNodes)
         .set({ 
-          status: 'synchronizing',
-          lastSync: new Date()
+          status: 'active',
+          updatedAt: new Date()
         })
         .where(eq(interstellarNodes.nodeId, nodeId));
+    }, 3000);
 
-      // Simulate synchronization process
-      setTimeout(async () => {
-        await db.update(interstellarNodes)
-          .set({ status: 'active' })
-          .where(eq(interstellarNodes.nodeId, nodeId));
-      }, 3000);
-
-      return { success: true, message: 'Node synchronization initiated' };
-    } catch (error) {
-      console.error('Failed to synchronize node:', error);
-      return { success: false, message: 'Synchronization failed' };
-    }
+    return { success: true, message: 'Node synchronization initiated' };
   }
 
   async getGlobalLogicConfig(): Promise<GlobalLogicConfig | undefined> {
-    const [config] = await db.select().from(globalLogicConfigs)
+    const [config] = await db.select()
+      .from(globalLogicConfigs)
       .where(eq(globalLogicConfigs.isActive, true))
-      .orderBy(globalLogicConfigs.updatedAt)
-      .limit(1);
+      .orderBy(desc(globalLogicConfigs.updatedAt));
     return config;
   }
 
@@ -886,21 +963,6 @@ export class MemStorage implements IStorage {
     }).returning();
 
     return newConfig;
-  }
-
-  async getCosmicMetrics(): Promise<any> {
-    const nodes = await this.getInterstellarNodes();
-    const config = await this.getGlobalLogicConfig();
-    
-    return {
-      total_nodes: nodes.length,
-      active_connections: nodes.filter(n => n.status === 'active').length,
-      processing_capacity: `${(nodes.reduce((sum, n) => sum + (n.processingPower || 0), 0) / nodes.length || 0).toFixed(1)} EXA`,
-      quantum_coherence: 99.7 + Math.random() * 0.2,
-      neural_efficiency: 94.8 + Math.random() * 2,
-      dimensional_stability: 87.2 + Math.random() * 5,
-      cosmic_synchronization: 96.4 + Math.random() * 1.5
-    };
   }
 
   async seedInterstellarData(): Promise<void> {
