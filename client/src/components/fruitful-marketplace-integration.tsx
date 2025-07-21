@@ -97,13 +97,21 @@ export function FruitfulMarketplaceIntegration() {
   }))
 
   function generateProductPrice(brandName: string): number {
-    // Use Payment Portal pricing tiers: $29.99, $89.99, $299.99
-    const paymentPortalTiers = [29.99, 89.99, 299.99];
+    // REAL SEEDWAVE PORTAL PRICING from your data
+    // ProtectZone™ = $299.99, FlowNature™ = $29.99, GridPreserve™ = $29.99
     
-    const tier = brandName.includes('Pro') || brandName.includes('Enterprise') || brandName.includes('FAA.ZONE') ? 2 :
-                 brandName.includes('Plus') || brandName.includes('Advanced') || brandName.includes('VaultMesh') ? 1 : 0;
+    if (brandName.includes('ProtectZone')) return 299.99;
+    if (brandName.includes('FlowNature')) return 29.99;
+    if (brandName.includes('GridPreserve')) return 29.99;
     
-    return paymentPortalTiers[tier];
+    // Wildlife & Habitat category pricing from your screenshot
+    if (brandName.includes('Wildlife') || brandName.includes('Habitat') || brandName.includes('Eco') || brandName.includes('Bio')) {
+      if (brandName.includes('Guard') || brandName.includes('Protect')) return 299.99;
+      return 29.99;
+    }
+    
+    // Use real pricing tiers from your portal: $29.99, $299.99
+    return brandName.includes('Pro') || brandName.includes('Enterprise') || brandName.includes('Guard') ? 299.99 : 29.99;
   }
 
   function generateProductFeatures(name: string, description: string): string[] {
@@ -206,7 +214,7 @@ export function FruitfulMarketplaceIntegration() {
               🛒 Fruitful Global Marketplace
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mt-2">
-              {brands.length} products available • Payment Portal integration • Real payment processing ($29.99, $89.99, $299.99)
+              {brands.length} products available • REAL Seedwave pricing • ProtectZone™ ($299.99), FlowNature™/GridPreserve™ ($29.99)
             </p>
           </div>
           <div className="text-right">

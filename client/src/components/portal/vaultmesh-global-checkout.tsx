@@ -28,10 +28,18 @@ export function VaultMeshGlobalCheckout() {
       try {
         const product = JSON.parse(productData);
         setSelectedProduct(product);
-        // Auto-select appropriate package based on product price
-        if (product.price <= 99) setSelectedPackage('starter');
-        else if (product.price <= 299) setSelectedPackage('professional'); 
-        else setSelectedPackage('enterprise');
+        // Auto-select appropriate package based on REAL product price from Seedwave data
+        if (product.price === 29.99) {
+          if (product.name.includes('Flow') || product.name.includes('Nature')) {
+            setSelectedPackage('wildlife-basic');
+          } else {
+            setSelectedPackage('wildlife-preserve');
+          }
+        } else if (product.price === 299.99) {
+          setSelectedPackage('wildlife-protection');
+        } else {
+          setSelectedPackage('wildlife-basic'); // fallback
+        }
         localStorage.removeItem('selectedProduct'); // Clear after use
       } catch (error) {
         console.error('Error parsing selected product:', error);
@@ -41,50 +49,45 @@ export function VaultMeshGlobalCheckout() {
 
   const packages: CheckoutPackage[] = [
     {
-      id: "starter",
-      name: "VaultMesh™ Starter",
-      price: 99,
-      currency: "USD",
-      features: [
-        "Core VaultMesh™ Protocols",
-        "Basic Data Integrity",
-        "5 Network Connections",
-        "Standard Support",
-        "Monthly Reports"
-      ]
-    },
-    {
-      id: "professional",
-      name: "VaultMesh™ Professional",
-      price: 299,
+      id: "wildlife-basic",
+      name: "FlowNature™ Wildlife Basic",
+      price: 29.99,
       currency: "USD",
       popular: true,
       features: [
-        "Advanced VaultMesh™ Protocols",
-        "Enhanced Data Integrity",
-        "25 Network Connections",
-        "SecureSign™ Integration",
-        "Priority Support",
-        "Real-time Analytics",
-        "Custom Integrations"
+        "Natural flow monitoring",
+        "Ecosystem surveillance",
+        "Wildlife & Habitat protection",
+        "Basic conservation tools",
+        "Community reporting"
       ]
     },
     {
-      id: "enterprise",
-      name: "VaultMesh™ Enterprise",
-      price: 999,
+      id: "wildlife-preserve", 
+      name: "GridPreserve™ Wildlife Network",
+      price: 29.99,
+      currency: "USD",
+      features: [
+        "Wildlife preservation grid",
+        "Habitat protection zones",
+        "Real-time monitoring",
+        "Conservation analytics",
+        "Preservation reporting"
+      ]
+    },
+    {
+      id: "wildlife-protection",
+      name: "ProtectZone™ Advanced Protection",
+      price: 299.99,
       currency: "USD",
       recommended: true,
       features: [
-        "Full VaultMesh™ Infrastructure",
-        "Maximum Data Integrity",
-        "Unlimited Connections",
-        "Omni Grid™ Access",
-        "White-label Solutions",
-        "24/7 Dedicated Support",
-        "Custom Development",
-        "Compliance Suite",
-        "Multi-region Deployment"
+        "Advanced protection zones",
+        "Wildlife sanctuaries management", 
+        "Professional conservation tools",
+        "24/7 monitoring systems",
+        "Priority conservation support",
+        "Full ecosystem protection"
       ]
     }
   ]
