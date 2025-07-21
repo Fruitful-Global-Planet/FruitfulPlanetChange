@@ -34,6 +34,7 @@ import { OmnilevelPage } from "@/pages/omnilevel"
 import { OmniGridFAAZonePage } from "@/pages/omnigrid-faa-zone"
 import Landing from "@/pages/landing"
 import SectorDashboard from "@/pages/sector-dashboard"
+import SectorList from "@/pages/sector-list"
 import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
 import { GlobalFooter } from "@/components/ui/global-footer"
@@ -56,7 +57,7 @@ function PageRouter({ activePage }: { activePage: string }) {
     case "sectors":
       return (
         <div className="p-8">
-          <SectorsPage />
+          <SectorList />
         </div>
       )
     case "global-pulse":
@@ -184,6 +185,7 @@ function Router() {
         <>
           <Route path="/" component={PortalHome} />
           <Route path="/portal-home" component={PortalHome} />
+          <Route path="/sector-list" component={SectorList} />
           <Route path="/sector/:sectorId" component={SectorDashboard} />
         </>
       )}

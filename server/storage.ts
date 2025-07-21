@@ -46,6 +46,8 @@ import {
   type InsertGlobalLogicConfig,
   COMPREHENSIVE_BRAND_DATA
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, or, ilike } from "drizzle-orm";
 import { FRUITFUL_CRATE_DANCE_SECTORS } from "@shared/fruitful-crate-dance-ecosystem";
 import { 
   SECURESIGN_API_KEYS, 
@@ -57,9 +59,7 @@ import {
   type DocumentTemplate,
   type InsertDocumentTemplate
 } from "@shared/securesign-schema";
-import { db } from "./db";
-import { eq, ilike, or, desc } from "drizzle-orm";
-// Remove invalid import - update is not exported from drizzle-orm/pg-core
+import { desc } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
