@@ -5,7 +5,7 @@ import { useTheme } from "@/hooks/use-theme"
 import { SystemStatus } from "./system-status"
 import type { Sector } from "@shared/schema"
 import { motion, AnimatePresence } from "framer-motion"
-import { InteractiveCard, PulseIndicator, RippleEffect } from "@/components/ui/micro-interactions"
+import { PulseIndicator, RippleButton, SparkleEffect } from "@/components/ui/micro-interactions"
 
 interface SidebarProps {
   activePage: string
@@ -141,29 +141,53 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
             }
           }}
         >
-          {navItems.map((item) => (
-            <button
+          {navItems.map((item, index) => (
+            <motion.div
               key={item.id}
-              onClick={() => {
-                onPageChange(item.id)
-                setIsMobileOpen(false)
-              }}
-              className={`
-                w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left
-                ${activePage === item.id
-                  ? 'bg-cyan-500 bg-opacity-10 text-cyan-500'
-                  : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+              variants={{
+                hidden: { opacity: 0, x: -20 },
+                visible: { 
+                  opacity: 1, 
+                  x: 0,
+                  transition: { delay: index * 0.05 }
                 }
-              `}
+              }}
             >
-              <span className="text-lg">{item.icon}</span>
-              <span className="font-medium flex-1">{item.label}</span>
-              {item.badge && (
-                <span className="text-xs bg-cyan-500 text-white px-2 py-1 rounded-full">
-                  {item.badge}
-                </span>
-              )}
-            </button>
+              <SparkleEffect trigger={activePage === item.id}>
+                <RippleButton
+                  onClick={() => {
+                    onPageChange(item.id)
+                    setIsMobileOpen(false)
+                  }}
+                  className={`
+                    w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left
+                    ${activePage === item.id
+                      ? 'bg-cyan-500 bg-opacity-10 text-cyan-500'
+                      : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                    }
+                  `}
+                  variant={activePage === item.id ? "default" : "default"}
+                >
+                  <motion.span 
+                    className="text-lg"
+                    whileHover={{ scale: 1.2, rotate: 15 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    {item.icon}
+                  </motion.span>
+                  <span className="font-medium flex-1">{item.label}</span>
+                  {item.badge && (
+                    <motion.span 
+                      className="text-xs bg-cyan-500 text-white px-2 py-1 rounded-full flex items-center gap-1"
+                      whileHover={{ scale: 1.1 }}
+                    >
+                      <PulseIndicator active={activePage === item.id} size="sm" color="blue" />
+                      {item.badge}
+                    </motion.span>
+                  )}
+                </RippleButton>
+              </SparkleEffect>
+            </motion.div>
           ))}
         </motion.nav>
 
@@ -171,29 +195,48 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
         <div className="pt-6 border-t border-gray-200 dark:border-gray-800 mb-8">
           <h3 className="text-sm font-semibold text-gray-500 mb-3">MAIN SECTIONS</h3>
           <div className="space-y-2">
-            {mainSections.map((item) => (
-              <button
+            {mainSections.map((item, index) => (
+              <motion.div
                 key={item.id}
-                onClick={() => {
-                  onPageChange(item.id)
-                  setIsMobileOpen(false)
-                }}
-                className={`
-                  w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left
-                  ${activePage === item.id
-                    ? 'bg-cyan-500 bg-opacity-10 text-cyan-500'
-                    : 'hover:bg-gray-100 dark:hover:bg-gray-800'
-                  }
-                `}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 + index * 0.1 }}
               >
-                <span className="text-lg">{item.icon}</span>
-                <span className="font-medium flex-1">{item.label}</span>
-                {item.badge && (
-                  <span className="text-xs bg-cyan-500 text-white px-2 py-1 rounded-full">
-                    {item.badge}
-                  </span>
-                )}
-              </button>
+                <SparkleEffect trigger={activePage === item.id}>
+                  <RippleButton
+                    onClick={() => {
+                      onPageChange(item.id)
+                      setIsMobileOpen(false)
+                    }}
+                    className={`
+                      w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left
+                      ${activePage === item.id
+                        ? 'bg-cyan-500 bg-opacity-10 text-cyan-500'
+                        : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                      }
+                    `}
+                    variant={activePage === item.id ? "success" : "default"}
+                  >
+                    <motion.span 
+                      className="text-lg"
+                      whileHover={{ scale: 1.3, rotate: -10 }}
+                      transition={{ type: "spring", stiffness: 400 }}
+                    >
+                      {item.icon}
+                    </motion.span>
+                    <span className="font-medium flex-1">{item.label}</span>
+                    {item.badge && (
+                      <motion.span 
+                        className="text-xs bg-cyan-500 text-white px-2 py-1 rounded-full flex items-center gap-1"
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                      >
+                        <PulseIndicator active={activePage === item.id} size="sm" color="green" />
+                        {item.badge}
+                      </motion.span>
+                    )}
+                  </RippleButton>
+                </SparkleEffect>
+              </motion.div>
             ))}
           </div>
         </div>

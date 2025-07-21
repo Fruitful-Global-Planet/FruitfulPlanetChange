@@ -4,6 +4,8 @@ import { Rocket, HelpCircle, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SearchFilters } from "@/components/portal/search-filters"
 import { BrandCard } from "@/components/portal/brand-card"
+import { motion } from "framer-motion"
+import { MorphingButton, SparkleEffect, PulseIndicator } from "@/components/ui/micro-interactions"
 import type { Brand, Sector } from "@shared/schema"
 
 export default function PortalHome() {

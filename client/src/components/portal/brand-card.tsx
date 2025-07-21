@@ -1,3 +1,5 @@
+import { motion } from "framer-motion"
+import { SparkleEffect, PulseIndicator } from "@/components/ui/micro-interactions"
 import type { Brand, Sector } from "@shared/schema"
 
 interface BrandCardProps {

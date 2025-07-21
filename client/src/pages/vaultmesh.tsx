@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { motion } from "framer-motion"
+import { PulseIndicator, MorphingButton, SparkleEffect } from "@/components/ui/micro-interactions"
 import { VaultMeshGlobalCheckout } from "@/components/portal/vaultmesh-global-checkout"
 import { VaultMeshAbout } from "@/components/portal/vaultmesh-about"
 import { VaultMeshProducts } from "@/components/portal/vaultmesh-products"
@@ -193,53 +195,141 @@ export default function VaultMeshPage() {
           {/* Real-time Metrics Dashboard */}
           <section className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <Card className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-cyan-100 text-sm">Total Connections</p>
-                      <p className="text-2xl font-bold">{metrics.totalConnections.toLocaleString()}</p>
-                    </div>
-                    <Database className="h-8 w-8 text-cyan-200" />
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                whileHover={{ y: -5, scale: 1.02 }}
+              >
+                <Card className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white relative overflow-hidden">
+                  <div className="absolute top-2 right-2">
+                    <PulseIndicator active={true} color="blue" size="sm" />
                   </div>
-                </CardContent>
-              </Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-cyan-100 text-sm">Total Connections</p>
+                        <motion.p 
+                          className="text-2xl font-bold"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ delay: 0.3, type: "spring" }}
+                        >
+                          {metrics.totalConnections.toLocaleString()}
+                        </motion.p>
+                      </div>
+                      <motion.div
+                        whileHover={{ rotate: 360, scale: 1.1 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <Database className="h-8 w-8 text-cyan-200" />
+                      </motion.div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
 
-              <Card className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-green-100 text-sm">Active Nodes</p>
-                      <p className="text-2xl font-bold">{metrics.activeNodes.toLocaleString()}</p>
-                    </div>
-                    <Cpu className="h-8 w-8 text-green-200" />
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                whileHover={{ y: -5, scale: 1.02 }}
+              >
+                <Card className="bg-gradient-to-r from-green-500 to-emerald-500 text-white relative overflow-hidden">
+                  <div className="absolute top-2 right-2">
+                    <PulseIndicator active={true} color="green" size="sm" />
                   </div>
-                </CardContent>
-              </Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-green-100 text-sm">Active Nodes</p>
+                        <motion.p 
+                          className="text-2xl font-bold"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ delay: 0.4, type: "spring" }}
+                        >
+                          {metrics.activeNodes.toLocaleString()}
+                        </motion.p>
+                      </div>
+                      <motion.div
+                        whileHover={{ rotate: 360, scale: 1.1 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <Cpu className="h-8 w-8 text-green-200" />
+                      </motion.div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
 
-              <Card className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-purple-100 text-sm">Data Integrity</p>
-                      <p className="text-2xl font-bold">{metrics.dataIntegrity.toFixed(2)}%</p>
-                    </div>
-                    <Lock className="h-8 w-8 text-purple-200" />
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                whileHover={{ y: -5, scale: 1.02 }}
+              >
+                <Card className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white relative overflow-hidden">
+                  <div className="absolute top-2 right-2">
+                    <PulseIndicator active={true} color="purple" size="sm" />
                   </div>
-                </CardContent>
-              </Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-purple-100 text-sm">Data Integrity</p>
+                        <motion.p 
+                          className="text-2xl font-bold"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ delay: 0.5, type: "spring" }}
+                        >
+                          {metrics.dataIntegrity.toFixed(2)}%
+                        </motion.p>
+                      </div>
+                      <motion.div
+                        whileHover={{ rotate: 360, scale: 1.1 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <Lock className="h-8 w-8 text-purple-200" />
+                      </motion.div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
 
-              <Card className="bg-gradient-to-r from-orange-500 to-red-500 text-white">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-orange-100 text-sm">Protocols</p>
-                      <p className="text-2xl font-bold">{metrics.protocolsSupported}</p>
-                    </div>
-                    <Network className="h-8 w-8 text-orange-200" />
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                whileHover={{ y: -5, scale: 1.02 }}
+              >
+                <Card className="bg-gradient-to-r from-orange-500 to-red-500 text-white relative overflow-hidden">
+                  <div className="absolute top-2 right-2">
+                    <PulseIndicator active={true} color="red" size="sm" />
                   </div>
-                </CardContent>
-              </Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-orange-100 text-sm">Protocols</p>
+                        <motion.p 
+                          className="text-2xl font-bold"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ delay: 0.6, type: "spring" }}
+                        >
+                          {metrics.protocolsSupported}
+                        </motion.p>
+                      </div>
+                      <motion.div
+                        whileHover={{ rotate: 360, scale: 1.1 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <Network className="h-8 w-8 text-orange-200" />
+                      </motion.div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             </div>
           </section>
 
