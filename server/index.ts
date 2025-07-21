@@ -3,6 +3,7 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { seedDatabase } from "./seed-data";
 import { seedLegalDocuments } from "./seed-legal";
+import { storage } from "./storage";
 
 const app = express();
 app.use(express.json());
@@ -46,6 +47,8 @@ app.use((req, res, next) => {
     try {
       await seedDatabase();
       await seedLegalDocuments();
+      console.log("🐻 Seeding Banimal ecosystem for charitable giving...");
+      await storage.seedBanimalData();
     } catch (error) {
       console.error("Failed to seed database:", error);
     }

@@ -347,6 +347,80 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Banimal Integration routes
+  app.get("/api/banimal/transactions", async (req, res) => {
+    try {
+      const transactions = await storage.getBanimalTransactions();
+      res.json(transactions);
+    } catch (error) {
+      console.error("Error fetching Banimal transactions:", error);
+      res.status(500).json({ message: "Failed to fetch transactions" });
+    }
+  });
+
+  app.post("/api/banimal/transactions", async (req, res) => {
+    try {
+      const transaction = await storage.createBanimalTransaction(req.body);
+      
+      // Create automatic charitable distributions
+      const distributionRules = {
+        charity: 35,
+        developer: 25,
+        operations: 20,
+        sonicGrid: 10,
+        vault: 10
+      };
+      
+      const amount = parseFloat(req.body.amount);
+      for (const [type, percentage] of Object.entries(distributionRules)) {
+        const distributionAmount = (amount * percentage) / 100;
+        await storage.createCharitableDistribution({
+          transactionId: transaction.transactionId,
+          beneficiaryType: type,
+          beneficiaryName: req.body.childBeneficiary || `${type} beneficiary`,
+          amount: distributionAmount.toString(),
+          percentage,
+          status: "completed"
+        });
+      }
+      
+      res.json(transaction);
+    } catch (error) {
+      console.error("Error creating Banimal transaction:", error);
+      res.status(500).json({ message: "Failed to create transaction" });
+    }
+  });
+
+  app.get("/api/banimal/distributions", async (req, res) => {
+    try {
+      const distributions = await storage.getCharitableDistributions();
+      res.json(distributions);
+    } catch (error) {
+      console.error("Error fetching distributions:", error);
+      res.status(500).json({ message: "Failed to fetch distributions" });
+    }
+  });
+
+  app.get("/api/banimal/sonicgrid", async (req, res) => {
+    try {
+      const connections = await storage.getSonicGridConnections();
+      res.json(connections);
+    } catch (error) {
+      console.error("Error fetching SonicGrid connections:", error);
+      res.status(500).json({ message: "Failed to fetch SonicGrid connections" });
+    }
+  });
+
+  app.get("/api/banimal/vault-actions", async (req, res) => {
+    try {
+      const actions = await storage.getVaultActions();
+      res.json(actions);
+    } catch (error) {
+      console.error("Error fetching vault actions:", error);
+      res.status(500).json({ message: "Failed to fetch vault actions" });
+    }
+  });
+
   // Dashboard stats endpoint
   app.get("/api/dashboard/stats", async (req, res) => {
     try {

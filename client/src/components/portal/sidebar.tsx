@@ -56,6 +56,7 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
     { id: "omnigrid-faa-zone", label: "🌐 OmniGrid™ FAA.zone™", icon: "🔋", badge: "PulseTrade™" },
     { id: "buildnest-dashboard", label: "🏗️ BuildNest Dashboard", icon: "🖥️", badge: "Live Metrics" },
     { id: "intern-portalnest", label: "🎓 PortalNest™ Interns", icon: "👨‍💻", badge: "AI Tracking" },
+    { id: "banimal-integration", label: "🍼 Banimal™ Global", icon: "💝", badge: "Charitable" },
     { id: "legal-hub", label: "📋 Legal Documentation Hub", icon: "📄", badge: "8 Documents" },
     { id: "api-keys", label: "🔑 API Key Manager", icon: "🔐", badge: "8 Keys" },
     { id: "payment-hub", label: "Payment Portal", icon: "💳", badge: "SSO" },

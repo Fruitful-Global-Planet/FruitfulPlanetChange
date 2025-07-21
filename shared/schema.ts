@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, jsonb, varchar, timestamp, index } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, jsonb, varchar, timestamp, index, decimal } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { FRUITFUL_CRATE_DANCE_ECOSYSTEM, FRUITFUL_CRATE_DANCE_SECTORS } from "./fruitful-crate-dance-ecosystem";
@@ -136,6 +136,74 @@ export type InsertRepository = z.infer<typeof insertRepositorySchema>;
 export type Repository = typeof repositories.$inferSelect;
 export type InsertPayment = z.infer<typeof insertPaymentSchema>;
 export type Payment = typeof payments.$inferSelect;
+
+// Banimal Integration Tables
+export const banimalTransactions = pgTable("banimal_transactions", {
+  id: serial("id").primaryKey(),
+  transactionId: varchar("transaction_id").unique().notNull(),
+  productName: varchar("product_name").notNull(),
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  distributionRules: jsonb("distribution_rules").notNull(),
+  childBeneficiary: varchar("child_beneficiary"),
+  status: varchar("status").default("pending"), // pending, processing, distributed
+  vaultSignature: varchar("vault_signature"),
+  sonicValidation: boolean("sonic_validation").default(false),
+  userId: varchar("user_id"),
+  createdAt: text("created_at").default("now()"),
+  updatedAt: text("updated_at").default("now()"),
+});
+
+export const charitableDistributions = pgTable("charitable_distributions", {
+  id: serial("id").primaryKey(),
+  transactionId: varchar("transaction_id").references(() => banimalTransactions.transactionId),
+  beneficiaryType: varchar("beneficiary_type").notNull(), // charity, developer, operations, sonicgrid, vault
+  beneficiaryName: varchar("beneficiary_name").notNull(),
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  percentage: integer("percentage").notNull(),
+  distributionDate: text("distribution_date").default("now()"),
+  vaultActionId: varchar("vault_action_id"),
+  status: varchar("status").default("pending"), // pending, completed, failed
+  metadata: jsonb("metadata"),
+});
+
+export const sonicGridConnections = pgTable("sonic_grid_connections", {
+  id: serial("id").primaryKey(),
+  connectionName: varchar("connection_name").notNull(),
+  connectionType: varchar("connection_type").notNull(), // media_processing, impact_verification, sonic_core
+  status: varchar("status").default("active"), // active, inactive, error
+  documentsProcessed: integer("documents_processed").default(0),
+  confidenceScore: decimal("confidence_score", { precision: 5, scale: 2 }).default("0.00"),
+  lastActivity: text("last_activity").default("now()"),
+  configuration: jsonb("configuration"),
+});
+
+export const vaultActions = pgTable("vault_actions", {
+  id: serial("id").primaryKey(),
+  actionId: varchar("action_id").unique().notNull(),
+  actionType: varchar("action_type").notNull(),
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  beneficiary: varchar("beneficiary").notNull(),
+  transactionId: varchar("transaction_id"),
+  vaultSignature: varchar("vault_signature").notNull(),
+  sonicValidation: boolean("sonic_validation").default(false),
+  status: varchar("status").default("pending"), // pending, processing, completed, failed
+  executedAt: text("executed_at").default("now()"),
+  metadata: jsonb("metadata"),
+});
+
+export const insertBanimalTransactionSchema = createInsertSchema(banimalTransactions);
+export const insertCharitableDistributionSchema = createInsertSchema(charitableDistributions);
+export const insertSonicGridConnectionSchema = createInsertSchema(sonicGridConnections);
+export const insertVaultActionSchema = createInsertSchema(vaultActions);
+
+export type InsertBanimalTransaction = z.infer<typeof insertBanimalTransactionSchema>;
+export type BanimalTransaction = typeof banimalTransactions.$inferSelect;
+export type InsertCharitableDistribution = z.infer<typeof insertCharitableDistributionSchema>;
+export type CharitableDistribution = typeof charitableDistributions.$inferSelect;
+export type InsertSonicGridConnection = z.infer<typeof insertSonicGridConnectionSchema>;
+export type SonicGridConnection = typeof sonicGridConnections.$inferSelect;
+export type InsertVaultAction = z.infer<typeof insertVaultActionSchema>;
+export type VaultAction = typeof vaultActions.$inferSelect;
 
 // Comprehensive Fruitful Global Ecosystem Data - 7,038 Total Brands across 33 Sectors
 export const COMPREHENSIVE_SECTOR_LIST = {

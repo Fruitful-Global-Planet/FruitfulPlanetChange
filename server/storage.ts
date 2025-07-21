@@ -6,6 +6,10 @@ import {
   legalDocuments, 
   repositories, 
   payments,
+  banimalTransactions,
+  charitableDistributions,
+  sonicGridConnections,
+  vaultActions,
   type User, 
   type InsertUser, 
   type Sector, 
@@ -20,6 +24,14 @@ import {
   type InsertRepository,
   type Payment,
   type InsertPayment,
+  type BanimalTransaction,
+  type InsertBanimalTransaction,
+  type CharitableDistribution,
+  type InsertCharitableDistribution,
+  type SonicGridConnection,
+  type InsertSonicGridConnection,
+  type VaultAction,
+  type InsertVaultAction,
   COMPREHENSIVE_BRAND_DATA
 } from "@shared/schema";
 import { FRUITFUL_CRATE_DANCE_SECTORS } from "@shared/fruitful-crate-dance-ecosystem";
@@ -69,6 +81,20 @@ export interface IStorage {
   // Payments
   getPayments(): Promise<Payment[]>;
   createPayment(payment: InsertPayment): Promise<Payment>;
+
+  // Banimal Integration
+  createBanimalTransaction(transaction: InsertBanimalTransaction): Promise<BanimalTransaction>;
+  getBanimalTransactions(): Promise<BanimalTransaction[]>;
+  updateBanimalTransactionStatus(id: number, status: string): Promise<void>;
+  
+  createCharitableDistribution(distribution: InsertCharitableDistribution): Promise<CharitableDistribution>;
+  getCharitableDistributions(): Promise<CharitableDistribution[]>;
+  
+  getSonicGridConnections(): Promise<SonicGridConnection[]>;
+  updateSonicGridConnection(id: number, data: Partial<SonicGridConnection>): Promise<void>;
+  
+  createVaultAction(action: InsertVaultAction): Promise<VaultAction>;
+  getVaultActions(): Promise<VaultAction[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -216,6 +242,163 @@ export class DatabaseStorage implements IStorage {
       .values(insertPayment)
       .returning();
     return payment;
+  }
+
+  // Banimal Integration Methods
+  async createBanimalTransaction(transaction: InsertBanimalTransaction): Promise<BanimalTransaction> {
+    const [result] = await db
+      .insert(banimalTransactions)
+      .values(transaction)
+      .returning();
+    return result;
+  }
+
+  async getBanimalTransactions(): Promise<BanimalTransaction[]> {
+    return await db.select().from(banimalTransactions);
+  }
+
+  async updateBanimalTransactionStatus(id: number, status: string): Promise<void> {
+    await db
+      .update(banimalTransactions)
+      .set({ status, updatedAt: new Date().toISOString() })
+      .where(eq(banimalTransactions.id, id));
+  }
+
+  async createCharitableDistribution(distribution: InsertCharitableDistribution): Promise<CharitableDistribution> {
+    const [result] = await db
+      .insert(charitableDistributions)
+      .values(distribution)
+      .returning();
+    return result;
+  }
+
+  async getCharitableDistributions(): Promise<CharitableDistribution[]> {
+    return await db.select().from(charitableDistributions);
+  }
+
+  async getSonicGridConnections(): Promise<SonicGridConnection[]> {
+    return await db.select().from(sonicGridConnections);
+  }
+
+  async updateSonicGridConnection(id: number, data: Partial<SonicGridConnection>): Promise<void> {
+    await db
+      .update(sonicGridConnections)
+      .set({ ...data, lastActivity: new Date().toISOString() })
+      .where(eq(sonicGridConnections.id, id));
+  }
+
+  async createVaultAction(action: InsertVaultAction): Promise<VaultAction> {
+    const [result] = await db
+      .insert(vaultActions)
+      .values(action)
+      .returning();
+    return result;
+  }
+
+  async getVaultActions(): Promise<VaultAction[]> {
+    return await db.select().from(vaultActions);
+  }
+
+  // Seed initial Banimal data
+  async seedBanimalData(): Promise<void> {
+    try {
+      // Check if data already exists
+      const existingTransactions = await this.getBanimalTransactions();
+      if (existingTransactions.length > 0) return;
+
+      // Seed SonicGrid connections
+      const sonicGridConnections = [
+        {
+          connectionName: "Affirmative Media Processor",
+          connectionType: "media_processing",
+          status: "active" as const,
+          documentsProcessed: 1247,
+          configuration: {
+            mediaTypes: ["video", "audio", "images"],
+            processingRules: ["affirmative_filter", "child_safety", "content_verification"],
+            outputFormats: ["mp4", "mp3", "webp"]
+          }
+        },
+        {
+          connectionName: "Charitable Distribution Hub",
+          connectionType: "payment_distribution",
+          status: "active" as const,
+          documentsProcessed: 856,
+          configuration: {
+            distributionRules: {
+              charity: 35,
+              developer: 25,
+              operations: 20,
+              sonicGrid: 10,
+              vault: 10
+            }
+          }
+        }
+      ];
+
+      for (const connection of sonicGridConnections) {
+        await db.insert(sonicGridConnections).values(connection);
+      }
+
+      // Seed sample transactions and distributions
+      const sampleTransaction = await this.createBanimalTransaction({
+        transactionId: `BAN-${Date.now()}`,
+        productName: "Banimal Soft Toy - Bear",
+        amount: "49.99",
+        currency: "USD",
+        userId: "demo-user",
+        childBeneficiary: "Children's Hospital Trust",
+        distributionRules: {
+          charity: 35,
+          developer: 25,
+          operations: 20,
+          sonicGrid: 10,
+          vault: 10
+        },
+        status: "completed"
+      });
+
+      // Create distributions for the sample transaction
+      const distributionRules = {
+        charity: 35,
+        developer: 25,
+        operations: 20,
+        sonicGrid: 10,
+        vault: 10
+      };
+      
+      const amount = 49.99;
+      for (const [type, percentage] of Object.entries(distributionRules)) {
+        const distributionAmount = (amount * percentage) / 100;
+        await this.createCharitableDistribution({
+          transactionId: sampleTransaction.transactionId,
+          beneficiaryType: type,
+          beneficiaryName: type === "charity" ? "Children's Hospital Trust" : `${type} beneficiary`,
+          amount: distributionAmount.toString(),
+          percentage,
+          status: "completed"
+        });
+      }
+
+      // Create vault actions
+      await this.createVaultAction({
+        actionId: `VA-${Date.now()}`,
+        actionType: "charitable_distribution",
+        beneficiary: "Children's Hospital Trust",
+        transactionId: sampleTransaction.transactionId,
+        amount: "17.50",
+        status: "completed",
+        visibility: "transparent",
+        metadata: {
+          ecosystem: "fruitful_crate_dance",
+          integration: "banimal_giving_loop"
+        }
+      });
+
+      console.log("✅ Banimal ecosystem data seeded successfully");
+    } catch (error) {
+      console.error("❌ Error seeding Banimal data:", error);
+    }
   }
 }
 

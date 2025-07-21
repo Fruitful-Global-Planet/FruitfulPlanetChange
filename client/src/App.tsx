@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { ThemeProvider } from "@/components/ui/theme-provider"
 import InternPortalNestPage from "@/pages/intern-portalnest"
+import BanimalIntegrationPage from "@/pages/banimal-integration"
 import { Sidebar } from "@/components/portal/sidebar"
 import { GlobalPulse } from "@/components/portal/global-pulse"
 import { SeedwaveAdmin } from "@/components/portal/seedwave-admin"
@@ -156,6 +157,8 @@ function PageRouter({ activePage }: { activePage: string }) {
       return <BuildNestDashboardPage />
     case "intern-portalnest":
       return <InternPortalNestPage />
+    case "banimal-integration":
+      return <BanimalIntegrationPage />
     case "fruitful-smart-toys":
       return <FruitfulSmartToys />
     default:
