@@ -51,6 +51,8 @@ app.use((req, res, next) => {
       await storage.seedBanimalData();
       console.log("🎬 Seeding Motion, Media & Sonic engines...");
       await storage.seedMediaData();
+      console.log("🚀 Seeding Omnilevel Interstellar operations...");
+      await storage.seedInterstellarData();
     } catch (error) {
       console.error("Failed to seed database:", error);
     }

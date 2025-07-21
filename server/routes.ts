@@ -642,6 +642,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Omnilevel Interstellar routes
+  app.get('/api/omnilevel/interstellar/nodes', async (req, res) => {
+    try {
+      const nodes = await storage.getInterstellarNodes();
+      res.json(nodes);
+    } catch (error) {
+      console.error('Error fetching interstellar nodes:', error);
+      res.status(500).json({ message: 'Failed to fetch interstellar nodes' });
+    }
+  });
+
+  app.post('/api/omnilevel/interstellar/nodes', async (req, res) => {
+    try {
+      const node = await storage.createInterstellarNode(req.body);
+      res.json(node);
+    } catch (error) {
+      console.error('Error creating interstellar node:', error);
+      res.status(500).json({ message: 'Failed to create interstellar node' });
+    }
+  });
+
+  app.post('/api/omnilevel/nodes/:nodeId/synchronize', async (req, res) => {
+    try {
+      const { nodeId } = req.params;
+      const result = await storage.synchronizeNode(nodeId);
+      res.json(result);
+    } catch (error) {
+      console.error('Error synchronizing node:', error);
+      res.status(500).json({ message: 'Failed to synchronize node' });
+    }
+  });
+
+  app.get('/api/omnilevel/cosmic/metrics', async (req, res) => {
+    try {
+      const metrics = await storage.getCosmicMetrics();
+      res.json(metrics);
+    } catch (error) {
+      console.error('Error fetching cosmic metrics:', error);
+      res.status(500).json({ message: 'Failed to fetch cosmic metrics' });
+    }
+  });
+
+  app.get('/api/omnilevel/config/global', async (req, res) => {
+    try {
+      const config = await storage.getGlobalLogicConfig();
+      res.json(config);
+    } catch (error) {
+      console.error('Error fetching global config:', error);
+      res.status(500).json({ message: 'Failed to fetch global config' });
+    }
+  });
+
+  app.post('/api/omnilevel/config/update', async (req, res) => {
+    try {
+      const config = await storage.updateGlobalLogicConfig(req.body);
+      res.json(config);
+    } catch (error) {
+      console.error('Error updating global config:', error);
+      res.status(500).json({ message: 'Failed to update global config' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

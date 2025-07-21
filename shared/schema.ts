@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, jsonb, varchar, timestamp, index, decimal } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, jsonb, varchar, timestamp, index, decimal, numeric } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { FRUITFUL_CRATE_DANCE_ECOSYSTEM, FRUITFUL_CRATE_DANCE_SECTORS } from "./fruitful-crate-dance-ecosystem";
@@ -241,6 +241,49 @@ export type InsertMediaProject = z.infer<typeof insertMediaProjectSchema>;
 export type MediaProject = typeof mediaProjects.$inferSelect;
 export type InsertProcessingEngine = z.infer<typeof insertProcessingEngineSchema>;
 export type ProcessingEngine = typeof processingEngines.$inferSelect;
+
+// Omnilevel Interstellar Tables
+export const interstellarNodes = pgTable("interstellar_nodes", {
+  id: serial("id").primaryKey(),
+  nodeId: varchar("node_id").unique().notNull(),
+  name: varchar("name").notNull(),
+  type: varchar("type").notNull(), // quantum, neural, cosmic, dimensional
+  status: varchar("status").default("dormant"), // active, dormant, processing, synchronizing
+  coordinates: jsonb("coordinates").notNull(), // {x, y, z}
+  connections: integer("connections").default(0),
+  processingPower: integer("processing_power").default(0),
+  dataVolume: varchar("data_volume"),
+  lastSync: timestamp("last_sync").defaultNow(),
+  configuration: jsonb("configuration"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const globalLogicConfigs = pgTable("global_logic_configs", {
+  id: serial("id").primaryKey(),
+  configId: varchar("config_id").unique().notNull(),
+  omnilevelMode: varchar("omnilevel_mode").default("standard"),
+  neuralNetworkDepth: integer("neural_network_depth").default(7),
+  quantumEntanglement: boolean("quantum_entanglement").default(false),
+  cosmicAlignment: boolean("cosmic_alignment").default(false),
+  dimensionalBridging: boolean("dimensional_bridging").default(false),
+  processingClusters: integer("processing_clusters").default(12),
+  dataCompressionRatio: integer("data_compression_ratio").default(85),
+  securityProtocols: jsonb("security_protocols").default("[]"),
+  syncFrequency: numeric("sync_frequency").default("2.5"),
+  autonomousLearning: boolean("autonomous_learning").default(true),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertInterstellarNodeSchema = createInsertSchema(interstellarNodes);
+export const insertGlobalLogicConfigSchema = createInsertSchema(globalLogicConfigs);
+
+export type InsertInterstellarNode = z.infer<typeof insertInterstellarNodeSchema>;
+export type InterstellarNode = typeof interstellarNodes.$inferSelect;
+export type InsertGlobalLogicConfig = z.infer<typeof insertGlobalLogicConfigSchema>;
+export type GlobalLogicConfig = typeof globalLogicConfigs.$inferSelect;
+
 
 // Comprehensive Fruitful Global Ecosystem Data - 7,038 Total Brands across 33 Sectors
 export const COMPREHENSIVE_SECTOR_LIST = {

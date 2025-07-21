@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider"
 import InternPortalNestPage from "@/pages/intern-portalnest"
 import BanimalIntegrationPage from "@/pages/banimal-integration"
 import MotionMediaSonic from "@/pages/motion-media-sonic"
+import OmnilevelInterstellar from "@/pages/omnilevel-interstellar"
 import { Sidebar } from "@/components/portal/sidebar"
 import { GlobalPulse } from "@/components/portal/global-pulse"
 import { SeedwaveAdmin } from "@/components/portal/seedwave-admin"
@@ -162,6 +163,8 @@ function PageRouter({ activePage }: { activePage: string }) {
       return <BanimalIntegrationPage />
     case "motion-media-sonic":
       return <MotionMediaSonic />
+    case "omnilevel-interstellar":
+      return <OmnilevelInterstellar />
     case "fruitful-smart-toys":
       return <FruitfulSmartToys />
     default:

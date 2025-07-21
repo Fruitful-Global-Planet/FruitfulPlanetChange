@@ -12,6 +12,8 @@ import {
   vaultActions,
   mediaProjects,
   processingEngines,
+  interstellarNodes,
+  globalLogicConfigs,
   type User, 
   type InsertUser, 
   type Sector, 
@@ -38,6 +40,10 @@ import {
   type InsertMediaProject,
   type ProcessingEngine,
   type InsertProcessingEngine,
+  type InterstellarNode,
+  type InsertInterstellarNode,
+  type GlobalLogicConfig,
+  type InsertGlobalLogicConfig,
   COMPREHENSIVE_BRAND_DATA
 } from "@shared/schema";
 import { FRUITFUL_CRATE_DANCE_SECTORS } from "@shared/fruitful-crate-dance-ecosystem";
@@ -108,6 +114,15 @@ export interface IStorage {
   processMediaProject(projectId: string, settings: any): Promise<{ success: boolean, message: string }>;
   getProcessingEngines(): Promise<ProcessingEngine[]>;
   seedMediaData(): Promise<void>;
+
+  // Omnilevel Interstellar operations
+  getInterstellarNodes(): Promise<InterstellarNode[]>;
+  createInterstellarNode(node: InsertInterstellarNode): Promise<InterstellarNode>;
+  synchronizeNode(nodeId: string): Promise<{ success: boolean, message: string }>;
+  getGlobalLogicConfig(): Promise<GlobalLogicConfig | undefined>;
+  updateGlobalLogicConfig(config: InsertGlobalLogicConfig): Promise<GlobalLogicConfig>;
+  getCosmicMetrics(): Promise<any>;
+  seedInterstellarData(): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -813,6 +828,206 @@ export class MemStorage implements IStorage {
     };
     this.payments.set(id.toString(), payment);
     return payment;
+  }
+
+  // Omnilevel Interstellar operations
+  async getInterstellarNodes(): Promise<InterstellarNode[]> {
+    return await db.select().from(interstellarNodes).orderBy(interstellarNodes.createdAt);
+  }
+
+  async createInterstellarNode(node: InsertInterstellarNode): Promise<InterstellarNode> {
+    const [newNode] = await db.insert(interstellarNodes).values(node).returning();
+    return newNode;
+  }
+
+  async synchronizeNode(nodeId: string): Promise<{ success: boolean, message: string }> {
+    try {
+      await db.update(interstellarNodes)
+        .set({ 
+          status: 'synchronizing',
+          lastSync: new Date()
+        })
+        .where(eq(interstellarNodes.nodeId, nodeId));
+
+      // Simulate synchronization process
+      setTimeout(async () => {
+        await db.update(interstellarNodes)
+          .set({ status: 'active' })
+          .where(eq(interstellarNodes.nodeId, nodeId));
+      }, 3000);
+
+      return { success: true, message: 'Node synchronization initiated' };
+    } catch (error) {
+      console.error('Failed to synchronize node:', error);
+      return { success: false, message: 'Synchronization failed' };
+    }
+  }
+
+  async getGlobalLogicConfig(): Promise<GlobalLogicConfig | undefined> {
+    const [config] = await db.select().from(globalLogicConfigs)
+      .where(eq(globalLogicConfigs.isActive, true))
+      .orderBy(globalLogicConfigs.updatedAt)
+      .limit(1);
+    return config;
+  }
+
+  async updateGlobalLogicConfig(config: InsertGlobalLogicConfig): Promise<GlobalLogicConfig> {
+    // Deactivate existing configs
+    await db.update(globalLogicConfigs)
+      .set({ isActive: false })
+      .where(eq(globalLogicConfigs.isActive, true));
+
+    // Insert new config
+    const [newConfig] = await db.insert(globalLogicConfigs).values({
+      ...config,
+      configId: `CONFIG-${Date.now()}`,
+      isActive: true,
+      updatedAt: new Date()
+    }).returning();
+
+    return newConfig;
+  }
+
+  async getCosmicMetrics(): Promise<any> {
+    const nodes = await this.getInterstellarNodes();
+    const config = await this.getGlobalLogicConfig();
+    
+    return {
+      total_nodes: nodes.length,
+      active_connections: nodes.filter(n => n.status === 'active').length,
+      processing_capacity: `${(nodes.reduce((sum, n) => sum + (n.processingPower || 0), 0) / nodes.length || 0).toFixed(1)} EXA`,
+      quantum_coherence: 99.7 + Math.random() * 0.2,
+      neural_efficiency: 94.8 + Math.random() * 2,
+      dimensional_stability: 87.2 + Math.random() * 5,
+      cosmic_synchronization: 96.4 + Math.random() * 1.5
+    };
+  }
+
+  async seedInterstellarData(): Promise<void> {
+    try {
+      const existingNodes = await db.select().from(interstellarNodes);
+      if (existingNodes.length > 0) {
+        console.log('✅ Interstellar nodes already seeded, skipping...');
+        return;
+      }
+
+      const defaultNodes = [
+        {
+          nodeId: 'QUANTUM-ALPHA-001',
+          name: 'Quantum Processing Alpha',
+          type: 'quantum',
+          status: 'active',
+          coordinates: JSON.stringify({ x: 12.7, y: -45.3, z: 890.2 }),
+          connections: 127,
+          processingPower: 94,
+          dataVolume: '2.4 PB',
+          configuration: JSON.stringify({
+            quantum_cores: 16,
+            entanglement_pairs: 8,
+            coherence_time: '150ms'
+          })
+        },
+        {
+          nodeId: 'NEURAL-BETA-002',
+          name: 'Neural Network Beta',
+          type: 'neural',
+          status: 'active',
+          coordinates: JSON.stringify({ x: -234.1, y: 78.9, z: 1205.7 }),
+          connections: 89,
+          processingPower: 87,
+          dataVolume: '1.8 PB',
+          configuration: JSON.stringify({
+            neural_layers: 24,
+            learning_rate: 0.001,
+            batch_size: 512
+          })
+        },
+        {
+          nodeId: 'COSMIC-GAMMA-003',
+          name: 'Cosmic Alignment Gamma',
+          type: 'cosmic',
+          status: 'processing',
+          coordinates: JSON.stringify({ x: 567.8, y: -123.4, z: 2847.6 }),
+          connections: 203,
+          processingPower: 76,
+          dataVolume: '4.7 PB',
+          configuration: JSON.stringify({
+            stellar_alignment: true,
+            cosmic_frequency: '2.5 GHz',
+            signal_strength: 98.2
+          })
+        },
+        {
+          nodeId: 'DIMENSIONAL-DELTA-004',
+          name: 'Dimensional Bridge Delta',
+          type: 'dimensional',
+          status: 'synchronizing',
+          coordinates: JSON.stringify({ x: -890.2, y: 456.7, z: 3921.4 }),
+          connections: 45,
+          processingPower: 62,
+          dataVolume: '956 TB',
+          configuration: JSON.stringify({
+            dimension_count: 11,
+            bridge_stability: 87.3,
+            quantum_tunneling: true
+          })
+        },
+        {
+          nodeId: 'QUANTUM-EPSILON-005',
+          name: 'Quantum Processor Epsilon',
+          type: 'quantum',
+          status: 'active',
+          coordinates: JSON.stringify({ x: 345.6, y: 789.1, z: 4567.2 }),
+          connections: 156,
+          processingPower: 91,
+          dataVolume: '3.1 PB',
+          configuration: JSON.stringify({
+            quantum_cores: 32,
+            entanglement_pairs: 16,
+            coherence_time: '200ms'
+          })
+        },
+        {
+          nodeId: 'NEURAL-ZETA-006',
+          name: 'Neural Hub Zeta',
+          type: 'neural',
+          status: 'dormant',
+          coordinates: JSON.stringify({ x: -678.9, y: -234.5, z: 5123.8 }),
+          connections: 0,
+          processingPower: 0,
+          dataVolume: '0 B',
+          configuration: JSON.stringify({
+            neural_layers: 48,
+            learning_rate: 0.0005,
+            batch_size: 1024
+          })
+        }
+      ];
+
+      await db.insert(interstellarNodes).values(defaultNodes);
+      
+      // Create default global logic config
+      const defaultConfig = {
+        configId: 'GLOBAL-CONFIG-001',
+        omnilevelMode: 'advanced',
+        neuralNetworkDepth: 12,
+        quantumEntanglement: true,
+        cosmicAlignment: true,
+        dimensionalBridging: false,
+        processingClusters: 18,
+        dataCompressionRatio: 92,
+        securityProtocols: JSON.stringify(['quantum_encryption', 'neural_firewall', 'cosmic_shielding']),
+        syncFrequency: 3.2,
+        autonomousLearning: true,
+        isActive: true
+      };
+
+      await db.insert(globalLogicConfigs).values(defaultConfig);
+      
+      console.log('✅ Interstellar nodes and global config seeded successfully');
+    } catch (error) {
+      console.error('❌ Failed to seed interstellar data:', error);
+    }
   }
 }
 
