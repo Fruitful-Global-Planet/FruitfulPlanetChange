@@ -208,6 +208,42 @@ export function IntegrationsDashboard() {
     return matchesSearch && matchesCategory
   })
 
+  const getExtensionIcon = (extension: Extension) => {
+    // Specific icons for known Replit extensions
+    const specificIcons: Record<string, string> = {
+      'csv-editor': '📊',
+      'root-workbench': '🏢',
+      'ui-sketcher': '✏️',
+      'icon-generator': '🎨',
+      'repl-tv': '📺',
+      'gpt-replit': '🤖',
+      'secrets-generator': '🔐',
+      'api-request-tester': '🔌'
+    }
+    
+    if (specificIcons[extension.id]) {
+      return specificIcons[extension.id]
+    }
+    
+    // Use extension.icon if available, otherwise fallback to category
+    if (extension.icon) {
+      return extension.icon
+    }
+    
+    // Fallback to category icons
+    const categoryIcons: Record<string, string> = {
+      'data': '📊',
+      'development': '💻',
+      'design': '🎨',
+      'ai': '🤖',
+      'security': '🔒',
+      'media': '📺',
+      'infrastructure': '⚙️',
+      'unknown': '🔧'
+    }
+    return categoryIcons[extension.category] || '🔧'
+  }
+
   const getIntegrationIcon = (level: string) => {
     switch (level) {
       case 'native': return <CheckCircle className="h-4 w-4 text-green-500" />
@@ -308,7 +344,7 @@ export function IntegrationsDashboard() {
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="text-2xl">{extension.icon || '🔧'}</div>
+                        <div className="text-2xl">{getExtensionIcon(extension)}</div>
                         <div>
                           <CardTitle className="text-lg">{extension.name}</CardTitle>
                           <p className="text-sm text-muted-foreground">
