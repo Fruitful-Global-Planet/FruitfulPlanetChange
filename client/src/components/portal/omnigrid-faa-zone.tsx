@@ -279,6 +279,22 @@ export function OmniGridFAAZone({ className }: OmniGridFAAZoneProps) {
   const totalNodes = pulseTradeSectors.reduce((sum, sector) => sum + sector.nodes, 0);
   const avgMonthlyFee = Math.round(pulseTradeSectors.reduce((sum, sector) => sum + sector.monthlyFee, 0) / pulseTradeSectors.length);
 
+  // Handler functions for sector actions
+  const handleSectorView = (sector: any) => {
+    setSelectedSector(sector.name);
+    // Create modal or detailed view for the sector
+    alert(`Viewing ${sector.name}\n\nBrands: ${sector.brands}\nNodes: ${sector.nodes.toLocaleString()}\nTier: ${sector.tier}\nRegion: ${sector.region}\nMonthly Fee: $${sector.monthlyFee}\n\n${sector.description}`);
+  };
+
+  const handleSectorDeploy = (sector: any) => {
+    // Deployment logic for the sector
+    const deploymentConfirm = confirm(`Deploy ${sector.name} sector?\n\nThis will activate:\n• ${sector.brands} brands\n• ${sector.nodes.toLocaleString()} nodes\n• ${sector.tier} tier infrastructure\n• ${sector.region} regional coverage\n\nContinue with deployment?`);
+    
+    if (deploymentConfirm) {
+      alert(`🚀 Deploying ${sector.name}...\n\nDeployment initiated successfully!\n\n✓ Activating ${sector.brands} brands\n✓ Spinning up ${sector.nodes.toLocaleString()} nodes\n✓ Configuring ${sector.tier} tier infrastructure\n✓ Establishing ${sector.region} regional presence\n\nEstimated completion: 2-3 minutes`);
+    }
+  };
+
   return (
     <div className={`space-y-8 ${className}`}>
       {/* Hero Section */}
@@ -422,11 +438,20 @@ export function OmniGridFAAZone({ className }: OmniGridFAAZoneProps) {
                         </div>
                       </div>
                       <div className="flex gap-2 mt-4">
-                        <Button size="sm" variant="outline" className="flex-1">
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="flex-1"
+                          onClick={() => handleSectorView(sector)}
+                        >
                           <Activity className="h-3 w-3 mr-1" />
                           View
                         </Button>
-                        <Button size="sm" className="flex-1">
+                        <Button 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={() => handleSectorDeploy(sector)}
+                        >
                           <Upload className="h-3 w-3 mr-1" />
                           Deploy
                         </Button>
