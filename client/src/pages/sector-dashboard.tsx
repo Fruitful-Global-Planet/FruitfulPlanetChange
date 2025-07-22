@@ -9,15 +9,24 @@ export default function SectorDashboard() {
   const [, params] = useRoute("/sector/:sectorId")
   const sectorId = params?.sectorId
 
-  const { data: sector, isLoading: sectorLoading, error: sectorError } = useQuery<Sector>({
-    queryKey: [`/api/sectors/${sectorId}`],
-    enabled: !!sectorId
+  const { data: sectors = [] } = useQuery<Sector[]>({
+    queryKey: ["/api/sectors"]
   })
 
-  const { data: brands = [], isLoading: brandsLoading } = useQuery<Brand[]>({
-    queryKey: [`/api/brands?sectorId=${sectorId}`],
-    enabled: !!sectorId
+  // Find sector by slug or ID
+  const sector = sectors.find(s => {
+    const sectorSlug = s.name.toLowerCase().replace(/[^a-z0-9]/g, '').replace(/^[⚡🌱💼🏢📦🔧🎮🎨🎭🍎♻️🎵💊⚡🏠]/g, '')
+    return sectorSlug === sectorId || s.id.toString() === sectorId
   })
+
+  const sectorLoading = false
+
+  const { data: allBrands = [] } = useQuery<Brand[]>({
+    queryKey: ["/api/brands"]
+  })
+
+  const brands = sector ? allBrands.filter(brand => brand.sectorId === sector.id) : []
+  const brandsLoading = false
 
   if (sectorLoading || brandsLoading) {
     return (
@@ -30,7 +39,7 @@ export default function SectorDashboard() {
     )
   }
 
-  if (sectorError || !sector) {
+  if (!sector) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">

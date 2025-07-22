@@ -32,14 +32,12 @@ export function SectorNavigationCards({ onSectorSelect }: SectorNavigationCardsP
     }
   }
 
-  // Create sector slug for navigation
+  // Create sector slug for navigation (consistent with dashboard)
   const createSectorSlug = (sectorName: string) => {
     return sectorName
       .toLowerCase()
-      .replace(/[^a-z0-9\s]/g, '') // Remove special chars except spaces
-      .replace(/\s+/g, '-') // Replace spaces with hyphens
-      .replace(/-+/g, '-') // Remove multiple hyphens
-      .trim()
+      .replace(/[^a-z0-9]/g, '') // Remove ALL special chars and spaces
+      .replace(/^[⚡🌱💼🏢📦🔧🎮🎨🎭🍎♻️🎵💊⚡🏠]/g, '') // Remove emoji prefixes
   }
 
   const availableSectors = sectors.filter(sector => sector.name && sector.name.trim() !== "")
@@ -126,7 +124,11 @@ export function SectorNavigationCards({ onSectorSelect }: SectorNavigationCardsP
                   {/* Action Button */}
                   <Button 
                     className="w-full bg-gradient-to-r from-green-500 to-cyan-500 hover:from-green-600 hover:to-cyan-600 text-white font-bold"
-                    onClick={() => onSectorSelect(sectorSlug)}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      console.log(`Navigating to sector: ${sectorSlug}`)
+                      window.location.href = `/sector/${sectorSlug}`
+                    }}
                   >
                     <span className="flex items-center justify-center gap-2">
                       Access Dashboard
