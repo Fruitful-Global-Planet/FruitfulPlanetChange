@@ -309,10 +309,81 @@ export function SectorDashboardTemplate({ sector, brands, className }: SectorDas
               <p className="text-sm text-gray-400">Manage sector settings and preferences</p>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-12">
-                <Settings className="h-12 w-12 mx-auto mb-4 text-gray-500" />
-                <h3 className="text-lg font-semibold text-white mb-2">Configuration Panel</h3>
-                <p className="text-gray-400">Sector configuration tools are being developed.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Legal Repository Integration */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-white">Baobab Legal Documentation</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                      <span className="text-sm text-gray-300">Environmental Law Hub</span>
+                      <Badge variant="secondary" className="bg-green-600 text-white">Active</Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                      <span className="text-sm text-gray-300">Climate Litigation Support</span>
+                      <Badge variant="secondary" className="bg-green-600 text-white">Active</Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                      <span className="text-sm text-gray-300">Water Rights Documentation</span>
+                      <Badge variant="secondary" className="bg-green-600 text-white">Active</Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                      <span className="text-sm text-gray-300">Biodiversity Conservation</span>
+                      <Badge variant="secondary" className="bg-green-600 text-white">Active</Badge>
+                    </div>
+                  </div>
+                  <Button className="w-full bg-green-600 hover:bg-green-700">
+                    Access Legal Repository
+                  </Button>
+                </div>
+
+                {/* Sector Configuration */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-white">Integration Settings</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                      <span className="text-sm text-gray-300">VaultMesh™ Core</span>
+                      <Badge variant="secondary" className="bg-blue-600 text-white">Connected</Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                      <span className="text-sm text-gray-300">SecureSign™ VIP</span>
+                      <Badge variant="secondary" className="bg-blue-600 text-white">Connected</Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                      <span className="text-sm text-gray-300">King Price Integration</span>
+                      <Badge variant="secondary" className="bg-blue-600 text-white">Connected</Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+                      <span className="text-sm text-gray-300">Banimal Giving Loop</span>
+                      <Badge variant="secondary" className="bg-purple-600 text-white">Active</Badge>
+                    </div>
+                  </div>
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                    Configure Integrations
+                  </Button>
+                </div>
+              </div>
+
+              {/* Sector Metrics Configuration */}
+              <div className="mt-8 p-6 bg-gray-700 rounded-lg">
+                <h3 className="text-lg font-semibold text-white mb-4">Performance Metrics</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-cyan-400">{totalBrands}</div>
+                    <div className="text-sm text-gray-400">Total Brands</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-400">{activeBrands}</div>
+                    <div className="text-sm text-gray-400">Active Brands</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-400">{coreBrands}</div>
+                    <div className="text-sm text-gray-400">Core Systems</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-purple-400">{integrationRate}%</div>
+                    <div className="text-sm text-gray-400">Integration</div>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
