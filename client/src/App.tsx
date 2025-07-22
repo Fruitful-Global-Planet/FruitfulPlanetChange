@@ -21,6 +21,7 @@ import { VaultMeshCheckout } from "@/components/portal/vaultmesh-checkout"
 import { FruitfulMarketplace } from "@/components/portal/fruitful-marketplace"
 import { IntegrationsDashboard } from "@/components/portal/integrations-dashboard"
 import { HotStackCodeNest } from "@/components/portal/hotstack-codenest"
+import { RepositoryHub } from "@/components/portal/repository-hub"
 import { BrandIdentityManager } from "@/components/portal/brand-identity-manager"
 import { GlobalDashboard } from "@/components/portal/global-dashboard"
 import { FruitfulSmartToys } from "@/components/portal/fruitful-smart-toys"
@@ -121,6 +122,12 @@ function PageRouter({ activePage }: { activePage: string }) {
       return (
         <div className="p-8">
           <HotStackCodeNest />
+        </div>
+      )
+    case "repository-hub":
+      return (
+        <div className="p-8">
+          <RepositoryHub />
         </div>
       )
     case "brand-identity-manager":
