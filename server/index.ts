@@ -51,14 +51,8 @@ app.use((req, res, next) => {
     try {
       await seedDatabase();
       await seedLegalDocuments();
-      console.log("⛏️ Seeding comprehensive mining brands from HTML data...");
-      await seedAllMiningBrands();
       console.log("💰 Updating sector pricing structure...");
       await updateSectorPricing();
-      console.log("🌐 Seeding comprehensive brand ecosystem from HTML data...");
-      await seedComprehensiveBrands();
-      console.log("⛏️ Seeding MineNest™ comprehensive mining ecosystem...");
-      await seedMineNestComprehensive();
       console.log("🐻 Seeding Banimal ecosystem for charitable giving...");
       await storage.seedBanimalData();
       console.log("🎬 Seeding Motion, Media & Sonic engines...");
