@@ -53,6 +53,7 @@ app.use((req, res, next) => {
       await seedLegalDocuments();
       console.log("💰 Updating sector pricing structure...");
       await updateSectorPricing();
+
       console.log("🐻 Seeding Banimal ecosystem for charitable giving...");
       await storage.seedBanimalData();
       console.log("🎬 Seeding Motion, Media & Sonic engines...");
