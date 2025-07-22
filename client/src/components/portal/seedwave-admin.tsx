@@ -73,6 +73,12 @@ export function SeedwaveAdmin() {
   const chartRef = useRef<HTMLCanvasElement>(null);
   const { toast } = useToast();
 
+  // Fetch admin panel brands data
+  const { data: adminPanelData, isLoading: isLoadingAdminData } = useQuery({
+    queryKey: ['/api/admin-panel/brands'],
+    refetchInterval: 30000,
+  });
+
   useEffect(() => {
     // Simulate authentication check
     const checkAuth = () => {
@@ -368,31 +374,33 @@ export function SeedwaveAdmin() {
                   <thead>
                     <tr className="bg-gray-100 dark:bg-gray-800">
                       <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Sector</th>
-                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Core Brands</th>
-                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Total Nodes</th>
+                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Brand Name</th>
+                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Sub Nodes</th>
                       <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Monthly Fee</th>
                       <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Tier</th>
                       <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {adminPanelStats?.sectorBreakdown ? Object.entries(adminPanelStats.sectorBreakdown).map(([sectorKey, sector]: [string, any]) => (
-                      <tr key={sectorKey} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                    {adminPanelData && Array.isArray(adminPanelData) && adminPanelData.length > 0 ? adminPanelData.map((brand: any) => (
+                      <tr key={`${brand.sector_key}_${brand.brand_name}`} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                         <td className="border border-gray-300 dark:border-gray-700 p-3">
                           <div className="flex items-center gap-2">
-                            <span className="text-xl">{sector.sectorEmoji}</span>
-                            <span className="font-medium">{sector.sectorName}</span>
+                            <span className="text-xl">{brand.sector_emoji}</span>
+                            <span className="font-medium">{brand.sector_name}</span>
                           </div>
                         </td>
                         <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
-                          <Badge variant="outline">{sector.brandCount}</Badge>
+                          <Badge variant="outline">{brand.brand_name}</Badge>
                         </td>
                         <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
-                          <Badge variant="outline">{sector.subNodeCount}</Badge>
+                          <Badge variant="outline">{Array.isArray(brand.sub_nodes) ? brand.sub_nodes.length : 0}</Badge>
                         </td>
                         <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">$88</td>
                         <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
-                          <Badge variant="default" className="bg-green-600">A+</Badge>
+                          <Badge variant="default" className={brand.is_core ? "bg-green-600" : "bg-blue-600"}>
+                            {brand.is_core ? "A+" : "B+"}
+                          </Badge>
                         </td>
                         <td className="border border-gray-300 dark:border-gray-700 p-3">
                           <div className="flex gap-2">
