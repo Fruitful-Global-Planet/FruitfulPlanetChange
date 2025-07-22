@@ -89,6 +89,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Repositories API
+  app.get("/api/repositories", async (req, res) => {
+    try {
+      const { search, category } = req.query;
+      
+      let repositories;
+      if (search) {
+        repositories = await storage.getRepositoriesBySearch(search as string);
+      } else if (category && category !== 'all') {
+        repositories = await storage.getRepositoriesByCategory(category as string);
+      } else {
+        repositories = await storage.getAllRepositories();
+      }
+      
+      res.json(repositories);
+    } catch (error) {
+      console.error("Error fetching repositories:", error);
+      res.status(500).json({ message: "Failed to fetch repositories" });
+    }
+  });
+
   // Brands API
   app.get("/api/brands", async (req, res) => {
     try {

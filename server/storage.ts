@@ -87,7 +87,10 @@ export interface IStorage {
   createLegalDocument(doc: InsertLegalDocument): Promise<LegalDocument>;
   
   // Repositories
+  getAllRepositories(): Promise<Repository[]>;
   getRepositories(): Promise<Repository[]>;
+  getRepositoriesBySearch(query: string): Promise<Repository[]>;
+  getRepositoriesByCategory(category: string): Promise<Repository[]>;
   createRepository(repo: InsertRepository): Promise<Repository>;
   
   // Payments
@@ -259,8 +262,29 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Repositories
+  async getAllRepositories(): Promise<Repository[]> {
+    return await db.select().from(repositories);
+  }
+
   async getRepositories(): Promise<Repository[]> {
     return await db.select().from(repositories);
+  }
+
+  async getRepositoriesBySearch(query: string): Promise<Repository[]> {
+    if (!query) {
+      return await db.select().from(repositories);
+    }
+    
+    return await db.select().from(repositories).where(
+      or(
+        ilike(repositories.name, `%${query}%`),
+        ilike(repositories.description, `%${query}%`)
+      )
+    );
+  }
+
+  async getRepositoriesByCategory(category: string): Promise<Repository[]> {
+    return await db.select().from(repositories).where(eq(repositories.category, category));
   }
 
   async createRepository(insertRepo: InsertRepository): Promise<Repository> {
