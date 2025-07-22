@@ -116,8 +116,11 @@ export default function SectorListPage() {
 
                 {/* Access Button */}
                 <Button 
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
                     console.log('🎯 SECTOR DASHBOARD ACCESS:', sector.name, sector.id)
+                    console.log('🔧 Setting selected sector:', sector)
                     setSelectedSector(sector)
                   }}
                   className="w-full group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 transition-all"
