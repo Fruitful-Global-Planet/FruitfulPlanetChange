@@ -128,7 +128,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Brands API
+  // Brands API (Public - no auth required)
   app.get("/api/brands", async (req, res) => {
     try {
       const { search, sectorId } = req.query;
@@ -144,6 +144,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json(brands);
     } catch (error) {
+      console.error("Error fetching brands:", error);
       res.status(500).json({ message: "Failed to fetch brands" });
     }
   });
