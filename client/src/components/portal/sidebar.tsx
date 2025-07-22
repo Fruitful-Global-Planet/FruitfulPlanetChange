@@ -71,6 +71,7 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
     { id: "banimal-integration", label: "🍼 Banimal™ Global", icon: "💝", badge: "Charitable" },
     { id: "motion-media-sonic", label: "🎬 Motion, Media & Sonic", icon: "🎵", badge: "Processing Studio" },
     { id: "omnilevel-interstellar", label: "🚀 Omnilevel Interstellar", icon: "🌌", badge: "Quantum Space" },
+    { id: "baobab-security-network", label: "🌳 Baobab Security Network™", icon: "🛡️", badge: "Environmental AI" },
     { id: "legal-hub", label: "📋 Legal Documentation Hub", icon: "📄", badge: "9 Documents" },
     { id: "api-keys", label: "🔑 API Key Manager", icon: "🔐", badge: "8 Keys" },
     { id: "payment-hub", label: "Payment Portal", icon: "💳", badge: "SSO" },

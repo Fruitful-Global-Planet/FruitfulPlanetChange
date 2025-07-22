@@ -27,6 +27,7 @@ import { SectorNavigationCards } from "@/components/portal/sector-navigation-car
 import { BrandIdentityManager } from "@/components/portal/brand-identity-manager"
 import { GlobalDashboard } from "@/components/portal/global-dashboard"
 import { FruitfulSmartToys } from "@/components/portal/fruitful-smart-toys"
+import { BaobabSecurityNetwork } from "@/components/portal/baobab-security-network"
 import BuildNestDashboardPage from "@/pages/buildnest-dashboard"
 import PortalHome from "@/pages/portal-home"
 import BrandsPage from "@/pages/brands"
@@ -212,6 +213,8 @@ function PageRouter({ activePage }: { activePage: string }) {
       return <MotionMediaSonic />
     case "omnilevel-interstellar":
       return <OmnilevelInterstellar />
+    case "baobab-security-network":
+      return <BaobabSecurityNetwork />
     case "fruitful-smart-toys":
       return <FruitfulSmartToys />
     case "samfox-creative-studio":
