@@ -25,11 +25,13 @@ import {
   Activity,
   Eye,
   Rocket,
-  Building
+  Building,
+  PanelRight
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { CurrencyConverter } from '@/components/ui/currency-converter';
+import { EnhancedSidepanel } from '@/components/enhanced-sidepanel';
 
 interface AdminStats {
   totalUsers: number;
@@ -65,12 +67,39 @@ export function SeedwaveAdmin() {
     refetchInterval: 30000
   });
   
+  // Enhanced data synchronization with comprehensive backend mirroring
   const { data: sectorBreakdown = [], refetch: refetchSectorBreakdown, isLoading: isLoadingSectorBreakdown } = useQuery({
     queryKey: ['/api/admin-panel/sector-breakdown'],
-    staleTime: 0, // No cache - always fetch fresh data
-    cacheTime: 0, // Don't cache at all
-    refetchInterval: 10000, // Refresh every 10 seconds
-    refetchOnWindowFocus: true, // Refresh when window gets focus
+    staleTime: 0, // Real-time data sync
+    gcTime: 0, // Force fresh data on every request
+    refetchInterval: 5000, // Enhanced refresh every 5 seconds for real-time sync
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+  });
+
+  // Enhanced real-time stats synchronization
+  const { data: enhancedStats, refetch: refetchStats } = useQuery({
+    queryKey: ['/api/admin-panel/enhanced-stats'],
+    staleTime: 0,
+    gcTime: 0,
+    refetchInterval: 5000,
+  });
+
+  // Complete sector data with deep integration
+  const { data: allSectorsData, refetch: refetchAllSectors } = useQuery({
+    queryKey: ['/api/sectors'],
+    staleTime: 0,
+    gcTime: 0,
+    refetchInterval: 10000,
+  });
+
+  // Comprehensive brand data with full metadata
+  const { data: completeBrandsData, refetch: refetchBrands } = useQuery({
+    queryKey: ['/api/brands'],
+    staleTime: 0,
+    gcTime: 0,
+    refetchInterval: 15000,
   });
   const [xeroIntegration, setXeroIntegration] = useState<XeroIntegration>({
     connected: false,
@@ -78,6 +107,7 @@ export function SeedwaveAdmin() {
   });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
+  const [sidepanelVisible, setSidepanelVisible] = useState(false);
   
   const chartRef = useRef<HTMLCanvasElement>(null);
   const { toast } = useToast();
@@ -376,9 +406,16 @@ export function SeedwaveAdmin() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>FAA.ZONE INDEX — Expanded Table Structure ({sectorBreakdown?.length || 0} sectors)</CardTitle>
-              <Button onClick={() => refetchSectorBreakdown()} variant="outline" size="sm">
-                Refresh Data
-              </Button>
+              <div className="flex gap-2">
+                <Button onClick={() => setSidepanelVisible(!sidepanelVisible)} variant="outline" size="sm">
+                  <PanelRight className="w-4 h-4 mr-2" />
+                  Database Sync Panel
+                </Button>
+                <Button onClick={() => refetchSectorBreakdown()} variant="outline" size="sm">
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Refresh Data
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
@@ -739,6 +776,12 @@ export function SeedwaveAdmin() {
           </Card>
         </TabsContent>
       </Tabs>
+      
+      {/* Enhanced Sidepanel for Database Synchronization */}
+      <EnhancedSidepanel 
+        isVisible={sidepanelVisible} 
+        onToggle={() => setSidepanelVisible(!sidepanelVisible)} 
+      />
     </div>
   );
 }

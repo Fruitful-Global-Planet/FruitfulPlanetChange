@@ -19,6 +19,7 @@ import { ExtensionScanner } from "./extension-scanner";
 import { registerAdminPanelRoutes } from './routes-admin-panel';
 import adminPanelRoutes from './routes/admin-panel';
 
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app)
@@ -34,6 +35,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Register new admin panel API routes
   app.use('/api/admin-panel', adminPanelRoutes);
+
 
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
