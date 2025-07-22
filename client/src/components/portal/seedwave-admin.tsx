@@ -65,9 +65,10 @@ export function SeedwaveAdmin() {
     refetchInterval: 30000
   });
   
-  const { data: sectorBreakdown } = useQuery({
+  const { data: sectorBreakdown = [], refetch: refetchSectorBreakdown } = useQuery({
     queryKey: ['/api/admin-panel/sector-breakdown'],
-    refetchInterval: 30000
+    staleTime: 1000, // Cache for only 1 second to get fresh data
+    refetchInterval: 5000, // Refresh every 5 seconds to show all sectors
   });
   const [xeroIntegration, setXeroIntegration] = useState<XeroIntegration>({
     connected: false,
@@ -423,7 +424,7 @@ export function SeedwaveAdmin() {
                     )) : (
                       <tr>
                         <td colSpan={6} className="border border-gray-300 dark:border-gray-700 p-3 text-center text-muted-foreground">
-                          {adminPanelStats ? 'No sector data available' : 'Loading admin panel data...'}
+                          Loading sectors... ({Array.isArray(sectorBreakdown) ? sectorBreakdown.length : 0} sectors loaded)
                         </td>
                       </tr>
                     )}
