@@ -195,7 +195,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getBrandsBySector(sectorId: number): Promise<Brand[]> {
-    return await db.select().from(brands).where(eq(brands.sectorId, sectorId));
+    return await db.select().from(brands).where(eq(brands.sector_id, sectorId));
   }
 
   async getBrand(id: number): Promise<Brand | undefined> {
