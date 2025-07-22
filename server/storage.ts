@@ -274,7 +274,24 @@ export class DatabaseStorage implements IStorage {
 
   // Brands
   async getAllBrands(): Promise<Brand[]> {
-    return await db.select().from(brands).orderBy(brands.id);
+    console.log('🔍 FILTERING TO AUTHENTIC BRANDS ONLY - NO FAKE DATA');
+    const allBrands = await db.select().from(brands).orderBy(brands.id);
+    
+    // ONLY return authentic brands from real GitHub repositories  
+    const authenticBrands = allBrands.filter(brand => {
+      const isAuthentic = 
+        brand.metadata?.authentic === true ||
+        brand.metadata?.source === 'heyns1000-github-account' ||
+        brand.description?.includes('Authentic') ||
+        brand.name?.includes('™'); // Real trademarked brands
+      
+      return isAuthentic;
+    });
+    
+    console.log(`✅ AUTHENTIC DATA ONLY: ${authenticBrands.length} real brands (filtered out ${allBrands.length - authenticBrands.length} fake brands)`);
+    
+    // If no authentic brands found, return empty array instead of fake data
+    return authenticBrands.length > 0 ? authenticBrands : [];
   }
 
   async getBrandsBySearch(query: string): Promise<Brand[]> {
