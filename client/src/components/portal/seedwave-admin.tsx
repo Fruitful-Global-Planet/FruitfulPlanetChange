@@ -65,10 +65,12 @@ export function SeedwaveAdmin() {
     refetchInterval: 30000
   });
   
-  const { data: sectorBreakdown = [], refetch: refetchSectorBreakdown } = useQuery({
+  const { data: sectorBreakdown = [], refetch: refetchSectorBreakdown, isLoading: isLoadingSectorBreakdown } = useQuery({
     queryKey: ['/api/admin-panel/sector-breakdown'],
-    staleTime: 1000, // Cache for only 1 second to get fresh data
-    refetchInterval: 5000, // Refresh every 5 seconds to show all sectors
+    staleTime: 0, // No cache - always fetch fresh data
+    cacheTime: 0, // Don't cache at all
+    refetchInterval: 10000, // Refresh every 10 seconds
+    refetchOnWindowFocus: true, // Refresh when window gets focus
   });
   const [xeroIntegration, setXeroIntegration] = useState<XeroIntegration>({
     connected: false,
@@ -372,8 +374,11 @@ export function SeedwaveAdmin() {
 
           {/* FAA.ZONE INDEX — Expanded Table Structure with Backend Data */}
           <Card>
-            <CardHeader>
-              <CardTitle>FAA.ZONE INDEX — Expanded Table Structure</CardTitle>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>FAA.ZONE INDEX — Expanded Table Structure ({sectorBreakdown?.length || 0} sectors)</CardTitle>
+              <Button onClick={() => refetchSectorBreakdown()} variant="outline" size="sm">
+                Refresh Data
+              </Button>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
@@ -424,7 +429,11 @@ export function SeedwaveAdmin() {
                     )) : (
                       <tr>
                         <td colSpan={6} className="border border-gray-300 dark:border-gray-700 p-3 text-center text-muted-foreground">
-                          Loading sectors... ({Array.isArray(sectorBreakdown) ? sectorBreakdown.length : 0} sectors loaded)
+                          {isLoadingSectorBreakdown ? (
+                            <>Loading all 48 sectors from database...</>
+                          ) : (
+                            <>No sector data available. API Response: {JSON.stringify(sectorBreakdown)}</>
+                          )}
                         </td>
                       </tr>
                     )}
