@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, TrendingUp, Users, Building, Globe, Zap, Shield, DollarSign } from "lucide-react"
+import { ArrowLeft, TrendingUp, Users, Building, Globe, Zap, Shield, DollarSign, MapPin, Calendar, Activity, Settings, BarChart3, Truck, Pickaxe } from "lucide-react"
 import { motion } from "framer-motion"
 import { useLocation } from "wouter"
 
@@ -30,6 +30,28 @@ export default function SectorIndividualPage() {
       if (!response.ok) throw new Error('Failed to fetch brands')
       return response.json()
     }
+  })
+
+  // Fetch mining-specific dashboard data if this is the mining sector
+  const { data: miningData } = useQuery({
+    queryKey: ["/api/mining/dashboard"],
+    queryFn: async () => {
+      const response = await fetch("/api/mining/dashboard")
+      if (!response.ok) throw new Error('Failed to fetch mining data')
+      return response.json()
+    },
+    enabled: sector?.name?.includes("Mining") || sector?.emoji === "⛏️"
+  })
+
+  // Fetch mining projects data
+  const { data: miningProjects = [] } = useQuery({
+    queryKey: ["/api/mining/projects"],
+    queryFn: async () => {
+      const response = await fetch("/api/mining/projects")
+      if (!response.ok) throw new Error('Failed to fetch mining projects')
+      return response.json()
+    },
+    enabled: sector?.name?.includes("Mining") || sector?.emoji === "⛏️"
   })
 
   if (sectorLoading) {
@@ -64,11 +86,12 @@ export default function SectorIndividualPage() {
 
   const coreBrands = brands.filter((brand: any) => !brand.parentId)
   const subNodes = brands.filter((brand: any) => brand.parentId)
+  const isMining = sector?.name?.includes("Mining") || sector?.emoji === "⛏️"
 
   return (
     <div className="min-h-screen bg-gray-900">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6">
+      <div className={`p-6 ${isMining ? 'bg-gradient-to-r from-orange-600 to-yellow-600' : 'bg-gradient-to-r from-blue-600 to-purple-600'}`}>
         <div className="flex items-center gap-4 mb-4">
           <Button 
             variant="outline" 
@@ -79,68 +102,199 @@ export default function SectorIndividualPage() {
             Back to Sectors
           </Button>
           <div className="text-4xl">{sector.emoji}</div>
-          <div>
+          <div className="flex-1">
             <h1 className="text-3xl font-bold text-white">{sector.name}</h1>
             <p className="text-blue-100">{sector.description}</p>
+            {isMining && (
+              <div className="flex items-center gap-2 mt-2">
+                <Badge className="bg-orange-500 text-white">MineNest™ Integration</Badge>
+                <Badge className="bg-green-500 text-white">VaultTrace™ Active</Badge>
+              </div>
+            )}
           </div>
         </div>
         
-        {/* Sector Stats */}
+        {/* Sector Stats - Enhanced for Mining */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-white/10 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-white">{coreBrands.length}</div>
-            <div className="text-blue-100 text-sm">Core Brands</div>
-          </div>
-          <div className="bg-white/10 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-white">{subNodes.length}</div>
-            <div className="text-blue-100 text-sm">Sub-Nodes</div>
-          </div>
-          <div className="bg-white/10 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-white">{brands.length}</div>
-            <div className="text-blue-100 text-sm">Total Elements</div>
-          </div>
-          <div className="bg-white/10 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-white">Active</div>
-            <div className="text-blue-100 text-sm">Status</div>
-          </div>
+          {isMining && miningData ? (
+            <>
+              <div className="bg-white/10 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-white">{miningData.overview.totalActiveSites}</div>
+                <div className="text-blue-100 text-sm">Active Mine Sites</div>
+              </div>
+              <div className="bg-white/10 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-white">{miningData.overview.activeDrillRigs}</div>
+                <div className="text-blue-100 text-sm">Active Drill Rigs</div>
+              </div>
+              <div className="bg-white/10 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-white">{miningData.overview.monthlyOreYield.toLocaleString()}</div>
+                <div className="text-blue-100 text-sm">Monthly Ore Yield (Tonnes)</div>
+              </div>
+              <div className="bg-white/10 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-white">{miningData.overview.operationalHealth}%</div>
+                <div className="text-blue-100 text-sm">Operational Health</div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="bg-white/10 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-white">{coreBrands.length}</div>
+                <div className="text-blue-100 text-sm">Core Brands</div>
+              </div>
+              <div className="bg-white/10 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-white">{subNodes.length}</div>
+                <div className="text-blue-100 text-sm">Sub-Nodes</div>
+              </div>
+              <div className="bg-white/10 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-white">{brands.length}</div>
+                <div className="text-blue-100 text-sm">Total Elements</div>
+              </div>
+              <div className="bg-white/10 rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-white">Active</div>
+                <div className="text-blue-100 text-sm">Status</div>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
       <div className="p-6 space-y-6">
-        {/* Sector Analytics Dashboard */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="bg-gray-800 border-gray-700">
-            <CardContent className="p-6 text-center">
-              <TrendingUp className="h-8 w-8 text-green-500 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-white">96.8%</div>
-              <div className="text-gray-400 text-sm">Performance</div>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-gray-800 border-gray-700">
-            <CardContent className="p-6 text-center">
-              <Users className="h-8 w-8 text-blue-500 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-white">1,247</div>
-              <div className="text-gray-400 text-sm">Active Users</div>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-gray-800 border-gray-700">
-            <CardContent className="p-6 text-center">
-              <DollarSign className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-white">R2.4M</div>
-              <div className="text-gray-400 text-sm">Revenue</div>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-gray-800 border-gray-700">
-            <CardContent className="p-6 text-center">
-              <Shield className="h-8 w-8 text-purple-500 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-white">99.9%</div>
-              <div className="text-gray-400 text-sm">Security</div>
-            </CardContent>
-          </Card>
-        </div>
+        {/* Mining-Specific Dashboard */}
+        {isMining && miningData && (
+          <div className="space-y-6">
+            {/* Mining Equipment Overview */}
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Truck className="h-6 w-6 text-orange-500" />
+                  Equipment Status Overview
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-white mb-2">{miningData.equipment.drillRigs.active}/{miningData.equipment.drillRigs.total}</div>
+                    <div className="text-gray-400 mb-2">Drill Rigs</div>
+                    <div className="text-green-400 text-sm">{miningData.equipment.drillRigs.utilization}% Utilization</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-white mb-2">{miningData.equipment.processors.active}/{miningData.equipment.processors.total}</div>
+                    <div className="text-gray-400 mb-2">Processors</div>
+                    <div className="text-green-400 text-sm">{miningData.equipment.processors.utilization}% Utilization</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-white mb-2">{miningData.equipment.transportSystems.active}/{miningData.equipment.transportSystems.total}</div>
+                    <div className="text-gray-400 mb-2">Transport Systems</div>
+                    <div className="text-green-400 text-sm">{miningData.equipment.transportSystems.utilization}% Utilization</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Active Mining Projects */}
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Pickaxe className="h-6 w-6 text-yellow-500" />
+                  Active Mining Projects
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {miningProjects.slice(0, 4).map((project: any) => (
+                    <div key={project.id} className="bg-gray-700 rounded-lg p-4">
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="text-white font-semibold">{project.name}</h4>
+                        <Badge className={`${
+                          project.status === 'live' ? 'bg-green-500' :
+                          project.status === 'pending' ? 'bg-yellow-500' :
+                          'bg-gray-500'
+                        } text-white`}>
+                          {project.status}
+                        </Badge>
+                      </div>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-center gap-2 text-gray-300">
+                          <MapPin className="h-4 w-4" />
+                          {project.location}
+                        </div>
+                        <div className="text-gray-400">Yield: {project.yieldRate}</div>
+                        <div className="text-gray-400">Updated: {project.lastUpdate}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Compliance & Safety */}
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Shield className="h-6 w-6 text-green-500" />
+                  Compliance & Safety Status
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-400 mb-1">Active</div>
+                    <div className="text-gray-400 text-sm">VaultTrace™</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-400 mb-1">{miningData.compliance.environmentalCompliance}%</div>
+                    <div className="text-gray-400 text-sm">Environmental</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-400 mb-1">{miningData.compliance.safetyRating}</div>
+                    <div className="text-gray-400 text-sm">Safety Rating</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xl font-bold text-white mb-1">{miningData.compliance.lastAudit}</div>
+                    <div className="text-gray-400 text-sm">Last Audit</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Default Sector Analytics Dashboard */}
+        {!isMining && (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <Card className="bg-gray-800 border-gray-700">
+              <CardContent className="p-6 text-center">
+                <TrendingUp className="h-8 w-8 text-green-500 mx-auto mb-2" />
+                <div className="text-2xl font-bold text-white">96.8%</div>
+                <div className="text-gray-400 text-sm">Performance</div>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-gray-800 border-gray-700">
+              <CardContent className="p-6 text-center">
+                <Users className="h-8 w-8 text-blue-500 mx-auto mb-2" />
+                <div className="text-2xl font-bold text-white">1,247</div>
+                <div className="text-gray-400 text-sm">Active Users</div>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-gray-800 border-gray-700">
+              <CardContent className="p-6 text-center">
+                <DollarSign className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
+                <div className="text-2xl font-bold text-white">R2.4M</div>
+                <div className="text-gray-400 text-sm">Revenue</div>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-gray-800 border-gray-700">
+              <CardContent className="p-6 text-center">
+                <Shield className="h-8 w-8 text-purple-500 mx-auto mb-2" />
+                <div className="text-2xl font-bold text-white">99.9%</div>
+                <div className="text-gray-400 text-sm">Security</div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* Core Brands */}
         {coreBrands.length > 0 && (

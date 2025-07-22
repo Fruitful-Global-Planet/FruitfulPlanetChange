@@ -471,6 +471,194 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // MineNest™ Mining & Resources Complete Dashboard API
+  app.get("/api/mining/dashboard", async (req, res) => {
+    try {
+      const miningDashboard = {
+        overview: {
+          totalActiveSites: 12,
+          activeDrillRigs: 8,
+          monthlyOreYield: 2847,
+          operationalHealth: 94,
+          systemStatus: "Operational"
+        },
+        projects: [
+          {
+            id: 1,
+            name: "Deep Earth Exploration Alpha Site",
+            status: "live",
+            location: "Pilbara, Western Australia",
+            yieldRate: "847 tonnes/month",
+            equipment: "Autonomous drilling rig deployment",
+            lastUpdate: "2 hours ago"
+          },
+          {
+            id: 2,
+            name: "Iron Ore Processing Beta",
+            status: "pending",
+            location: "Kalahari, South Africa",
+            yieldRate: "1,203 tonnes/month",
+            equipment: "Processing facility optimization",
+            lastUpdate: "5 hours ago"
+          },
+          {
+            id: 3,
+            name: "Copper Extraction Gamma",
+            status: "live",
+            location: "Atacama, Chile",
+            yieldRate: "642 tonnes/month",
+            equipment: "VaultTrace™ monitoring system",
+            lastUpdate: "30 minutes ago"
+          },
+          {
+            id: 4,
+            name: "Lithium Recovery Delta",
+            status: "draft",
+            location: "Nevada, USA",
+            yieldRate: "155 tonnes/month",
+            equipment: "Predictive analytics deployment",
+            lastUpdate: "1 day ago"
+          }
+        ],
+        equipment: {
+          drillRigs: {
+            total: 8,
+            active: 7,
+            maintenance: 1,
+            utilization: 87.5
+          },
+          processors: {
+            total: 4,
+            active: 4,
+            maintenance: 0,
+            utilization: 96.2
+          },
+          transportSystems: {
+            total: 15,
+            active: 14,
+            maintenance: 1,
+            utilization: 93.3
+          }
+        },
+        analytics: {
+          performanceTrends: [
+            { month: "Jan", yield: 2654, efficiency: 89 },
+            { month: "Feb", yield: 2721, efficiency: 91 },
+            { month: "Mar", yield: 2598, efficiency: 88 },
+            { month: "Apr", yield: 2803, efficiency: 94 },
+            { month: "May", yield: 2847, efficiency: 96 },
+            { month: "Jun", yield: 2901, efficiency: 97 }
+          ],
+          brandStatusDistribution: {
+            active: 74,
+            development: 20,
+            maintenance: 6
+          },
+          regionDistribution: {
+            "Australia": 35,
+            "South Africa": 28,
+            "Chile": 18,
+            "North America": 12,
+            "Other": 7
+          }
+        },
+        compliance: {
+          vaultTrace: "Active",
+          environmentalCompliance: 98.7,
+          safetyRating: "A+",
+          lastAudit: "2024-06-15"
+        },
+        licenses: [
+          {
+            id: "claimroot-001",
+            name: "MineNest™ Enterprise License",
+            status: "Active",
+            validUntil: "2025-12-31",
+            price: "$19,999.00"
+          }
+        ]
+      };
+
+      res.json(miningDashboard);
+    } catch (error) {
+      console.error("Error fetching mining dashboard:", error);
+      res.status(500).json({ message: "Failed to fetch mining dashboard" });
+    }
+  });
+
+  // Mining Projects API
+  app.get("/api/mining/projects", async (req, res) => {
+    try {
+      const projects = [
+        {
+          id: 1,
+          name: "Deep Earth Exploration Alpha Site",
+          status: "live",
+          location: "Pilbara, Western Australia",
+          description: "Autonomous drilling rig deployment for deep earth mineral exploration",
+          yieldRate: "847 tonnes/month",
+          equipment: ["Autonomous drilling rig", "VaultTrace™ sensors", "Real-time telemetry"],
+          team: "12 specialists",
+          budget: "$2.4M",
+          completion: 78,
+          lastUpdate: "2 hours ago",
+          riskLevel: "Low",
+          nextMilestone: "Phase 3 drilling completion"
+        },
+        {
+          id: 2,
+          name: "Iron Ore Processing Beta",
+          status: "pending",
+          location: "Kalahari, South Africa",
+          description: "Processing facility optimization with AI-driven efficiency improvements",
+          yieldRate: "1,203 tonnes/month",
+          equipment: ["Processing facility", "AI optimization system", "Quality control sensors"],
+          team: "18 specialists",
+          budget: "$3.8M", 
+          completion: 45,
+          lastUpdate: "5 hours ago",
+          riskLevel: "Medium",
+          nextMilestone: "Equipment installation"
+        },
+        {
+          id: 3,
+          name: "Copper Extraction Gamma",
+          status: "live",
+          location: "Atacama, Chile",
+          description: "VaultTrace™ monitoring system for copper extraction optimization",
+          yieldRate: "642 tonnes/month",
+          equipment: ["Extraction systems", "VaultTrace™ monitoring", "Environmental sensors"],
+          team: "15 specialists",
+          budget: "$1.9M",
+          completion: 92,
+          lastUpdate: "30 minutes ago",
+          riskLevel: "Low",
+          nextMilestone: "Performance validation"
+        },
+        {
+          id: 4,
+          name: "Lithium Recovery Delta",
+          status: "draft", 
+          location: "Nevada, USA",
+          description: "Predictive analytics deployment for lithium recovery operations",
+          yieldRate: "155 tonnes/month",
+          equipment: ["Recovery systems", "Predictive analytics", "Data collection network"],
+          team: "8 specialists",
+          budget: "$1.2M",
+          completion: 23,
+          lastUpdate: "1 day ago",
+          riskLevel: "High",
+          nextMilestone: "Site preparation"
+        }
+      ];
+
+      res.json(projects);
+    } catch (error) {
+      console.error("Error fetching mining projects:", error);
+      res.status(500).json({ message: "Failed to fetch mining projects" });
+    }
+  });
+
   app.post("/api/repositories", async (req, res) => {
     try {
       const result = insertRepositorySchema.safeParse(req.body);
