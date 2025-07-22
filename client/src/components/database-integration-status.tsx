@@ -9,20 +9,20 @@ import { WildlifeProductModal } from "@/components/wildlife-product-modal"
 export function DatabaseIntegrationStatus() {
   const { toast } = useToast()
 
-  // Real-time database queries showing live connection
+  // Connect ONLY to authentic repositories - NO FAKE DATA
   const { data: brands = [], isLoading: brandsLoading } = useQuery<any[]>({
-    queryKey: ["/api/brands"],
+    queryKey: ["/api/authentic/repositories"],
     refetchInterval: 10000, // Update every 10 seconds
     retry: false
   })
 
-  const { data: sectors = [] } = useQuery<any[]>({
-    queryKey: ["/api/sectors"],
+  const { data: sectors = [], isLoading: sectorsLoading } = useQuery<any[]>({
+    queryKey: ["/api/authentic/sectors"],
     refetchInterval: 10000,
     retry: false
   })
 
-  const { data: systemStatus = [] } = useQuery<any[]>({
+  const { data: systemStatus = [], isLoading: statusLoading } = useQuery<any[]>({
     queryKey: ["/api/system-status"],
     refetchInterval: 5000, // Real-time monitoring
   })

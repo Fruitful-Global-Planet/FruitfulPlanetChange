@@ -84,14 +84,14 @@ export function FruitfulMarketplace() {
   const [sortBy, setSortBy] = useState<string>('trending');
   const [selectedCurrency, setSelectedCurrency] = useState<string>('ZAR');
 
-  // Get real data from API
+  // Connect ONLY to authentic repositories - NO FAKE DATA
   const { data: sectors = [] } = useQuery({
-    queryKey: ["/api/sectors"],
+    queryKey: ["/api/authentic/sectors"],
     retry: false,
   });
 
   const { data: brands = [] } = useQuery({
-    queryKey: ["/api/brands"],
+    queryKey: ["/api/authentic/repositories"],
     retry: false,
   });
 

@@ -19,6 +19,7 @@ import { ExtensionScanner } from "./extension-scanner";
 import { registerAdminPanelRoutes } from './routes-admin-panel';
 import adminPanelRoutes from './routes/admin-panel';
 import syncRoutes from './routes/sync';
+import { registerAuthenticRoutes } from './routes-authentic-only';
 
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -157,6 +158,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Register Admin Panel routes
   registerAdminPanelRoutes(app, storage);
+  
+  // Register AUTHENTIC-ONLY routes (NO FAKE DATA)
+  registerAuthenticRoutes(app);
   
   // Register new admin panel API routes
   app.use('/api/admin-panel', adminPanelRoutes);
