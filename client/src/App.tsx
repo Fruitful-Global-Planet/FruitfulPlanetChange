@@ -23,6 +23,7 @@ import { IntegrationsDashboard } from "@/components/portal/integrations-dashboar
 import { HotStackCodeNest } from "@/components/portal/hotstack-codenest"
 import { RepositoryHub } from "@/components/portal/repository-hub"
 import { SectorOnboardingFlow } from "@/components/portal/sector-onboarding-flow"
+import { SectorNavigationCards } from "@/components/portal/sector-navigation-cards"
 import { BrandIdentityManager } from "@/components/portal/brand-identity-manager"
 import { GlobalDashboard } from "@/components/portal/global-dashboard"
 import { FruitfulSmartToys } from "@/components/portal/fruitful-smart-toys"
@@ -137,6 +138,14 @@ function PageRouter({ activePage }: { activePage: string }) {
           <SectorOnboardingFlow />
         </div>
       )
+    case "sector-dashboard-access":
+      return (
+        <div className="p-8">
+          <SectorNavigationCards onSectorSelect={(sectorSlug) => {
+            window.location.href = `/sector/${sectorSlug}`
+          }} />
+        </div>
+      )
     case "brand-identity-manager":
       return (
         <div className="p-8">
@@ -215,6 +224,11 @@ function PageRouter({ activePage }: { activePage: string }) {
     case "fruitful-marketplace-marketing":
       return <FruitfulMarketplaceMarketing />
     default:
+      // Check if it's a sector dashboard route
+      if (activePage.startsWith("sector-")) {
+        const sectorId = activePage.replace("sector-", "")
+        return <SectorDashboard />
+      }
       return <NotFound />
   }
 }

@@ -12,12 +12,16 @@ import {
 } from "@shared/schema";
 import { IntegrationManager } from "./services/integration-manager";
 import { getAPIConfig } from "../shared/api-config";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth, isAuthenticated } from "./replitAuth"
+import { registerSectorRoutes } from "./routes/sectors";
 import { ExtensionScanner } from "./extension-scanner";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
-  await setupAuth(app);
+  await setupAuth(app)
+
+  // Register sector routes
+  registerSectorRoutes(app);
 
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {

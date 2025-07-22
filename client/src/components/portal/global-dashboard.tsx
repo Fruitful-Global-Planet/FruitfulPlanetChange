@@ -7,11 +7,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { 
-  COMPREHENSIVE_BRAND_DATA, 
-  COMPREHENSIVE_SECTOR_LIST, 
-  GLOBAL_ECOSYSTEM_METRICS 
-} from "@shared/schema"
+import { useLocation } from "wouter"
 import type { Brand, Sector } from "@shared/schema"
 
 interface DashboardStats {
