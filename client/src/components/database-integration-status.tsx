@@ -224,7 +224,7 @@ export function DatabaseIntegrationStatus() {
                 <span className="text-sm font-medium">Brand Database Query</span>
               </div>
               <Badge variant="outline" className="text-xs">
-                {(brands as any[]).length} records loaded
+                {brandsLoading ? 'Loading...' : (Array.isArray(brands) ? brands.length : 0)} records loaded
               </Badge>
             </div>
             
@@ -234,7 +234,7 @@ export function DatabaseIntegrationStatus() {
                 <span className="text-sm font-medium">Sectors Database Query</span>
               </div>
               <Badge variant="outline" className="text-xs">
-                {(sectors as any[]).length} sectors active
+                {sectorsLoading ? 'Loading...' : (Array.isArray(sectors) ? sectors.length : 0)} sectors active
               </Badge>
             </div>
             
@@ -244,7 +244,7 @@ export function DatabaseIntegrationStatus() {
                 <span className="text-sm font-medium">System Status Monitor</span>
               </div>
               <Badge variant="outline" className="text-xs">
-                {(systemStatus as any[]).length} services monitored
+                {statusLoading ? 'Loading...' : (Array.isArray(systemStatus) ? systemStatus.length : 0)} services monitored
               </Badge>
             </div>
           </div>
