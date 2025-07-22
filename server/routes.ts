@@ -18,6 +18,7 @@ import { registerSectorRoutes } from "./routes/sectors";
 import { ExtensionScanner } from "./extension-scanner";
 import { registerAdminPanelRoutes } from './routes-admin-panel';
 import adminPanelRoutes from './routes/admin-panel';
+import syncRoutes from './routes/sync';
 
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -35,6 +36,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Register new admin panel API routes
   app.use('/api/admin-panel', adminPanelRoutes);
+  
+  // Register sync routes for real-time synchronization
+  app.use('/api/sync', syncRoutes);
 
 
   // Auth routes

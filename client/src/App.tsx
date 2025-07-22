@@ -48,6 +48,7 @@ import FruitfulMarketplaceMarketing from "@/pages/fruitful-marketplace-marketing
 import Landing from "@/pages/landing"
 import SectorDashboard from "@/pages/sector-dashboard"
 import SectorIndividualPage from "@/pages/sector-individual"
+import { GlobalSyncIndicator } from "@/components/global-sync-indicator"
 import SectorList from "@/pages/sector-list"
 import SettingsPage from "@/pages/settings"
 import AnalyticsPage from "@/pages/analytics"
@@ -311,6 +312,7 @@ function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; s
         </main>
       </div>
       <GlobalFooter className="ml-0 md:ml-80" />
+      <GlobalSyncIndicator />
     </div>
   );
 }
