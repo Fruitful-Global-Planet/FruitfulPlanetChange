@@ -192,6 +192,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // API: Get mining brands specifically (30 authentic brands from HTML)
+  app.get("/api/mining-brands", async (req, res) => {
+    try {
+      const miningBrands = await storage.getBrandsBySector(297); // Sector ID 297 is Mining & Resources
+      res.json(miningBrands);
+    } catch (error) {
+      console.error("Error fetching mining brands:", error);
+      res.status(500).json({ message: "Failed to fetch mining brands" });
+    }
+  });
+
   // System Status API
   app.get("/api/system-status", async (req, res) => {
     try {

@@ -7,6 +7,7 @@ import { ArrowLeft, TrendingUp, Users, Building, Globe, Zap, Shield, DollarSign,
 import { motion } from "framer-motion"
 import { useLocation } from "wouter"
 import { MineNestAuthenticDashboard } from '@/components/mining/minenest-authentic-dashboard'
+import { MineNestAuthenticBrands } from '@/components/mining/MineNestAuthenticBrands'
 
 export default function SectorIndividualPage() {
   const params = useParams()
@@ -325,8 +326,13 @@ export default function SectorIndividualPage() {
           </div>
         )}
 
+        {/* MineNest™ Authentic Brands for Mining Sector */}
+        {isMining && (
+          <MineNestAuthenticBrands />
+        )}
+
         {/* Core Brands */}
-        {coreBrands.length > 0 && (
+        {!isMining && coreBrands.length > 0 && (
           <div>
             <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
               <Building className="h-6 w-6" />
@@ -375,7 +381,7 @@ export default function SectorIndividualPage() {
         )}
 
         {/* Sub-Nodes */}
-        {subNodes.length > 0 && (
+        {!isMining && subNodes.length > 0 && (
           <div>
             <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
               <Globe className="h-6 w-6" />
@@ -410,7 +416,7 @@ export default function SectorIndividualPage() {
         )}
 
         {/* Empty State */}
-        {brands.length === 0 && !brandsLoading && (
+        {!isMining && brands.length === 0 && !brandsLoading && (
           <Card className="bg-gray-800 border-gray-700">
             <CardContent className="text-center py-12">
               <Building className="h-12 w-12 text-gray-400 mx-auto mb-4" />
