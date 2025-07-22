@@ -247,11 +247,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const sectors = await storage.getAllSectors();
       const legalDocs = await storage.getLegalDocuments();
       
+      // Calculate real-time totals from sectors with updated brand counts
+      const totalBrandsFromSectors = sectors.reduce((sum, sector) => sum + (sector.brandCount || 0), 0);
       const coreWands = brands.filter(b => b.isCore).length;
       const subnodes = brands.filter(b => !b.isCore).length;
       
       const stats = {
-        totalElements: brands.length,
+        totalElements: totalBrandsFromSectors, // Use calculated total from sectors
         coreBrands: coreWands,
         subnodes: subnodes,
         sectors: sectors.length,

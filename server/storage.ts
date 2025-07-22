@@ -50,7 +50,7 @@ import {
   COMPREHENSIVE_BRAND_DATA
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, or, ilike } from "drizzle-orm";
+import { eq, or, ilike, sql, count } from "drizzle-orm";
 import { FRUITFUL_CRATE_DANCE_SECTORS } from "@shared/fruitful-crate-dance-ecosystem";
 import { 
   SECURESIGN_API_KEYS, 
@@ -238,7 +238,25 @@ export class DatabaseStorage implements IStorage {
 
   // Sectors
   async getAllSectors(): Promise<Sector[]> {
-    return await db.select().from(sectors);
+    // Get sectors with real-time brand counts
+    const sectorsWithCounts = await db
+      .select({
+        id: sectors.id,
+        name: sectors.name,
+        emoji: sectors.emoji,
+        description: sectors.description,
+        brandCount: sql<number>`COALESCE(COUNT(${brands.id}), 0)`.as('brandCount'),
+        subnodeCount: sectors.subnodeCount,
+        price: sectors.price,
+        currency: sectors.currency,
+        metadata: sectors.metadata
+      })
+      .from(sectors)
+      .leftJoin(brands, eq(brands.sectorId, sectors.id))
+      .groupBy(sectors.id, sectors.name, sectors.emoji, sectors.description, sectors.subnodeCount, sectors.price, sectors.currency, sectors.metadata)
+      .orderBy(sectors.name);
+
+    return sectorsWithCounts;
   }
 
   async getSector(id: number): Promise<Sector | undefined> {
