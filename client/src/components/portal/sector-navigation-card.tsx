@@ -3,6 +3,7 @@ import { useLocation } from "wouter"
 import { ChevronRight, ExternalLink } from "lucide-react"
 import { InteractiveCard, SparkleEffect } from "@/components/ui/micro-interactions"
 import { Badge } from "@/components/ui/badge"
+import { SectorDashboardIndicator } from "./sector-dashboard-indicator"
 import type { Sector } from "@shared/schema"
 
 interface SectorNavigationCardProps {
@@ -59,14 +60,19 @@ export function SectorNavigationCard({ sector, className = "" }: SectorNavigatio
         </h3>
         
         {sector.description && (
-          <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
+          <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2">
             {sector.description}
           </p>
         )}
+        
+        {/* Dashboard Status Indicator */}
+        <div className="mb-4">
+          <SectorDashboardIndicator sector={sector} />
+        </div>
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            {sector.brandCount && (
+            {sector.brandCount && sector.brandCount > 0 && (
               <Badge variant="secondary" className="text-xs">
                 {sector.brandCount} brands
               </Badge>
@@ -76,13 +82,18 @@ export function SectorNavigationCard({ sector, className = "" }: SectorNavigatio
                 {sector.subnodeCount} subnodes
               </Badge>
             )}
+            {(!sector.brandCount || sector.brandCount === 0) && (
+              <Badge variant="destructive" className="text-xs opacity-60">
+                Dashboard Ready
+              </Badge>
+            )}
           </div>
           
           <motion.div
             className="flex items-center text-sm text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
             whileHover={{ x: 5 }}
           >
-            <span className="mr-1">Explore</span>
+            <span className="mr-1">{sector.brandCount && sector.brandCount > 0 ? 'Explore' : 'Access'}</span>
             <ChevronRight className="w-4 h-4" />
           </motion.div>
         </div>
