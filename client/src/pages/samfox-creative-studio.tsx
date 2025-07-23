@@ -116,7 +116,7 @@ function VipDashboardComponent() {
                 <div className="flex items-center justify-center mb-2">
                   <Shield className="w-8 h-8 text-purple-500" />
                 </div>
-                <div className="text-2xl font-bold">{dashboardStats.legalDocuments || 0}</div>
+                <div className="text-2xl font-bold">{legalDocuments.length}</div>
                 <div className="text-sm text-gray-600 dark:text-gray-300">Legal Documents</div>
               </div>
               
@@ -174,7 +174,7 @@ function VipDashboardComponent() {
                   <span>Legal Documents</span>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span className="text-sm">{dashboardStats.legalDocuments || 0} records</span>
+                    <span className="text-sm">{legalDocuments.length} records</span>
                   </div>
                 </div>
                 
@@ -396,41 +396,63 @@ function VipDashboardComponent() {
                 <div className="text-xs text-purple-600 mt-1">✓ Operational</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-orange-600">{dashboardStats.legalDocuments || 0}</div>
+                <div className="text-3xl font-bold text-orange-600">{legalDocuments.length}</div>
                 <div className="text-sm text-gray-500">Legal Documents</div>
                 <div className="text-xs text-orange-600 mt-1">✓ Secure</div>
               </div>
             </div>
 
-            {/* Real-time Sync Indicators */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Real-time System Health Monitoring */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-green-200 dark:border-green-800">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm font-medium">Database Sync</div>
-                    <div className="text-xs text-gray-500">Real-time updates</div>
+                    <div className="text-sm font-medium">Brand Database</div>
+                    <div className="text-xs text-gray-500">{brands.length} records</div>
                   </div>
-                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-xs text-green-600">connected</span>
+                  </div>
                 </div>
               </div>
               
               <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm font-medium">API Integration</div>
-                    <div className="text-xs text-gray-500">Live brand data</div>
+                    <div className="text-sm font-medium">Sectors Database</div>
+                    <div className="text-xs text-gray-500">{sectors.length} records</div>
                   </div>
-                  <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-xs text-green-600">connected</span>
+                  </div>
                 </div>
               </div>
               
               <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm font-medium">Portal Access</div>
-                    <div className="text-xs text-gray-500">Full functionality</div>
+                    <div className="text-sm font-medium">Legal Documents</div>
+                    <div className="text-xs text-gray-500">{legalDocuments.length} records</div>
                   </div>
-                  <div className="w-3 h-3 bg-purple-500 rounded-full animate-pulse"></div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-xs text-green-600">connected</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-orange-200 dark:border-orange-800">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-medium">System Services</div>
+                    <div className="text-xs text-gray-500">{systemStatus.length} services</div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-xs text-green-600">connected</span>
+                  </div>
                 </div>
               </div>
             </div>
