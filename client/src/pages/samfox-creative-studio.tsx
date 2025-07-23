@@ -62,6 +62,9 @@ import FirstEyeDesign from '@assets/1st_eye_1753263376706.png';
 import ChiefDesign from '@assets/Chief_02_1753263376705.png';
 import DripDesign from '@assets/Drip_1753263376705.png';
 
+// Additional Sam Fox Artwork Images  
+import LinkedinHeader from '@assets/Linkedin_header_1753261659049.png';
+
 // Import PayPal Button component
 import PayPalButton from '@/components/PayPalButton';
 
@@ -86,7 +89,10 @@ const designGallery = [
   { id: 14, title: "Dream Big", image: DreamBigDesign, price: 16.49, category: "Motivational", description: "Inspirational dream big artwork" },
   { id: 15, title: "First Eye", image: FirstEyeDesign, price: 13.99, category: "Spiritual", description: "Third eye spiritual design" },
   { id: 16, title: "Chief Portrait", image: ChiefDesign, price: 19.99, category: "Portrait", description: "Detailed chief character portrait" },
-  { id: 17, title: "Drip Style", image: DripDesign, price: 17.49, category: "Street Art", description: "Urban drip style artwork" }
+  { id: 17, title: "Drip Style", image: DripDesign, price: 17.49, category: "Street Art", description: "Urban drip style artwork" },
+  { id: 18, title: "Professional Screenshot", image: RabbitSketch, price: 16.99, category: "Professional", description: "High-quality professional design screenshot" },
+  { id: 19, title: "Sam Fox Logo", image: SamFoxLogo, price: 24.99, category: "Branding", description: "Official Sam Fox Creative Studio logo" },
+  { id: 20, title: "LinkedIn Header", image: LinkedinHeader, price: 18.99, category: "Professional", description: "Professional LinkedIn header design" }
 ];
 
 // VIP Dashboard Component with Complete Portal Functionality
@@ -1573,7 +1579,7 @@ export default function SamFoxCreativeStudio() {
                 Sam Fox Design Gallery
               </h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                Premium downloadable prints featuring 17 unique Sam Fox designs. High-quality digital artwork perfect for personal use, gifts, or commercial projects.
+                Premium downloadable prints featuring 20 unique Sam Fox designs. High-quality digital artwork perfect for personal use, gifts, or commercial projects.
               </p>
             </div>
 
