@@ -52,8 +52,8 @@ export function EnhancedSidepanel({ isVisible, onToggle }: EnhancedSidepanelProp
   });
 
   useEffect(() => {
-    if (enhancedStats?.timestamp) {
-      setSyncTime(new Date(enhancedStats.timestamp).toLocaleTimeString());
+    if ((enhancedStats as any)?.timestamp) {
+      setSyncTime(new Date((enhancedStats as any).timestamp).toLocaleTimeString());
     }
   }, [enhancedStats]);
 
@@ -67,20 +67,20 @@ export function EnhancedSidepanel({ isVisible, onToggle }: EnhancedSidepanelProp
 
   // Use existing API data structure
   const globalStats = {
-    totalSectors: deepSectorData?.length || 0,
-    totalBrands: enhancedStats?.totalBrands || 0,
-    totalCoreBrands: enhancedStats?.coreBrands || 0,
-    totalMonthlyRevenue: enhancedStats?.totalMonthlyRevenue || 0,
-    activeSectors: syncStatus?.length || 0,
+    totalSectors: (deepSectorData as any[])?.length || 0,
+    totalBrands: (enhancedStats as any)?.totalBrands || 0,
+    totalCoreBrands: (enhancedStats as any)?.coreBrands || 0,
+    totalMonthlyRevenue: (enhancedStats as any)?.totalMonthlyRevenue || 0,
+    activeSectors: (syncStatus as any[])?.length || 0,
     averagePerformance: 85,
     databaseRecords: {
-      sectors: deepSectorData?.length || 0,
-      brands: enhancedStats?.totalBrands || 0,
+      sectors: (deepSectorData as any[])?.length || 0,
+      brands: (enhancedStats as any)?.totalBrands || 0,
       systemStatus: 5
     }
   };
   
-  const sectorAnalysis = syncStatus || [];
+  const sectorAnalysis = (syncStatus as any[]) || [];
   const dbRecords = globalStats?.databaseRecords;
 
   return (
@@ -118,8 +118,8 @@ export function EnhancedSidepanel({ isVisible, onToggle }: EnhancedSidepanelProp
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-300">Status</span>
-                  <Badge variant={syncStatus?.status === 'synchronized' ? 'default' : 'destructive'}>
-                    {syncStatus?.status || 'unknown'}
+                  <Badge variant={(syncStatus as any)?.status === 'synchronized' ? 'default' : 'destructive'}>
+                    {(syncStatus as any)?.status || 'unknown'}
                   </Badge>
                 </div>
                 <div className="flex items-center justify-between">
@@ -129,7 +129,7 @@ export function EnhancedSidepanel({ isVisible, onToggle }: EnhancedSidepanelProp
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-300">Response Time</span>
                   <span className="text-xs text-green-400">
-                    {syncStatus?.performance?.responseTime?.toFixed(1) || 0}ms
+                    {(syncStatus as any)?.performance?.responseTime?.toFixed(1) || 0}ms
                   </span>
                 </div>
               </div>
@@ -227,9 +227,9 @@ export function EnhancedSidepanel({ isVisible, onToggle }: EnhancedSidepanelProp
             <CardContent>
               <div className="space-y-2">
                 {sectorAnalysis
-                  .sort((a, b) => (b.monthlyFee || 0) - (a.monthlyFee || 0))
+                  .sort((a: any, b: any) => ((b as any).monthlyFee || 0) - ((a as any).monthlyFee || 0))
                   .slice(0, 5)
-                  .map((sector, index) => (
+                  .map((sector: any, index: number) => (
                     <div key={sector.sectorId} className="flex items-center justify-between p-2 rounded bg-gray-700/50">
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-gray-400">#{index + 1}</span>
@@ -265,7 +265,7 @@ export function EnhancedSidepanel({ isVisible, onToggle }: EnhancedSidepanelProp
             </CardHeader>
             <CardContent>
               <div className="space-y-1 text-xs text-gray-400">
-                <div>✓ Sector breakdown: {sectorAnalysis.length} records</div>
+                <div>✓ Sector breakdown: {(sectorAnalysis as any[]).length} records</div>
                 <div>✓ Brand data: {globalStats?.totalBrands || 0} synced</div>
                 <div>✓ Pricing data: Updated</div>
                 <div>✓ Performance metrics: Live</div>
