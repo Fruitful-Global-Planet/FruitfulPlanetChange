@@ -53,6 +53,15 @@ export default function SamFoxCreativeStudio() {
 
   const dashboardTemplates = [
     {
+      id: 'south-africa-dashboard',
+      title: 'Fruitful™ South Africa Dashboard',
+      description: 'Comprehensive South African brands and products dashboard with ZAR integration',
+      preview: '/api/templates/samfox/south-africa-dashboard',
+      features: ['ZAR Currency', 'SA Brand Management', 'Local Integration', 'RSA Flag Branding'],
+      category: 'Regional Dashboard',
+      complexity: 'Advanced'
+    },
+    {
       id: 'global-dashboard',
       title: 'Fruitful™ Global Dashboard',
       description: 'Comprehensive multi-canvas dashboard with elegant dark theme',
@@ -175,10 +184,14 @@ export default function SamFoxCreativeStudio() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-8">
         <Tabs defaultValue="artwork" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-4 lg:w-[600px] mx-auto">
+          <TabsList className="grid w-full grid-cols-5 lg:w-[800px] mx-auto">
             <TabsTrigger value="artwork" className="flex items-center gap-2">
               <Image className="w-4 h-4" />
               Artwork Gallery
+            </TabsTrigger>
+            <TabsTrigger value="south-africa" className="flex items-center gap-2">
+              🇿🇦
+              South Africa
             </TabsTrigger>
             <TabsTrigger value="templates" className="flex items-center gap-2">
               <Layout className="w-4 h-4" />
@@ -267,6 +280,203 @@ export default function SamFoxCreativeStudio() {
                 </motion.div>
               ))}
             </div>
+          </TabsContent>
+
+          {/* South Africa Dashboard */}
+          <TabsContent value="south-africa" className="space-y-6">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-4 flex items-center justify-center gap-3">
+                🇿🇦 South Africa Dashboard
+              </h2>
+              <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                Comprehensive South African brands and products management with ZAR integration and local market focus
+              </p>
+            </div>
+
+            {/* South African Products Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+              {[
+                {
+                  name: 'LoopPay™',
+                  description: 'Construction-grade payout loop for RSA-based contractor networks',
+                  price: 'R1,380 master license',
+                  monthly: 'R92/month',
+                  category: 'FinTech',
+                  emoji: '💳',
+                  features: ['PulseTrade™', 'ClaimRoot™', 'DivLock™']
+                },
+                {
+                  name: 'SteelFlow™',
+                  description: 'Mining operations management for Steelpoort region',
+                  price: 'R2,100 master license',
+                  monthly: 'R150/month',
+                  category: 'Mining',
+                  emoji: '⛏️',
+                  features: ['Mining Operations', 'Safety Protocols', 'Resource Tracking']
+                },
+                {
+                  name: 'AgriLink™',
+                  description: 'Agricultural supply chain management for SA farmers',
+                  price: 'R1,850 master license',
+                  monthly: 'R125/month',
+                  category: 'Agriculture',
+                  emoji: '🌾',
+                  features: ['Farm Management', 'Supply Chain', 'Weather Integration']
+                },
+                {
+                  name: 'TaxiFlow™',
+                  description: 'Minibus taxi fleet management system',
+                  price: 'R950 master license',
+                  monthly: 'R75/month',
+                  category: 'Transport',
+                  emoji: '🚐',
+                  features: ['Route Optimization', 'Driver Management', 'Payment Processing']
+                },
+                {
+                  name: 'RetailZAR™',
+                  description: 'Point-of-sale system with ZAR integration',
+                  price: 'R1,200 master license',
+                  monthly: 'R85/month',
+                  category: 'Retail',
+                  emoji: '🛒',
+                  features: ['POS System', 'Inventory', 'ZAR Processing']
+                },
+                {
+                  name: 'EduSA™',
+                  description: 'Educational management for South African schools',
+                  price: 'R1,650 master license',
+                  monthly: 'R110/month',
+                  category: 'Education',
+                  emoji: '🎓',
+                  features: ['Student Management', 'Curriculum', 'Parent Portal']
+                }
+              ].map((product, index) => (
+                <motion.div
+                  key={product.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                >
+                  <Card className="hover:shadow-xl transition-all duration-300 group border-orange-200 dark:border-orange-800">
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <span className="text-3xl">{product.emoji}</span>
+                          <div>
+                            <h3 className="font-semibold text-lg text-orange-600 dark:text-orange-400">
+                              {product.name}
+                            </h3>
+                            <Badge variant="outline" className="text-xs">
+                              {product.category}
+                            </Badge>
+                          </div>
+                        </div>
+                        <div className="text-sm text-orange-600 dark:text-orange-400 font-mono">
+                          ZAR
+                        </div>
+                      </div>
+                      
+                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
+                        {product.description}
+                      </p>
+                      
+                      <div className="space-y-2 mb-4">
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-500">Master License:</span>
+                          <span className="font-semibold">{product.price}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-500">Monthly:</span>
+                          <span className="font-semibold">{product.monthly}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="flex flex-wrap gap-1">
+                          {product.features.map((feature, i) => (
+                            <Badge key={i} variant="secondary" className="text-xs">
+                              {feature}
+                            </Badge>
+                          ))}
+                        </div>
+                        
+                        <div className="flex gap-2">
+                          <Button size="sm" className="flex-1 bg-orange-600 hover:bg-orange-700">
+                            <Eye className="w-4 h-4 mr-2" />
+                            View Details
+                          </Button>
+                          <Button size="sm" variant="outline">
+                            <Download className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* South African Dashboard Features */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <Card className="bg-gradient-to-r from-orange-500/10 via-red-500/10 to-yellow-500/10 border-orange-500/20">
+                <CardContent className="p-8">
+                  <div className="text-center mb-6">
+                    <h3 className="text-2xl font-bold mb-2 flex items-center justify-center gap-2">
+                      🇿🇦 South African Market Dashboard Features
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      Specialized tools and integrations for the South African market
+                    </p>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-orange-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span className="text-white text-xl">R</span>
+                      </div>
+                      <h4 className="font-semibold mb-2">ZAR Integration</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">
+                        Native South African Rand support
+                      </p>
+                    </div>
+                    
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span className="text-white text-xl">🏪</span>
+                      </div>
+                      <h4 className="font-semibold mb-2">Local Markets</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">
+                        Cape Town, Johannesburg, Durban
+                      </p>
+                    </div>
+                    
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span className="text-white text-xl">📊</span>
+                      </div>
+                      <h4 className="font-semibold mb-2">RSA Analytics</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">
+                        South African market insights
+                      </p>
+                    </div>
+                    
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span className="text-white text-xl">🤝</span>
+                      </div>
+                      <h4 className="font-semibold mb-2">Local Partners</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">
+                        RSA-based business networks
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           </TabsContent>
 
           {/* Dashboard Templates */}
