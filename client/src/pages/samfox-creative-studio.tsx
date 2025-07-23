@@ -70,8 +70,7 @@ import LinkedinHeader from '@assets/Linkedin_header_1753261659049.png';
 // Import PayPal Button component
 import PayPalButton from '@/components/PayPalButton';
 
-// Import Database Schema Sidebar
-import DatabaseSchemaSidebar from '@/components/database-schema-sidebar';
+// Database Schema successfully removed from SamFox - now exists only in proper database settings
 
 // Sam Fox Design Gallery Data - All 20 Commercial Prints
 const designGallery = [
@@ -812,10 +811,7 @@ export default function SamFoxCreativeStudio() {
               <ShoppingCart className="w-4 h-4" />
               Design Gallery
             </TabsTrigger>
-            <TabsTrigger value="database" className="flex items-center gap-2">
-              <Database className="w-4 h-4" />
-              Database Schema
-            </TabsTrigger>
+
           </TabsList>
 
           {/* Artwork Gallery */}
@@ -1677,149 +1673,6 @@ export default function SamFoxCreativeStudio() {
             </div>
           </TabsContent>
 
-          {/* Database Schema Integration */}
-          <TabsContent value="database" className="space-y-6">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold mb-4 flex items-center justify-center gap-3">
-                <Database className="w-8 h-8" />
-                Database Schema & Data Integration
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                Complete database schema integration with real-time data from all 16 tables, 33MB+ of data, and comprehensive system monitoring.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[800px]">
-              {/* Database Schema Sidebar */}
-              <div className="lg:col-span-1">
-                <DatabaseSchemaSidebar />
-              </div>
-              
-              {/* Schema Data Visualization */}
-              <div className="lg:col-span-3 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium">Total Tables</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">16</div>
-                      <p className="text-xs text-gray-500">Active database tables</p>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium">Total Records</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">9,892</div>
-                      <p className="text-xs text-gray-500">Live data records</p>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium">Database Size</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold">33.05MB</div>
-                      <p className="text-xs text-gray-500">Total storage used</p>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Schema Integration Status</CardTitle>
-                    <CardDescription>
-                      Real-time synchronization between frontend components and database entities
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <CheckCircle className="w-5 h-5 text-green-500" />
-                          <div>
-                            <div className="font-medium">Core Brand Management</div>
-                            <div className="text-sm text-gray-500">brands, admin_panel_brands, sectors</div>
-                          </div>
-                        </div>
-                        <Badge className="bg-green-500 text-white">Connected</Badge>
-                      </div>
-                      
-                      <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <CheckCircle className="w-5 h-5 text-green-500" />
-                          <div>
-                            <div className="font-medium">Legal Documentation</div>
-                            <div className="text-sm text-gray-500">legal_documents, vault_actions</div>
-                          </div>
-                        </div>
-                        <Badge className="bg-green-500 text-white">Connected</Badge>
-                      </div>
-                      
-                      <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <CheckCircle className="w-5 h-5 text-green-500" />
-                          <div>
-                            <div className="font-medium">Financial Systems</div>
-                            <div className="text-sm text-gray-500">payments, banimal_transactions, charitable_distributions</div>
-                          </div>
-                        </div>
-                        <Badge className="bg-green-500 text-white">Connected</Badge>
-                      </div>
-                      
-                      <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <CheckCircle className="w-5 h-5 text-green-500" />
-                          <div>
-                            <div className="font-medium">Infrastructure</div>
-                            <div className="text-sm text-gray-500">system_status, processing_engines, repositories</div>
-                          </div>
-                        </div>
-                        <Badge className="bg-green-500 text-white">Connected</Badge>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Live Data Synchronization</CardTitle>
-                    <CardDescription>
-                      Real-time updates and data flow across all integrated systems
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="text-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                        <Building className="w-6 h-6 mx-auto mb-2 text-blue-500" />
-                        <div className="text-lg font-bold">3,794</div>
-                        <div className="text-xs text-gray-500">Total Brands</div>
-                      </div>
-                      <div className="text-center p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                        <BarChart3 className="w-6 h-6 mx-auto mb-2 text-purple-500" />
-                        <div className="text-lg font-bold">48</div>
-                        <div className="text-xs text-gray-500">Active Sectors</div>
-                      </div>
-                      <div className="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                        <FileText className="w-6 h-6 mx-auto mb-2 text-green-500" />
-                        <div className="text-lg font-bold">247</div>
-                        <div className="text-xs text-gray-500">Legal Documents</div>
-                      </div>
-                      <div className="text-center p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-                        <GitBranch className="w-6 h-6 mx-auto mb-2 text-orange-500" />
-                        <div className="text-lg font-bold">61</div>
-                        <div className="text-xs text-gray-500">Repositories</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </TabsContent>
         </Tabs>
       </div>
     </div>
