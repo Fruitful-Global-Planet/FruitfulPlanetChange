@@ -33,7 +33,9 @@ import {
   Monitor,
   ShoppingCart,
   CreditCard,
-  PrinterIcon
+  PrinterIcon,
+  Building,
+  GitBranch
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
