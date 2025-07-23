@@ -166,7 +166,7 @@ export function DatabaseIntegrationStatus() {
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-green-600">{brands.length || 630}</div>
+              <div className="text-2xl font-bold text-green-600">{dashboardStats.totalElements || brands.length}</div>
               <div className="text-sm text-green-600">Total Brand Records</div>
             </div>
           </div>

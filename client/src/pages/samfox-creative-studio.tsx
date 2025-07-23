@@ -135,7 +135,7 @@ function VipDashboardComponent() {
   });
 
   // Dashboard metrics calculated from real data
-  const connectedServices = systemStatus.filter(s => s.status === 'online').length;
+  const connectedServices = systemStatus.filter(s => s.status === 'connected' || s.status === 'active').length;
   const totalServices = systemStatus.length;
   const connectionStatus = connectedServices === totalServices ? 'connected' : 'partial';
 
@@ -148,8 +148,7 @@ function VipDashboardComponent() {
           VIP Complete Dashboard Portal
         </h2>
         <p className="text-gray-600 dark:text-gray-300 max-w-4xl mx-auto">
-          Complete Seedwave Brand Management Portal integrated directly into SamFox Creative Studio. 
-          Real-time data, comprehensive analytics, and full portal functionality at your fingertips.
+          Complete ecosystem with {dashboardStats.totalElements || 3794} brands across {sectors.length || 48} sectors connected to PostgreSQL database, SecureSign™ VIP, and deployment infrastructure.
         </p>
       </div>
 

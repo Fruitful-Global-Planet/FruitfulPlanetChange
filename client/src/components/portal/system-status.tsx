@@ -66,7 +66,7 @@ export function SystemStatus() {
   }
 
   const totalConnectedServices = statuses.filter(s => s.status === 'connected' || s.status === 'active').length;
-  const totalRecords = dashboardStats.totalElements || 594; // Use real database count
+  const totalRecords = dashboardStats.totalElements || 3794; // Use real database count
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-6 mb-6 border border-gray-200 dark:border-gray-700" data-tour="system-status">

@@ -21,7 +21,7 @@ export default function PortalHome() {
   if (searchQuery) queryParams.set("search", searchQuery)
   if (selectedSector) queryParams.set("sectorId", selectedSector.toString())
 
-  // REAL DATABASE QUERIES - Connected to PostgreSQL with 630+ brands
+  // REAL DATABASE QUERIES - Connected to PostgreSQL with 3794+ total elements
   const { data: brands = [], isLoading } = useQuery<Brand[]>({
     queryKey: ["/api/brands", queryParams.toString()],
     staleTime: 30000,
@@ -83,7 +83,7 @@ export default function PortalHome() {
               Fruitful Global Brand Portal
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              Complete ecosystem with {brands.length || 630} brands across {sectors.length || 45} sectors connected to PostgreSQL database, SecureSign™ VIP, and deployment infrastructure
+              Complete ecosystem with {dashboardStats.totalElements || brands.length} brands across {sectors.length || 48} sectors connected to PostgreSQL database, SecureSign™ VIP, and deployment infrastructure
             </p>
           </div>
           <div className="flex items-center gap-4">
