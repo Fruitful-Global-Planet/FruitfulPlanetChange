@@ -113,7 +113,9 @@ export interface IStorage {
   // Payments
   getAllPayments(): Promise<Payment[]>;
   getPayments(): Promise<Payment[]>;
+  getPayment(id: number): Promise<Payment | undefined>;
   createPayment(payment: InsertPayment): Promise<Payment>;
+  updatePayment(id: number, updates: Partial<InsertPayment>): Promise<Payment>;
 
   // Admin Panel Brands
   getAdminPanelBrands(): Promise<AdminPanelBrand[]>;
@@ -423,6 +425,20 @@ export class DatabaseStorage implements IStorage {
     const [payment] = await db
       .insert(payments)
       .values(insertPayment)
+      .returning();
+    return payment;
+  }
+
+  async getPayment(id: number): Promise<Payment | undefined> {
+    const [payment] = await db.select().from(payments).where(eq(payments.id, id));
+    return payment;
+  }
+
+  async updatePayment(id: number, updates: Partial<InsertPayment>): Promise<Payment> {
+    const [payment] = await db
+      .update(payments)
+      .set(updates)
+      .where(eq(payments.id, id))
       .returning();
     return payment;
   }
