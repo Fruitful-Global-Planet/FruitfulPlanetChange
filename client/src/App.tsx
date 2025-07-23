@@ -89,7 +89,11 @@ function PageRouter({ activePage }: { activePage: string }) {
         </div>
       )
     case "sectors":
-      return <SectorList />
+      return (
+        <div className="p-8">
+          <SectorList />
+        </div>
+      )
     case "global-pulse":
       return (
         <div className="p-8">
