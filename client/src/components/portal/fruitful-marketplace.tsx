@@ -84,32 +84,37 @@ export function FruitfulMarketplace() {
   const [sortBy, setSortBy] = useState<string>('trending');
   const [selectedCurrency, setSelectedCurrency] = useState<string>('ZAR');
 
-  // Connect ONLY to authentic repositories - NO FAKE DATA
-  const { data: sectorData } = useQuery({
-    queryKey: ["/api/authentic/sectors"],
+  // Keep your PAID sector dashboard system
+  const { data: sectors = [] } = useQuery({
+    queryKey: ["/api/sectors"],
     retry: false,
   });
 
-  // Extract authentic sectors
-  const sectors = sectorData?.sectors || [];
-
+  // Connect to authentic repositories for additional display
   const { data: repoData } = useQuery({
     queryKey: ["/api/authentic/repositories"],
     retry: false,
   });
 
-  // Extract authentic repositories as brands
-  const brands = repoData?.repositories || [];
+  // Extract authentic repositories as additional data
+  const repositories = repoData?.repositories || [];
+
+  // Keep your paid brands system
+  const { data: brands = [] } = useQuery({
+    queryKey: ["/api/brands"],
+    retry: false,
+  });
 
   const { data: stats } = useQuery({
     queryKey: ["/api/dashboard/stats"],
     retry: false,
   });
 
-  // Calculate totals from AUTHENTIC repository data ONLY
+  // Calculate totals from BOTH your paid system AND authentic repositories
   const totalSectors = sectors.length;
   const totalBrands = brands.length; 
-  const totalNodes = repoData?.totalRepos || brands.length;
+  const totalNodes = repositories.length;
+  const totalRepositories = repoData?.totalRepos || repositories.length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800">
@@ -130,7 +135,7 @@ export function FruitfulMarketplace() {
             >
               <Crown className="h-12 w-12 text-yellow-300" />
               <h1 className="text-5xl font-bold tracking-tight">
-                🌐 Authentic GitHub Repositories by heyns1000
+                🌐 Seedwave Portal + GitHub Integration
               </h1>
               <Crown className="h-12 w-12 text-yellow-300" />
             </motion.div>
@@ -141,7 +146,7 @@ export function FruitfulMarketplace() {
               transition={{ delay: 0.4 }}
               className="text-xl text-blue-100 max-w-3xl mx-auto"
             >
-              Authentic Repositories Only • Real GitHub Data • No AI Fiction
+              Your Paid Sector Dashboard System + Authentic GitHub Repository Integration
             </motion.p>
             
             <motion.div 
@@ -152,11 +157,11 @@ export function FruitfulMarketplace() {
             >
               <div className="flex items-center gap-2">
                 <Package className="h-5 w-5 text-yellow-300" />
-                <span>{totalBrands} Real Repositories</span>
+                <span>{totalBrands} Paid Brands</span>
               </div>
               <div className="flex items-center gap-2">
                 <Zap className="h-5 w-5 text-yellow-300" />
-                <span>{totalNodes} GitHub Projects</span>
+                <span>{totalRepositories} GitHub Repos</span>
               </div>
               <div className="flex items-center gap-2">
                 <Globe className="h-5 w-5 text-yellow-300" />

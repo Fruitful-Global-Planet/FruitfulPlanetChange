@@ -18,13 +18,19 @@ export function DatabaseIntegrationStatus() {
 
   const brands = repoData?.repositories || [];
 
-  const { data: sectorData, isLoading: sectorsLoading } = useQuery({
-    queryKey: ["/api/authentic/sectors"],
+  // Keep your PAID sector dashboard functionality
+  const { data: sectors = [], isLoading: sectorsLoading } = useQuery({
+    queryKey: ["/api/sectors"],
     refetchInterval: 10000,
     retry: false
   });
 
-  const sectors = sectorData?.sectors || [];
+  // Also get authentic repositories for display
+  const { data: sectorData } = useQuery({
+    queryKey: ["/api/authentic/sectors"],
+    refetchInterval: 10000,
+    retry: false
+  });
 
   const { data: systemStatus = [], isLoading: statusLoading } = useQuery<any[]>({
     queryKey: ["/api/system-status"],
@@ -62,11 +68,11 @@ export function DatabaseIntegrationStatus() {
       table: "authentic_repositories"
     },
     {
-      name: "Authentic Sectors",
+      name: "Paid Sector Dashboard",
       count: Array.isArray(sectors) ? sectors.length : 0,
       status: Array.isArray(sectors) && sectors.length > 0 ? "connected" : "disconnected",
-      description: `Real sectors from GitHub repositories with ${Array.isArray(sectors) ? sectors.length : 0} active sectors`,
-      table: "authentic_sectors"
+      description: `Your paid sector dashboard system with ${Array.isArray(sectors) ? sectors.length : 0} active sectors`,
+      table: "sectors"
     },
     {
       name: "System Status",
