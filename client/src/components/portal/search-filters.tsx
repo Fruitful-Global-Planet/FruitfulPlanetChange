@@ -19,7 +19,22 @@ export function SearchFilters({ onSearch, onSectorFilter, selectedSector }: Sear
     queryKey: ["/api/sectors"],
   })
 
-  const { data: stats } = useQuery({
+  const { data: stats } = useQuery<{
+    totalElements: number;
+    coreBrands: number;
+    subNodes?: number;
+    subnodes?: number;
+    sectors: number;
+    integrationTiers?: {
+      tier1: number;
+      tier2: number;
+      tier3: number;
+    };
+    globalRevenue?: number;
+    activeBrands?: number;
+    marketPenetration?: number;
+    revenueGrowth?: number;
+  }>({
     queryKey: ["/api/dashboard/stats"],
   })
 
@@ -123,7 +138,7 @@ export function SearchFilters({ onSearch, onSectorFilter, selectedSector }: Sear
             <div className="text-sm opacity-80">Core Brands</div>
           </div>
           <div className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg p-4 text-white">
-            <div className="text-2xl font-bold">{stats.subnodes.toLocaleString()}</div>
+            <div className="text-2xl font-bold">{(stats.subnodes || stats.subNodes || 0).toLocaleString()}</div>
             <div className="text-sm opacity-80">Subnodes</div>
           </div>
           <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-lg p-4 text-white">

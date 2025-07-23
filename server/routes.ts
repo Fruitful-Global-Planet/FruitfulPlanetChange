@@ -240,32 +240,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Dashboard stats API - includes legal document statistics for 24/7 sync
-  app.get("/api/dashboard/stats", async (req, res) => {
-    try {
-      const brands = await storage.getAllBrands();
-      const sectors = await storage.getAllSectors();
-      const legalDocs = await storage.getLegalDocuments();
-      
-      const coreWands = brands.filter(b => b.isCore).length;
-      const subnodes = brands.filter(b => !b.isCore).length;
-      
-      const stats = {
-        totalElements: brands.length,
-        coreBrands: coreWands,
-        subnodes: subnodes,
-        sectors: sectors.length,
-        legalDocuments: legalDocs.length,
-        activeContracts: legalDocs.filter(d => d.category === 'contracts').length,
-        technicalDocs: legalDocs.filter(d => d.category === 'technical').length,
-        meetingMinutes: legalDocs.filter(d => d.category === 'minutes').length
-      };
-      
-      res.json(stats);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch dashboard stats" });
-    }
-  });
+
 
   // Legal documents endpoints
   app.get("/api/legal-documents", async (req, res) => {
@@ -846,7 +821,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }, 0);
       
       // Calculate real market metrics from database
-      const activeBrands = brands.filter(b => !b.isArchived).length;
+      const activeBrands = brands.filter(b => b.status === 'active').length;
       const marketPenetration = sectorsCount > 0 ? (activeBrands / totalElements) * 100 : 0;
       
       res.json({
@@ -859,12 +834,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           tier2,
           tier3
         },
-        globalRevenue: Math.floor(totalRevenue),
+        globalRevenue: Math.floor(totalRevenue).toString(),
         activeBrands,
         marketPenetration: Math.round(marketPenetration * 10) / 10,
         revenueGrowth: payments.length > 0 ? Math.round((payments.length / 30) * 100) / 100 : 0
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error fetching dashboard stats:", error);
       res.status(500).json({ message: "Failed to fetch dashboard stats" });
     }
