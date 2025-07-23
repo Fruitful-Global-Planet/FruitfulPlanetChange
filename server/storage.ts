@@ -7,6 +7,10 @@ import {
   repositories, 
   payments,
   adminPanelBrands,
+  familyMembers,
+  heritageDocuments,
+  familyEvents,
+  heritageMetrics,
   banimalTransactions,
   charitableDistributions,
   sonicGridConnections,
@@ -31,6 +35,14 @@ import {
   type InsertPayment,
   type AdminPanelBrand,
   type InsertAdminPanelBrand,
+  type FamilyMember,
+  type InsertFamilyMember,
+  type HeritageDocument,
+  type InsertHeritageDocument,
+  type FamilyEvent,
+  type InsertFamilyEvent,
+  type HeritageMetrics,
+  type InsertHeritageMetrics,
   type BanimalTransaction,
   type InsertBanimalTransaction,
   type CharitableDistribution,
@@ -138,6 +150,32 @@ export interface IStorage {
   updateGlobalLogicConfig(config: InsertGlobalLogicConfig): Promise<GlobalLogicConfig>;
   getCosmicMetrics(): Promise<any>;
   seedInterstellarData(): Promise<void>;
+  
+  // Heritage Portal - Family Members
+  getAllFamilyMembers(userId: string): Promise<FamilyMember[]>;
+  getFamilyMember(id: number): Promise<FamilyMember | undefined>;
+  createFamilyMember(member: InsertFamilyMember): Promise<FamilyMember>;
+  updateFamilyMember(id: number, updates: Partial<InsertFamilyMember>): Promise<FamilyMember>;
+  deleteFamilyMember(id: number): Promise<void>;
+  
+  // Heritage Portal - Heritage Documents
+  getAllHeritageDocuments(userId: string): Promise<HeritageDocument[]>;
+  getHeritageDocument(id: number): Promise<HeritageDocument | undefined>;
+  createHeritageDocument(document: InsertHeritageDocument): Promise<HeritageDocument>;
+  updateHeritageDocument(id: number, updates: Partial<InsertHeritageDocument>): Promise<HeritageDocument>;
+  deleteHeritageDocument(id: number): Promise<void>;
+  searchHeritageDocuments(userId: string, query: string): Promise<HeritageDocument[]>;
+  
+  // Heritage Portal - Family Events
+  getAllFamilyEvents(userId: string): Promise<FamilyEvent[]>;
+  getFamilyEvent(id: number): Promise<FamilyEvent | undefined>;
+  createFamilyEvent(event: InsertFamilyEvent): Promise<FamilyEvent>;
+  updateFamilyEvent(id: number, updates: Partial<InsertFamilyEvent>): Promise<FamilyEvent>;
+  deleteFamilyEvent(id: number): Promise<void>;
+  
+  // Heritage Portal - Heritage Metrics
+  getHeritageMetrics(userId: string): Promise<HeritageMetrics | undefined>;
+  updateHeritageMetrics(userId: string, metrics: InsertHeritageMetrics): Promise<HeritageMetrics>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1250,6 +1288,113 @@ export class MemStorage implements IStorage {
       console.log('✅ Interstellar nodes and global config seeded successfully');
     } catch (error) {
       console.error('❌ Failed to seed interstellar data:', error);
+    }
+  }
+
+  // Heritage Portal - Family Members
+  async getAllFamilyMembers(userId: string): Promise<FamilyMember[]> {
+    return await db.select().from(familyMembers).where(eq(familyMembers.userId, userId));
+  }
+
+  async getFamilyMember(id: number): Promise<FamilyMember | undefined> {
+    const [member] = await db.select().from(familyMembers).where(eq(familyMembers.id, id));
+    return member;
+  }
+
+  async createFamilyMember(member: InsertFamilyMember): Promise<FamilyMember> {
+    const [newMember] = await db.insert(familyMembers).values(member).returning();
+    return newMember;
+  }
+
+  async updateFamilyMember(id: number, updates: Partial<InsertFamilyMember>): Promise<FamilyMember> {
+    const [updated] = await db.update(familyMembers).set(updates).where(eq(familyMembers.id, id)).returning();
+    return updated;
+  }
+
+  async deleteFamilyMember(id: number): Promise<void> {
+    await db.delete(familyMembers).where(eq(familyMembers.id, id));
+  }
+
+  // Heritage Portal - Heritage Documents
+  async getAllHeritageDocuments(userId: string): Promise<HeritageDocument[]> {
+    return await db.select().from(heritageDocuments).where(eq(heritageDocuments.userId, userId));
+  }
+
+  async getHeritageDocument(id: number): Promise<HeritageDocument | undefined> {
+    const [document] = await db.select().from(heritageDocuments).where(eq(heritageDocuments.id, id));
+    return document;
+  }
+
+  async createHeritageDocument(document: InsertHeritageDocument): Promise<HeritageDocument> {
+    const [newDocument] = await db.insert(heritageDocuments).values(document).returning();
+    return newDocument;
+  }
+
+  async updateHeritageDocument(id: number, updates: Partial<InsertHeritageDocument>): Promise<HeritageDocument> {
+    const [updated] = await db.update(heritageDocuments).set(updates).where(eq(heritageDocuments.id, id)).returning();
+    return updated;
+  }
+
+  async deleteHeritageDocument(id: number): Promise<void> {
+    await db.delete(heritageDocuments).where(eq(heritageDocuments.id, id));
+  }
+
+  async searchHeritageDocuments(userId: string, query: string): Promise<HeritageDocument[]> {
+    return await db.select().from(heritageDocuments)
+      .where(eq(heritageDocuments.userId, userId))
+      .where(
+        or(
+          ilike(heritageDocuments.title, `%${query}%`),
+          ilike(heritageDocuments.description, `%${query}%`),
+          ilike(heritageDocuments.ancestorName, `%${query}%`)
+        )
+      );
+  }
+
+  // Heritage Portal - Family Events
+  async getAllFamilyEvents(userId: string): Promise<FamilyEvent[]> {
+    return await db.select().from(familyEvents).where(eq(familyEvents.userId, userId));
+  }
+
+  async getFamilyEvent(id: number): Promise<FamilyEvent | undefined> {
+    const [event] = await db.select().from(familyEvents).where(eq(familyEvents.id, id));
+    return event;
+  }
+
+  async createFamilyEvent(event: InsertFamilyEvent): Promise<FamilyEvent> {
+    const [newEvent] = await db.insert(familyEvents).values(event).returning();
+    return newEvent;
+  }
+
+  async updateFamilyEvent(id: number, updates: Partial<InsertFamilyEvent>): Promise<FamilyEvent> {
+    const [updated] = await db.update(familyEvents).set(updates).where(eq(familyEvents.id, id)).returning();
+    return updated;
+  }
+
+  async deleteFamilyEvent(id: number): Promise<void> {
+    await db.delete(familyEvents).where(eq(familyEvents.id, id));
+  }
+
+  // Heritage Portal - Heritage Metrics
+  async getHeritageMetrics(userId: string): Promise<HeritageMetrics | undefined> {
+    const [metrics] = await db.select().from(heritageMetrics).where(eq(heritageMetrics.userId, userId));
+    return metrics;
+  }
+
+  async updateHeritageMetrics(userId: string, metricsData: InsertHeritageMetrics): Promise<HeritageMetrics> {
+    const existing = await this.getHeritageMetrics(userId);
+    
+    if (existing) {
+      const [updated] = await db.update(heritageMetrics)
+        .set({ ...metricsData, updatedAt: new Date() })
+        .where(eq(heritageMetrics.userId, userId))
+        .returning();
+      return updated;
+    } else {
+      const [created] = await db.insert(heritageMetrics)
+        .values({ ...metricsData, userId })
+        .returning();
+      return created;
     }
   }
 }

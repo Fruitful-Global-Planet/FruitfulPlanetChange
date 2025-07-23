@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, jsonb, varchar, timestamp, index, decimal, numeric } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, jsonb, varchar, timestamp, index, decimal, numeric, date } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { FRUITFUL_CRATE_DANCE_ECOSYSTEM, FRUITFUL_CRATE_DANCE_SECTORS } from "./fruitful-crate-dance-ecosystem";
@@ -656,3 +656,75 @@ export type Payment = typeof payments.$inferSelect;
 export type InsertPayment = typeof payments.$inferInsert;
 export type AdminPanelBrand = typeof adminPanelBrands.$inferSelect;
 export type InsertAdminPanelBrand = typeof adminPanelBrands.$inferInsert;
+
+// AncestorTag™ Heritage Portal Tables
+export const familyMembers = pgTable("family_members", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  name: text("name").notNull(),
+  relationship: text("relationship"), // "father", "grandmother", etc.
+  dateOfBirth: date("date_of_birth"),
+  dateOfDeath: date("date_of_death"),
+  currentLocation: text("current_location"),
+  birthLocation: text("birth_location"),
+  metadata: jsonb("metadata"), // additional info like occupation, notes
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const heritageDocuments = pgTable("heritage_documents", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  familyMemberId: integer("family_member_id").references(() => familyMembers.id),
+  title: text("title").notNull(),
+  description: text("description"),
+  contentType: text("content_type").notNull(), // "Document", "Oral History", "Ritual Description", "Artifact", "Visual Record"
+  tags: jsonb("tags").$type<string[]>().default([]),
+  fileUrl: text("file_url"), // URL to stored file
+  ancestorName: text("ancestor_name"), // for filtering
+  dateRecorded: date("date_recorded"),
+  location: text("location"),
+  culturalSignificance: text("cultural_significance"),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const familyEvents = pgTable("family_events", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  eventName: text("event_name").notNull(),
+  eventDate: date("event_date").notNull(),
+  eventTime: text("event_time"),
+  description: text("description"),
+  participants: jsonb("participants").$type<string[]>().default([]), // family member IDs
+  isRecurring: boolean("is_recurring").default(false),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const heritageMetrics = pgTable("heritage_metrics", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  totalTags: integer("total_tags").default(0),
+  uniqueAncestors: integer("unique_ancestors").default(0),
+  documentsTagged: integer("documents_tagged").default(0),
+  oralHistories: integer("oral_histories").default(0),
+  ritualsTagged: integer("rituals_tagged").default(0),
+  artifactsPreserved: integer("artifacts_preserved").default(0),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Heritage Portal insert schemas
+export const insertFamilyMemberSchema = createInsertSchema(familyMembers).omit({ id: true, createdAt: true });
+export const insertHeritageDocumentSchema = createInsertSchema(heritageDocuments).omit({ id: true, createdAt: true });
+export const insertFamilyEventSchema = createInsertSchema(familyEvents).omit({ id: true, createdAt: true });
+export const insertHeritageMetricsSchema = createInsertSchema(heritageMetrics).omit({ id: true, updatedAt: true });
+
+// Heritage Portal types
+export type FamilyMember = typeof familyMembers.$inferSelect;
+export type InsertFamilyMember = z.infer<typeof insertFamilyMemberSchema>;
+export type HeritageDocument = typeof heritageDocuments.$inferSelect;
+export type InsertHeritageDocument = z.infer<typeof insertHeritageDocumentSchema>;
+export type FamilyEvent = typeof familyEvents.$inferSelect;
+export type InsertFamilyEvent = z.infer<typeof insertFamilyEventSchema>;
+export type HeritageMetrics = typeof heritageMetrics.$inferSelect;
+export type InsertHeritageMetrics = z.infer<typeof insertHeritageMetricsSchema>;

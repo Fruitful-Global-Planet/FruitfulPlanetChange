@@ -1467,6 +1467,217 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Heritage Portal API Routes - Family Members
+  app.get("/api/heritage/family-members", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+      
+      const familyMembers = await storage.getAllFamilyMembers(userId);
+      res.json(familyMembers);
+    } catch (error) {
+      console.error("Error fetching family members:", error);
+      res.status(500).json({ error: "Failed to fetch family members" });
+    }
+  });
+
+  app.post("/api/heritage/family-members", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+      
+      const memberData = { ...req.body, userId };
+      const newMember = await storage.createFamilyMember(memberData);
+      res.json(newMember);
+    } catch (error) {
+      console.error("Error creating family member:", error);
+      res.status(500).json({ error: "Failed to create family member" });
+    }
+  });
+
+  app.put("/api/heritage/family-members/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updates = req.body;
+      const updatedMember = await storage.updateFamilyMember(id, updates);
+      res.json(updatedMember);
+    } catch (error) {
+      console.error("Error updating family member:", error);
+      res.status(500).json({ error: "Failed to update family member" });
+    }
+  });
+
+  app.delete("/api/heritage/family-members/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteFamilyMember(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting family member:", error);
+      res.status(500).json({ error: "Failed to delete family member" });
+    }
+  });
+
+  // Heritage Portal API Routes - Heritage Documents
+  app.get("/api/heritage/documents", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+      
+      const query = req.query.search as string;
+      let documents;
+      
+      if (query) {
+        documents = await storage.searchHeritageDocuments(userId, query);
+      } else {
+        documents = await storage.getAllHeritageDocuments(userId);
+      }
+      
+      res.json(documents);
+    } catch (error) {
+      console.error("Error fetching heritage documents:", error);
+      res.status(500).json({ error: "Failed to fetch heritage documents" });
+    }
+  });
+
+  app.post("/api/heritage/documents", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+      
+      const documentData = { ...req.body, userId };
+      const newDocument = await storage.createHeritageDocument(documentData);
+      res.json(newDocument);
+    } catch (error) {
+      console.error("Error creating heritage document:", error);
+      res.status(500).json({ error: "Failed to create heritage document" });
+    }
+  });
+
+  app.put("/api/heritage/documents/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updates = req.body;
+      const updatedDocument = await storage.updateHeritageDocument(id, updates);
+      res.json(updatedDocument);
+    } catch (error) {
+      console.error("Error updating heritage document:", error);
+      res.status(500).json({ error: "Failed to update heritage document" });
+    }
+  });
+
+  app.delete("/api/heritage/documents/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteHeritageDocument(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting heritage document:", error);
+      res.status(500).json({ error: "Failed to delete heritage document" });
+    }
+  });
+
+  // Heritage Portal API Routes - Family Events
+  app.get("/api/heritage/events", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+      
+      const events = await storage.getAllFamilyEvents(userId);
+      res.json(events);
+    } catch (error) {
+      console.error("Error fetching family events:", error);
+      res.status(500).json({ error: "Failed to fetch family events" });
+    }
+  });
+
+  app.post("/api/heritage/events", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+      
+      const eventData = { ...req.body, userId };
+      const newEvent = await storage.createFamilyEvent(eventData);
+      res.json(newEvent);
+    } catch (error) {
+      console.error("Error creating family event:", error);
+      res.status(500).json({ error: "Failed to create family event" });
+    }
+  });
+
+  app.put("/api/heritage/events/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updates = req.body;
+      const updatedEvent = await storage.updateFamilyEvent(id, updates);
+      res.json(updatedEvent);
+    } catch (error) {
+      console.error("Error updating family event:", error);
+      res.status(500).json({ error: "Failed to update family event" });
+    }
+  });
+
+  app.delete("/api/heritage/events/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteFamilyEvent(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting family event:", error);
+      res.status(500).json({ error: "Failed to delete family event" });
+    }
+  });
+
+  // Heritage Portal API Routes - Heritage Metrics
+  app.get("/api/heritage/metrics", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+      
+      const metrics = await storage.getHeritageMetrics(userId);
+      res.json(metrics || {
+        totalTags: 0,
+        uniqueAncestors: 0,
+        documentsTagged: 0,
+        oralHistories: 0,
+        ritualsTagged: 0,
+        artifactsPreserved: 0
+      });
+    } catch (error) {
+      console.error("Error fetching heritage metrics:", error);
+      res.status(500).json({ error: "Failed to fetch heritage metrics" });
+    }
+  });
+
+  app.put("/api/heritage/metrics", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: "User not authenticated" });
+      }
+      
+      const updatedMetrics = await storage.updateHeritageMetrics(userId, req.body);
+      res.json(updatedMetrics);
+    } catch (error) {
+      console.error("Error updating heritage metrics:", error);
+      res.status(500).json({ error: "Failed to update heritage metrics" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
