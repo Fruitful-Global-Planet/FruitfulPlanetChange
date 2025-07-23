@@ -72,6 +72,7 @@ export interface IStorage {
   getAllSectors(): Promise<Sector[]>;
   getSector(id: number): Promise<Sector | undefined>;
   createSector(sector: InsertSector): Promise<Sector>;
+  updateSector(id: number, updates: Partial<InsertSector>): Promise<Sector>;
   
   // Brands
   getAllBrands(): Promise<Brand[]>;
@@ -79,6 +80,7 @@ export interface IStorage {
   getBrandsBySector(sectorId: number): Promise<Brand[]>;
   getBrand(id: number): Promise<Brand | undefined>;
   createBrand(brand: InsertBrand): Promise<Brand>;
+  updateBrand(id: number, updates: Partial<InsertBrand>): Promise<Brand>;
   
   // System Status
   getAllSystemStatus(): Promise<SystemStatus[]>;
@@ -719,6 +721,24 @@ export class DatabaseStorage implements IStorage {
     }]).returning();
 
     return newConfig;
+  }
+
+  async updateSector(id: number, updates: Partial<InsertSector>): Promise<Sector> {
+    const [sector] = await db
+      .update(sectors)
+      .set(updates)
+      .where(eq(sectors.id, id))
+      .returning();
+    return sector;
+  }
+
+  async updateBrand(id: number, updates: Partial<InsertBrand>): Promise<Brand> {
+    const [brand] = await db
+      .update(brands)
+      .set(updates)
+      .where(eq(brands.id, id))
+      .returning();
+    return brand;
   }
 }
 
