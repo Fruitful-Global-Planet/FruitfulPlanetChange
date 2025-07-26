@@ -300,11 +300,12 @@ function App() {
           <OnboardingProvider>
             <div id="main-app-wrapper" style={{ 
               minHeight: '100vh', 
-              backgroundColor: '#f9fafb', 
+              backgroundColor: '#ffffff', 
               width: '100%', 
               position: 'relative',
               display: 'block',
-              visibility: 'visible'
+              visibility: 'visible',
+              zIndex: 1
             }}>
 
               <AuthenticatedApp activePage={activePage} setActivePage={setActivePage} />
@@ -325,7 +326,7 @@ function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; s
   if (isLoading) {
     console.log("⏳ Showing loading spinner");
     return (
-      <div className="flex items-center justify-center min-h-screen bg-white">
+      <div className="flex items-center justify-center min-h-screen bg-white" style={{ backgroundColor: '#ffffff', minHeight: '100vh', width: '100%', zIndex: 999 }}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading Seedwave Portal...</p>
@@ -342,10 +343,10 @@ function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; s
   console.log("✅ Rendering main app UI");
   
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900" style={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
+    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900" style={{ display: 'flex', minHeight: '100vh', width: '100%', backgroundColor: '#f9fafb', position: 'relative', zIndex: 1 }}>
       <div className="flex flex-1" style={{ flex: 1, display: 'flex' }}>
         <Sidebar activePage={activePage} setActivePage={setActivePage} />
-        <main className="flex-1 ml-0 md:ml-80 transition-all duration-300" style={{ flex: 1, minHeight: '100vh' }}>
+        <main className="flex-1 ml-0 md:ml-80 transition-all duration-300" style={{ flex: 1, minHeight: '100vh', backgroundColor: '#ffffff', position: 'relative' }}>
           <PageRouter activePage={activePage} />
         </main>
       </div>
