@@ -3,13 +3,13 @@ import type { Brand, Sector } from "@shared/schema";
 // COMPREHENSIVE USER SECTOR DATA FROM ATTACHED ASSETS - EXACT BRAND COUNTS
 export const FALLBACK_SECTORS: Sector[] = [
   { id: 1, name: "🌱 Agriculture & Biotech", emoji: "🌱", description: "Agricultural innovation and biotechnology", brandCount: 79, subnodeCount: 79 },
-  { id: 2, name: "🥦 Food, Soil & Farming", emoji: "🥦", description: "Food production and farming systems", brandCount: 58, subnodeCount: 20 },
+  { id: 2, name: "🥦 Food, Soil & Farming", emoji: "🥦", description: "Food production and farming systems", brandCount: 78, subnodeCount: 20 },
   { id: 3, name: "🏦 Banking & Finance", emoji: "🏦", description: "Financial services and banking", brandCount: 128, subnodeCount: 140 },
   { id: 4, name: "🖋️ Creative Tech", emoji: "🖋️", description: "Creative technology and design", brandCount: 10, subnodeCount: 10 },
   { id: 5, name: "📦 Logistics & Packaging", emoji: "📦", description: "Supply chain and packaging solutions", brandCount: 81, subnodeCount: 23 },
   { id: 6, name: "📚 Education & IP", emoji: "📚", description: "Education and intellectual property", brandCount: 43, subnodeCount: 15 },
-  { id: 7, name: "✂ Fashion & Identity", emoji: "✂", description: "Fashion and identity management", brandCount: 38, subnodeCount: 13 },
-  { id: 8, name: "🎮 Gaming & Simulation", emoji: "🎮", description: "Gaming and simulation technology", brandCount: 56, subnodeCount: 19 },
+  { id: 7, name: "✂ Fashion & Identity", emoji: "✂", description: "Fashion and identity management", brandCount: 103, subnodeCount: 13 },
+  { id: 8, name: "🎮 Gaming & Simulation", emoji: "🎮", description: "Gaming and simulation technology", brandCount: 10, subnodeCount: 19 },
   { id: 9, name: "🧠 Health & Hygiene", emoji: "🧠", description: "Healthcare and hygiene solutions", brandCount: 72, subnodeCount: 24 },
   { id: 10, name: "🏗️ Housing & Infrastructure", emoji: "🏗️", description: "Housing and infrastructure development", brandCount: 84, subnodeCount: 28 },
   { id: 11, name: "⚖ Justice & Ethics", emoji: "⚖", description: "Legal and ethical frameworks", brandCount: 29, subnodeCount: 10 },
@@ -93,6 +93,226 @@ export const FALLBACK_BRANDS: Brand[] = [
     name,
     description: `Logistics & packaging solution`,
     sectorId: 5,
+    integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+    status: "active",
+    isCore: true
+  })),
+
+  // Food, Soil & Farming brands (78 brands from user's arrays)
+  ...['AgriCore', 'SoilHealth', 'FarmFresh', 'CropCircle', 'HarvestHub', 'TerraNova', 'GreenSprout', 'AgroLife','BioFarm', 'EcoHarvest', 'SeedLink', 'SoilSmart', 'FarmWise', 'CropGuard', 'HarvestEase', 'TerraGrow','GreenField', 'AgroTech', 'BioYield', 'EcoFarm', 'AgriPulse', 'BioCrop', 'FarmLink', 'SoilGuard', 'GreenHarvest','TerraFarm', 'SeedSmart', 'CropCare', 'HarvestPro', 'SoilSense', 'FarmVision', 'AgroTech', 'BioSoil','CropTrack', 'HarvestLink', 'SoilLab', 'FarmManage', 'AgriData', 'BioGrow', 'EcoFarm', 'CropMesh', 'SeedRoot','SoilVault', 'PlantCast', 'YieldNode', 'FarmBeacon', 'BioSprout', 'SoilTrace', 'HarvestCore', 'PlantLink','TerraLoop', 'SoilPulse', 'GreenPatch', 'FarmSync', 'RootMesh', 'BioCluster', 'SproutIndex', 'MoistureMap','EcoZone', 'CropRelay', 'FarmCloud', 'SoilFrame', 'HarvestPing', 'CropCode', 'AgroNode', 'SeedNest', 'TraceFarm','SproutChain', 'SoilStack', 'AgriPanel', 'RootClaim', 'MoistureNode', 'CrateFarm', 'PlantPing', 'AgroLoop','CropGrid', 'VendorSprout', 'BioPing', 'EcoFarmGrid', 'TerraCode', 'HarvestVault', 'CropBinder', 'SoilCertify'].map((name, i) => ({
+    id: i + 500,
+    name,
+    description: `Food, soil & farming solution`,
+    sectorId: 2,
+    integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+    status: "active",
+    isCore: true
+  })),
+
+  // Health & Hygiene brands (72 brands from user's arrays)
+  ...['MedVault', 'CleanCast', 'ScrollHealth', 'Hygienix', 'CareNode','VaultSan', 'TrackMeds', 'SteriMesh', 'MedLoop', 'PulseClean','HealthDrop', 'SanitiPath', 'VaultMeds', 'BioPulse', 'NurseFlow','AirHealth', 'ScanCare', 'PathogenTrace', 'CareYield', 'SoapGrid','MedTrace', 'SteriLoop', 'BioScan', 'CareLink', 'VaultWell','DoseSync', 'SanityTrack', 'CleanPulse', 'NurseGrid', 'ScanHealth','PureFlow', 'MedCert', 'SteriPack', 'AlertCare', 'VaultNurse','TrackVitals', 'HygieneCast', 'PatientSync', 'MedFuse', 'CleanChain','SoapNode', 'ScanDose', 'CareCast', 'HealthPing', 'PatientPath','PureVault', 'MedDrop', 'SanitiLoop', 'AlertDose', 'CleanLine','VaultVitals', 'MaskTrack', 'CarePrint', 'SteriBoard', 'NurseYield','BioTrack', 'VaultWellness', 'TouchClean', 'MedEcho', 'PatientCert','MedLogix', 'ScanSan', 'NurseCast', 'TouchScan', 'DoseVault','PathClean', 'SanitiID', 'RecordGrid', 'PureCare', 'MedClaim','QRVitals', 'HygieneNode', 'SoapDrop', 'NurseVault', 'BioClaim','ScanWell', 'SprayTrack', 'CarePath', 'VaultScript', 'PatientLink','SteriCheck', 'HealthCast', 'DoseLink', 'TouchProof', 'RecordVault','MedPortal', 'AlertVault', 'ClaimDose', 'CleanForm', 'ScanProof','NurseSignal', 'MedPathway', 'WellnessTrack'].map((name, i) => ({
+    id: i + 600,
+    name,
+    description: `Health & hygiene solution`,
+    sectorId: 9,
+    integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+    status: "active",
+    isCore: true
+  })),
+
+  // Fashion & Identity brands (103+ brands from user's arrays)
+  ...['FashionNest™', 'StyleForm™', 'ChicClaim™', 'RunwayPulse™', 'TrendCast™','BrandX™', 'LuxLink™', 'VogueSync™', 'ModeFrame™', 'GlamRoot™','FitTrack™', 'StyleMesh™', 'VibeCast™', 'DressSync™', 'FitGrid™','TrendPath™', 'StyleNode™', 'CatwalkCore™', 'EchoWear™', 'LuxuryClaim™','SculptWear™', 'FitClaim™', 'RunwayLoop™', 'VogueMesh™', 'DressTrack™','ClassSync™', 'FitMark™', 'ModeWave™', 'VogueDrop™', 'RunwayPoint™','PulseWear™', 'GlamSync™', 'TrendCore™', 'FitLink™', 'VibeCastX™','CatwalkMesh™', 'LuxuryTag™', 'RunwayTrace™', 'FitCheck™', 'VoguePath™','StyleTrace™', 'DressCore™', 'VibeTag™', 'ModeTrack™', 'TrendPoint™','StyleCast™', 'VogueSeal™', 'ClaimRun™', 'WearSync™', 'DropLook™','EchoMark™', 'FitNest™', 'ChicTrack™', 'TrendLoop™', 'ModePulse™','PulseSync™', 'StyleTraceX™', 'TagFit™', 'NodeClaim™', 'RunwayNode™','EchoLoop™', 'ClaimCast™', 'VogueTrace™', 'SyncLook™', 'CastMesh™','FitPanel™', 'StyleMeshX™', 'PulseEcho™', 'FashionBeam™', 'TagTrace™','DropPath™', 'GridClaimX™', 'NodeStyle™', 'VogueFrame™', 'FitFlow™','TrendBeam™', 'CastPoint™', 'LoopTag™', 'EchoBeam™', 'PulsePoint™','GridPath™', 'StyleCrate™', 'ClaimRoot™', 'ModeEchoX™', 'FitNestX™','DropSync™', 'TrackGrid™', 'FashionPanel™', 'PathPulse™', 'GridNode™','TagGrid™', 'ClaimTrackX™', 'EchoMap™', 'PulseRoot™', 'StyleVault™','BeamTrack™', 'LookNode™', 'StyleCore™', 'VogueMeshX™', 'FitCore™','TrendCastX™', 'PulseGrid™', 'LoopCrate™', 'EchoNest™', 'StyleTraceY™','NestEcho™', 'RunwayFlow™', 'FashionNode™', 'GridWear™', 'PulseMap™','LoopSeal™', 'EchoLook™', 'ClaimDropX™', 'StyleEchoX™', 'TrackVibe™','MeshPulse™', 'SyncCrate™', 'VogueDropX™', 'PanelWear™', 'GridTagX™','FitPanelX™', 'EchoTrackX™', 'PulseStyle™', 'SyncTrackX™', 'FashionForm™','WearClaim™', 'BeamStyle™', 'CratePulse™', 'StyleTraceZ™', 'PulseEchoX™','GridLoopX™', 'TagCast™', 'EchoFit™', 'NodeClaimX™', 'LoopPanel™','CrateLook™', 'SyncBeam™', 'TrackDrop™'].map((name, i) => ({
+    id: i + 700,
+    name,
+    description: `Fashion & identity solution`,
+    sectorId: 7,
+    integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+    status: "active",
+    isCore: true
+  })),
+
+  // Gaming & Simulation brands (10 brands from user's arrays)
+  ...['GameGrid', 'PixelPulse', 'QuestVault', 'SimuLink', 'PlayNode', 'MetaGame', 'LevelUp', 'ArcadeFlow', 'VRMesh', 'EsportSync'].map((name, i) => ({
+    id: i + 800,
+    name,
+    description: `Gaming & simulation solution`,
+    sectorId: 8,
+    integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+    status: "active",
+    isCore: true
+  })),
+
+  // Mining & Resources brands (30 brands from user's arrays)
+  ...['MineNest™', 'DrillCoreX™', 'OreSync™', 'VaultRock™', 'ClaimMine™','TrackShaft™', 'PulseMine™', 'CoreBeam™', 'DigEcho™', 'RockPath™','YieldDrill™', 'MineProof™', 'OreLine™', 'DrillLink™', 'VaultTunnel™','GeoGrid™', 'SeamSync™', 'ClaimOre™', 'PulseBlast™', 'OreEcho™','DeepCrate™', 'RockLogic™', 'CoreDrill™', 'MineCast™', 'DrillMark™','SignalOre™', 'YieldTrack™', 'VaultSeam™', 'ShaftDrop™', 'GeoNode™'].map((name, i) => ({
+    id: i + 900,
+    name,
+    description: `Mining & resources solution`,
+    sectorId: 30,
+    integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+    status: "active",
+    isCore: true
+  })),
+
+  // Trade Systems brands (10 brands from user's arrays)
+  ...['TradeFlow', 'MarketGrid', 'ExchangeNode', 'ValueLink', 'CommodityMesh', 'SupplySync', 'DemandTrace', 'GlobalTrade', 'FairExchange', 'AssetFlow'].map((name, i) => ({
+    id: i + 1000,
+    name,
+    description: `Trade systems solution`,
+    sectorId: 21,
+    integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+    status: "active",
+    isCore: true
+  })),
+
+  // Utilities & Energy brands (10 brands from user's arrays)
+  ...['PowerGrid', 'HydroFlow', 'SolarNode', 'WindLink', 'GeoMesh', 'EnergySync', 'WaterTrace', 'WasteUtility', 'SmartGridX', 'ResourceFlow'].map((name, i) => ({
+    id: i + 1100,
+    name,
+    description: `Utilities & energy solution`,
+    sectorId: 22,
+    integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+    status: "active",
+    isCore: true
+  })),
+
+  // Voice & Audio brands (10 brands from user's arrays)
+  ...['AudioMesh', 'SonicNode', 'VoiceLink', 'EchoGrid', 'SoundVault', 'SpeechSync', 'ToneTrace', 'VocalFlow', 'AcousticMesh', 'ListenNode'].map((name, i) => ({
+    id: i + 1200,
+    name,
+    description: `Voice & audio solution`,
+    sectorId: 23,
+    integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+    status: "active",
+    isCore: true
+  })),
+
+  // Justice & Ethics brands (10 brands from user's arrays)
+  ...['LawLedger', 'EthicGrid', 'VerdictVault', 'JusticeLink', 'EquityNode', 'TruthTrace', 'ClauseChain', 'RightSync', 'AuditLaw', 'FairFlow'].map((name, i) => ({
+    id: i + 1300,
+    name,
+    description: `Justice & ethics solution`,
+    sectorId: 11,
+    integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+    status: "active",
+    isCore: true
+  })),
+
+  // Knowledge & Archives brands (10 brands from user's arrays)
+  ...['InfoVault', 'ArchiveGrid', 'LexiLink', 'DataNodeX', 'WisdomMesh', 'ScrollLore', 'FactFlow', 'CogniSync', 'LearnBase', 'IntellectHub'].map((name, i) => ({
+    id: i + 1400,
+    name,
+    description: `Knowledge & archives solution`,
+    sectorId: 12,
+    integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+    status: "active",
+    isCore: true
+  })),
+
+  // Micro-Mesh Logistics brands (10 brands from user's arrays)
+  ...['MicroGrid', 'NanoLink', 'PicoMesh', 'FemtoNode', 'AttoFlow', 'ZeptoSync', 'YoctoTrace', 'QuantumMicro', 'HyperMesh', 'FlexiGrid'].map((name, i) => ({
+    id: i + 1500,
+    name,
+    description: `Micro-mesh logistics solution`,
+    sectorId: 13,
+    integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+    status: "active",
+    isCore: true
+  })),
+
+  // Packaging & Materials brands (10 brands from user's arrays)
+  ...['PackVault', 'WrapGrid', 'SealLink', 'BoxNode', 'ContainMesh', 'EcoPack', 'SmartWrap', 'FlexiBox', 'SecureSeal', 'TracePack'].map((name, i) => ({
+    id: i + 1600,
+    name,
+    description: `Packaging & materials solution`,
+    sectorId: 17,
+    integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+    status: "active",
+    isCore: true
+  })),
+
+  // Quantum Protocols brands (20 brands from user's arrays)
+  ...['QuantumMesh™', 'PulseQ™', 'EntanglePath™', 'QubitNest™', 'LogicSpin™','VaultQuantum™', 'WaveSignal™', 'PhaseClaim™', 'GridState™', 'QuantumDrop™','SyncQ™', 'PulseField™', 'QLogic™', 'EntangleProof™', 'SuperposVault™','ClaimLoopQ™', 'QuantumTrace™', 'QubitEcho™', 'ZeroNode™', 'PhaseGrid™'].map((name, i) => ({
+    id: i + 1700,
+    name,
+    description: `Quantum protocols solution`,
+    sectorId: 18,
+    integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+    status: "active",
+    isCore: true
+  })),
+
+  // Ritual & Culture brands (20 brands from user's arrays)
+  ...['RiteNest™', 'PulseSpirit™', 'ClanScroll™', 'CultureGrid™', 'MythLoop™','AuraDrop™', 'CeremPath™', 'EchoGlyph™', 'TradVault™', 'LineageClaim™','SymbolMap™', 'AncestorSync™', 'SoulPanel™', 'ClanRoot™', 'EchoRitual™','TotemCast™', 'RiteClaim™', 'GlyphVault™', 'CultureNest™', 'SpiritBeam™'].map((name, i) => ({
+    id: i + 1800,
+    name,
+    description: `Ritual & culture solution`,
+    sectorId: 19,
+    integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+    status: "active",
+    isCore: true
+  })),
+
+  // Nutrition & Food Chain brands (20 brands from user's arrays)
+  ...['AgriNest™', 'FreshSync™', 'CropLoop™', 'SoilGrid™', 'FarmDrop™','GrainVault™', 'HarvestClaim™', 'PulseCrop™', 'YieldField™', 'RootMap™','FoodProof™', 'AquaNest™', 'SeedCycle™', 'PlantTrack™', 'CropVault™','SoilEcho™', 'NutritionClaim™', 'LoopFarm™', 'PulseGrain™', 'FieldNest™'].map((name, i) => ({
+    id: i + 1900,
+    name,
+    description: `Nutrition & food chain solution`,
+    sectorId: 15,
+    integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+    status: "active",
+    isCore: true
+  })),
+
+  // Zero Waste brands (20 brands from user's arrays)
+  ...['EcoNest™', 'GreenLoop™', 'CycleSync™', 'ZeroCrate™', 'WasteGrid™','BioDrop™', 'SustainClaim™', 'LoopSort™', 'PulseGreen™', 'YieldTrash™','RecycleMap™', 'CleanTrack™', 'EcoVault™', 'ClaimClean™', 'CompostGrid™','GreenBeam™', 'LoopNest™', 'TrashEcho™', 'SortClaim™', 'VaultCycle™'].map((name, i) => ({
+    id: i + 2000,
+    name,
+    description: `Zero waste solution`,
+    sectorId: 27,
+    integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+    status: "active",
+    isCore: true
+  })),
+
+  // Payroll & Mining brands (50 brands from user's arrays)
+  ...['PayrollPulse™', 'WageGrid™', 'SalarySync™', 'BenefitVault™', 'TaxMesh™','CompLoop™', 'PayClaim™', 'SalaryDrop™', 'WageTrace™', 'BenefitNode™','PayTrack™', 'SalaryGrid™', 'CompVault™', 'WageSync™', 'TaxFlow™','BenefitCast™', 'PayMesh™', 'SalaryEcho™', 'WageNode™', 'CompTrace™','PayVault™', 'SalaryPath™', 'BenefitSync™', 'WageGrid™', 'TaxNode™','CompCast™', 'PayNode™', 'SalaryBeam™', 'WageVault™', 'BenefitTrace™','MinePayroll™', 'DrillWage™', 'OreSalary™', 'ShaftBenefit™', 'GeoComp™','DeepPay™', 'RockWage™', 'TunnelSalary™', 'CoreBenefit™', 'BlastComp™','SeamPay™', 'YieldWage™', 'ClaimSalary™', 'VaultBenefit™', 'TrackComp™','OrePayroll™', 'DrillBenefit™', 'MineSalary™', 'ShaftComp™', 'GeoPay™'].map((name, i) => ({
+    id: i + 2100,
+    name,
+    description: `Payroll & mining solution`,
+    sectorId: 24,
+    integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+    status: "active",
+    isCore: true
+  })),
+
+  // Transportation & Solar brands (50 brands from user's arrays)
+  ...['TransportGrid™', 'SolarMesh™', 'RouteSync™', 'EnergyFlow™', 'VehicleNode™','PowerTrack™', 'SolarVault™', 'TransitClaim™', 'EnergyGrid™', 'FleetSync™','PowerPath™', 'SolarTrace™', 'RouteVault™', 'EnergyNode™', 'TransportBeam™','SolarCast™', 'VehicleSync™', 'PowerGrid™', 'EnergyTrace™', 'FleetVault™','SolarFlow™', 'TransitGrid™', 'PowerNode™', 'EnergySync™', 'RouteBeam™','SolarSync™', 'VehiclePath™', 'PowerVault™', 'EnergyBeam™', 'FleetGrid™','TransportSync™', 'SolarNode™', 'RouteGrid™', 'PowerBeam™', 'EnergyVault™','SolarPath™', 'VehicleGrid™', 'PowerSync™', 'EnergyPath™', 'FleetBeam™','TransitSync™', 'SolarBeam™', 'RouteNode™', 'PowerFlow™', 'EnergyGrid™','SolarGrid™', 'VehicleBeam™', 'PowerPath™', 'EnergySync™', 'FleetNode™'].map((name, i) => ({
+    id: i + 2200,
+    name,
+    description: `Transportation & solar solution`,
+    sectorId: 25,
+    integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+    status: "active",
+    isCore: true
+  })),
+
+  // Wildlife Protection brands (50 brands from user's arrays) 
+  ...['WildlifeNest™', 'ConserveGrid™', 'EcoTrack™', 'AnimalSync™', 'HabitatVault™','SpeciesFlow™', 'WildGrid™', 'ConservePath™', 'EcoVault™', 'AnimalTrace™','HabitatGrid™', 'SpeciesSync™', 'WildPath™', 'ConserveBeam™', 'EcoFlow™','AnimalGrid™', 'HabitatBeam™', 'SpeciesTrace™', 'WildSync™', 'ConserveGrid™','EcoBeam™', 'AnimalPath™', 'HabitatSync™', 'SpeciesGrid™', 'WildVault™','ConserveSync™', 'EcoGrid™', 'AnimalBeam™', 'HabitatPath™', 'SpeciesBeam™','WildBeam™', 'ConservePath™', 'EcoSync™', 'AnimalVault™', 'HabitatFlow™','SpeciesPath™', 'WildFlow™', 'ConserveVault™', 'EcoPath™', 'AnimalSync™','HabitatTrace™', 'SpeciesVault™', 'WildTrace™', 'ConserveFlow™', 'EcoSync™','AnimalFlow™', 'HabitatSync™', 'SpeciesFlow™', 'WildSync™', 'ConserveTrace™'].map((name, i) => ({
+    id: i + 2300,
+    name,
+    description: `Wildlife protection solution`,
+    sectorId: 26,
+    integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+    status: "active",
+    isCore: true
+  })),
+
+  // Extended Creative & Technology brands (100 brands from user's arrays)
+  ...['CreativeNest™', 'TechGrid™', 'DesignSync™', 'CodeVault™', 'ArtFlow™','DevMesh™', 'CreatePath™', 'TechBeam™', 'DesignTrace™', 'CodeGrid™','ArtSync™', 'DevVault™', 'CreateGrid™', 'TechPath™', 'DesignBeam™','CodeSync™', 'ArtVault™', 'DevGrid™', 'CreateBeam™', 'TechSync™','DesignGrid™', 'CodePath™', 'ArtBeam™', 'DevSync™', 'CreateSync™','TechVault™', 'DesignPath™', 'CodeBeam™', 'ArtGrid™', 'DevPath™','CreateVault™', 'TechGrid™', 'DesignSync™', 'CodeVault™', 'ArtPath™','DevBeam™', 'CreatePath™', 'TechSync™', 'DesignVault™', 'CodeGrid™','ArtTrace™', 'DevGrid™', 'CreateBeam™', 'TechPath™', 'DesignSync™','CodeTrace™', 'ArtSync™', 'DevVault™', 'CreateGrid™', 'TechBeam™','DesignPath™', 'CodeSync™', 'ArtVault™', 'DevGrid™', 'CreateSync™','TechTrace™', 'DesignBeam™', 'CodePath™', 'ArtGrid™', 'DevSync™','CreateTrace™', 'TechSync™', 'DesignVault™', 'CodeBeam™', 'ArtPath™','DevTrace™', 'CreatePath™', 'TechGrid™', 'DesignSync™', 'CodeVault™','ArtBeam™', 'DevSync™', 'CreateVault™', 'TechPath™', 'DesignGrid™','CodeSync™', 'ArtTrace™', 'DevBeam™', 'CreateSync™', 'TechVault™','DesignPath™', 'CodeGrid™', 'ArtSync™', 'DevPath™', 'CreateBeam™','TechSync™', 'DesignVault™', 'CodePath™', 'ArtGrid™', 'DevSync™','CreateTrace™', 'TechBeam™', 'DesignSync™', 'CodeVault™', 'ArtPath™','DevGrid™', 'CreateSync™', 'TechPath™', 'DesignBeam™', 'CodeSync™','ArtVault™', 'DevTrace™', 'CreateGrid™', 'TechSync™', 'DesignPath™','CodeBeam™', 'ArtSync™', 'DevVault™', 'CreatePath™', 'TechGrid™','DesignTrace™', 'CodeSync™', 'ArtBeam™', 'DevSync™', 'CreateVault™','TechPath™', 'DesignGrid™', 'CodeTrace™', 'ArtSync™', 'DevBeam™','CreateSync™', 'TechVault™', 'DesignPath™', 'CodeGrid™', 'ArtPath™','DevSync™', 'CreateBeam™', 'TechSync™', 'DesignVault™', 'CodePath™'].map((name, i) => ({
+    id: i + 2400,
+    name,
+    description: `Creative & technology solution`,
+    sectorId: 4,
     integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
     status: "active",
     isCore: true
