@@ -17,6 +17,7 @@ import { getAPIConfig } from "../shared/api-config";
 import { setupAuth, isAuthenticated } from "./replitAuth"
 import { registerSectorRoutes } from "./routes/sectors";
 import { registerGlobalSyncRoutes } from "./routes/global-sync";
+import { registerExternalPortalRoutes } from "./routes/external-portal-api";
 import { ExtensionScanner } from "./extension-scanner";
 import { registerAdminPanelRoutes } from './routes-admin-panel';
 import adminPanelRoutes from './routes/admin-panel';
@@ -61,6 +62,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Register global synchronization routes
   registerGlobalSyncRoutes(app);
+  
+  // Register external portal integration routes
+  registerExternalPortalRoutes(app);
   
   // Register MineNest mining routes
   registerMineNestRoutes(app);
