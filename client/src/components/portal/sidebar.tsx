@@ -76,6 +76,7 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
     { id: "baobab-security-network", label: "🌳 Baobab Security Network™", icon: "🛡️", badge: "Environmental AI" },
     { id: "legal-hub", label: "📋 Legal Documentation Hub", icon: "📄", badge: "9 Documents" },
     { id: "api-keys", label: "🔑 API Key Manager", icon: "🔐", badge: "8 Keys" },
+    { id: "access-portal", label: "🌐 Access Portal", icon: "🔐", badge: "User Onboarding" },
     { id: "payment-hub", label: "Payment Portal", icon: "💳", badge: "SSO" },
   ]
 

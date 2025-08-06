@@ -53,6 +53,7 @@ import { GlobalSyncIndicator } from "@/components/global-sync-indicator"
 import SectorList from "@/pages/sector-list"
 import SettingsPage from "@/pages/settings"
 import AnalyticsPage from "@/pages/analytics"
+import { AccessPortal } from "@/components/portal/access-portal"
 import SectorMapping from "@/pages/sector-mapping"
 import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
@@ -252,6 +253,8 @@ function PageRouter({ activePage }: { activePage: string }) {
       return <FruitfulBusinessPlan />
     case "fruitful-marketplace-marketing":
       return <FruitfulMarketplaceMarketing />
+    case "access-portal":
+      return <AccessPortal />
     default:
       // Check if it's a sector dashboard route
       if (activePage.startsWith("sector-")) {
