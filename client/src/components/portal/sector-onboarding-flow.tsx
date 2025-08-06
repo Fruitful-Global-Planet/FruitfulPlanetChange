@@ -48,7 +48,7 @@ export function SectorOnboardingFlow() {
           description: "Your gateway to the FAA.zone™ ecosystem with 25+ integrated sectors",
           icon: "🌱",
           features: [
-            "brand management system",
+            "6,005+ brand management system",
             "VaultMesh™ security infrastructure", 
             "Real-time analytics dashboard",
             "Cross-sector integration"

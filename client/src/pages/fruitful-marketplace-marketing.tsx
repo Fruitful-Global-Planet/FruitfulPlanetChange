@@ -38,7 +38,6 @@ import {
   Dumbbell
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useQuery } from "@tanstack/react-query";
 
 // Marketplace Categories
 const categories = [
@@ -104,35 +103,26 @@ const featuredProducts = [
   }
 ];
 
-// Marketing Stats will be defined inside the component
+// Marketing Stats
+const marketingStats = [
+  { label: 'Active Products', value: '6,005', growth: '+23%', icon: <Package className="w-6 h-6" /> },
+  { label: 'Monthly Visitors', value: '2.3M', growth: '+45%', icon: <Users className="w-6 h-6" /> },
+  { label: 'Conversion Rate', value: '8.7%', growth: '+12%', icon: <TrendingUp className="w-6 h-6" /> },
+  { label: 'Customer Satisfaction', value: '96%', growth: '+3%', icon: <Star className="w-6 h-6" /> }
+];
 
-// Live URL Integration Features will be defined inside the component
+// Live URL Integration Features
+const liveFeatures = [
+  { title: 'Real-time Inventory', description: 'Live stock tracking across all 6,005 products', icon: <Globe className="w-5 h-5" /> },
+  { title: 'Dynamic Pricing', description: 'AI-powered pricing optimization', icon: <TrendingUp className="w-5 h-5" /> },
+  { title: 'Live Chat Support', description: '24/7 customer support integration', icon: <MessageCircle className="w-5 h-5" /> },
+  { title: 'Secure Payments', description: 'Multiple payment gateways', icon: <Shield className="w-5 h-5" /> }
+];
 
 export default function FruitfulMarketplaceMarketing() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentTime, setCurrentTime] = useState(new Date());
-
-  const { data: dashboardStats = {} } = useQuery({
-    queryKey: ["/api/dashboard/stats"],
-    staleTime: 30000,
-  });
-
-  // Marketing Stats
-  const marketingStats = [
-    { label: 'Active Products', value: (dashboardStats?.totalElements || 0).toString(), growth: '+23%', icon: <Package className="w-6 h-6" /> },
-    { label: 'Monthly Visitors', value: '2.3M', growth: '+45%', icon: <Users className="w-6 h-6" /> },
-    { label: 'Conversion Rate', value: '8.7%', growth: '+12%', icon: <TrendingUp className="w-6 h-6" /> },
-    { label: 'Customer Satisfaction', value: '96%', growth: '+3%', icon: <Star className="w-6 h-6" /> }
-  ];
-
-  // Live URL Integration Features
-  const liveFeatures = [
-    { title: 'Real-time Inventory', description: `Live stock tracking across all ${dashboardStats?.totalElements || 0} products`, icon: <Globe className="w-5 h-5" /> },
-    { title: 'Dynamic Pricing', description: 'AI-powered pricing optimization', icon: <TrendingUp className="w-5 h-5" /> },
-    { title: 'Live Chat Support', description: '24/7 customer support integration', icon: <MessageCircle className="w-5 h-5" /> },
-    { title: 'Secure Payments', description: 'Multiple payment gateways', icon: <Shield className="w-5 h-5" /> }
-  ];
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -170,7 +160,7 @@ export default function FruitfulMarketplaceMarketing() {
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed"
               >
-                Discover over {dashboardStats?.totalElements || 0} premium products across 8 categories with real-time inventory, 
+                Discover over 6,005 premium products across 8 categories with real-time inventory, 
                 AI-powered recommendations, and seamless shopping experiences powered by advanced technology.
               </motion.p>
 
@@ -182,7 +172,7 @@ export default function FruitfulMarketplaceMarketing() {
               >
                 <Badge className="px-6 py-3 text-lg bg-orange-500/20 text-orange-600 border-orange-500/30">
                   <Package className="w-5 h-5 mr-2" />
-                  {dashboardStats?.totalElements || 0}+ Products
+                  6,005+ Products
                 </Badge>
                 <Badge className="px-6 py-3 text-lg bg-red-500/20 text-red-600 border-red-500/30">
                   <Globe className="w-5 h-5 mr-2" />
