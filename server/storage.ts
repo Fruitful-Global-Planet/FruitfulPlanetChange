@@ -1337,6 +1337,57 @@ export class MemStorage implements IStorage {
     return payment;
   }
 
+  async getAllPayments(): Promise<Payment[]> {
+    return Array.from(this.payments.values());
+  }
+
+  async getAllRepositories(): Promise<Repository[]> {
+    return Array.from(this.repositories.values());
+  }
+
+  async getRepositories(): Promise<Repository[]> {
+    return Array.from(this.repositories.values());
+  }
+
+  async getRepositoriesBySearch(query: string): Promise<Repository[]> {
+    if (!query) {
+      return Array.from(this.repositories.values());
+    }
+    
+    const lowerQuery = query.toLowerCase();
+    return Array.from(this.repositories.values()).filter(repo =>
+      repo.name.toLowerCase().includes(lowerQuery) ||
+      (repo.description && repo.description.toLowerCase().includes(lowerQuery)) ||
+      repo.category.toLowerCase().includes(lowerQuery)
+    );
+  }
+
+  async getRepository(id: string): Promise<Repository | undefined> {
+    return this.repositories.get(id);
+  }
+
+  async updateRepository(id: string, updates: Partial<InsertRepository>): Promise<Repository> {
+    const existing = this.repositories.get(id);
+    if (!existing) {
+      throw new Error(`Repository with id ${id} not found`);
+    }
+    
+    const updated: Repository = {
+      ...existing,
+      ...updates,
+      id: existing.id,
+      updatedAt: new Date().toISOString()
+    };
+    this.repositories.set(id, updated);
+    return updated;
+  }
+
+  async getRepositoriesByCategory(category: string): Promise<Repository[]> {
+    return Array.from(this.repositories.values()).filter(repo =>
+      repo.category.toLowerCase() === category.toLowerCase()
+    );
+  }
+
 
 
 
