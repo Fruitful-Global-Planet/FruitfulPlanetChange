@@ -980,6 +980,7 @@ export class MemStorage implements IStorage {
     
     // Initialize with sample data based on the provided brand counts
     this.initializeSampleData();
+    this.initializeRepositoryData();
   }
 
   private initializeSampleData() {
@@ -1083,6 +1084,96 @@ export class MemStorage implements IStorage {
       }
     });
     this.currentBrandId = brandId;
+  }
+
+  private initializeRepositoryData() {
+    // Initialize your Repository Hub with sample repositories
+    const sampleRepos: Repository[] = [
+      {
+        id: "seedwave-portal",
+        name: "Seedwave Brand Portal",
+        description: "Advanced brand management portal with VaultMesh integration",
+        category: "infrastructure",
+        url: "https://github.com/heyns1000/seedwave-portal",
+        language: "TypeScript",
+        framework: "React + Express",
+        status: "active",
+        visibility: "public",
+        stars: 47,
+        forks: 12,
+        lastCommit: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: "omnigrid-faa-zone",
+        name: "OmniGrid FAA.zone Integration",
+        description: "Quantum-enabled grid system for atom-level processing",
+        category: "ai",
+        url: "https://github.com/heyns1000/omnigrid-faa",
+        language: "TypeScript",
+        framework: "Next.js",
+        status: "development",
+        visibility: "private",
+        stars: 23,
+        forks: 5,
+        lastCommit: new Date(Date.now() - 86400000).toISOString(),
+        createdAt: new Date(Date.now() - 7776000000).toISOString(),
+        updatedAt: new Date(Date.now() - 86400000).toISOString()
+      },
+      {
+        id: "fruitful-crate-dance",
+        name: "Fruitful Crate Dance Platform",
+        description: "Global ecosystem management for 6,005+ brands",
+        category: "finance",
+        url: "https://github.com/heyns1000/fruitful-crate-dance",
+        language: "JavaScript",
+        framework: "Vue.js",
+        status: "active",
+        visibility: "public",
+        stars: 89,
+        forks: 34,
+        lastCommit: new Date(Date.now() - 43200000).toISOString(),
+        createdAt: new Date(Date.now() - 15552000000).toISOString(),
+        updatedAt: new Date(Date.now() - 43200000).toISOString()
+      },
+      {
+        id: "securesign-vip",
+        name: "SecureSign VIP Portal",
+        description: "Legal document management with blockchain verification",
+        category: "legal",
+        url: "https://github.com/heyns1000/securesign-vip",
+        language: "TypeScript",
+        framework: "React",
+        status: "active",
+        visibility: "private",
+        stars: 156,
+        forks: 67,
+        lastCommit: new Date(Date.now() - 172800000).toISOString(),
+        createdAt: new Date(Date.now() - 31104000000).toISOString(),
+        updatedAt: new Date(Date.now() - 172800000).toISOString()
+      },
+      {
+        id: "vaultmesh-core",
+        name: "VaultMesh Core Engine",
+        description: "Distributed data management and synchronization engine",
+        category: "infrastructure",
+        url: "https://github.com/heyns1000/vaultmesh-core",
+        language: "Go",
+        framework: "Gin",
+        status: "active",
+        visibility: "public",
+        stars: 234,
+        forks: 89,
+        lastCommit: new Date(Date.now() - 259200000).toISOString(),
+        createdAt: new Date(Date.now() - 46656000000).toISOString(),
+        updatedAt: new Date(Date.now() - 259200000).toISOString()
+      }
+    ];
+
+    sampleRepos.forEach(repo => {
+      this.repositories.set(repo.id, repo);
+    });
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -1581,4 +1672,5 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new DatabaseStorage();
+// Temporarily using memory storage due to database endpoint issues
+export const storage = new MemStorage();
