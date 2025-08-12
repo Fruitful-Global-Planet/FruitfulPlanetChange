@@ -46,23 +46,9 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
-  // Seed database with comprehensive brand data in development
+  // Initialize in-memory storage only (avoid database operations due to freeze)
   if (app.get("env") === "development") {
-    try {
-      await seedDatabase();
-      await seedLegalDocuments();
-      console.log("💰 Updating sector pricing structure...");
-      await updateSectorPricing();
-
-      console.log("🐻 Seeding Banimal ecosystem for charitable giving...");
-      await storage.seedBanimalData();
-      console.log("🎬 Seeding Motion, Media & Sonic engines...");
-      await storage.seedMediaData();
-      console.log("🚀 Seeding Omnilevel Interstellar operations...");
-      await storage.seedInterstellarData();
-    } catch (error) {
-      console.error("Failed to seed database:", error);
-    }
+    console.log("✅ Using in-memory storage - database operations skipped due to freeze");
   }
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

@@ -980,9 +980,9 @@ export class MemStorage implements IStorage {
     
     // Initialize ONLY with authentic 48 sectors
     this.initializeAuthentic48Sectors();
-    this.initializeSampleBrands();
+    this.initializeOriginalBrands();
     this.initializeRepositoryData();
-    this.initializeSystemStatus();
+    this.initializeSystemStatuses();
   }
 
   private initializeAuthentic48Sectors() {
@@ -2074,6 +2074,50 @@ export class MemStorage implements IStorage {
 
     realRepositories.forEach(repo => {
       this.repositories.set(repo.id, repo);
+    });
+  }
+
+  private initializeOriginalBrands() {
+    // Add original brands from comprehensive data
+    Object.entries(COMPREHENSIVE_BRAND_DATA).forEach(([sectorKey, sectorData]) => {
+      const sectorId = Array.from(this.sectors.values()).find(s => 
+        s.name.toLowerCase().includes(sectorKey.toLowerCase()) || 
+        sectorKey.toLowerCase().includes(s.name.toLowerCase().replace(/[^a-z]/g, ''))
+      )?.id || 1;
+
+      sectorData.brands.forEach((brandData) => {
+        const newBrand: Brand = {
+          id: this.currentBrandId++,
+          name: brandData.name,
+          description: brandData.description || null,
+          logo: brandData.logo || null,
+          website: brandData.website || null,
+          status: brandData.status || "active",
+          category: brandData.category || "general",
+          tags: brandData.tags || [],
+          sectorId: sectorId,
+          metadata: brandData.metadata || null,
+          createdAt: new Date().toISOString(),
+        };
+        this.brands.set(newBrand.id, newBrand);
+      });
+    });
+  }
+
+  private initializeSystemStatuses() {
+    // Add system statuses
+    const statuses = [
+      { id: "vaultmesh", service: "VaultMesh™", status: "operational", description: "Core infrastructure running smoothly" },
+      { id: "omnigrid", service: "OmniGrid™ FAA.zone™", status: "operational", description: "All sector synchronization active" },
+      { id: "securesign", service: "SecureSign™ VIP", status: "operational", description: "Legal document processing online" }
+    ];
+
+    statuses.forEach(statusData => {
+      this.systemStatuses.set(statusData.id, {
+        ...statusData,
+        lastCheck: new Date().toISOString(),
+        metadata: null
+      });
     });
   }
 
