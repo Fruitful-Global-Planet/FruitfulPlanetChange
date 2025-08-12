@@ -246,7 +246,22 @@ function PageRouter({ activePage }: { activePage: string }) {
     case "fruitful-smart-toys":
       return <FruitfulSmartToys />
     case "samfox-creative-studio":
-      return <SamFoxCreativeStudio />
+      try {
+        return <SamFoxCreativeStudio />
+      } catch (error) {
+        console.error("SamFox Creative Studio error:", error);
+        return (
+          <div className="p-8">
+            <div className="text-center">
+              <h1 className="text-2xl font-bold mb-4">Sam Fox Creative Studio</h1>
+              <p className="text-muted-foreground">Loading creative studio...</p>
+              <Button onClick={() => window.location.reload()} className="mt-4">
+                Refresh Page
+              </Button>
+            </div>
+          </div>
+        )
+      }
     case "faa-quantum-nexus":
       return <FAAQuantumNexus />
     case "fruitful-business-plan":

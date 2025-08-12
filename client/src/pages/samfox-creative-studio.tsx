@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, ErrorBoundary } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -76,8 +76,7 @@ import DripDesign from '@assets/Drip_1753263376705.png';
 // Additional Sam Fox Artwork Images  
 import LinkedinHeader from '@assets/Linkedin_header_1753261659049.png';
 
-// Import PayPal Button component
-import PayPalButton from '@/components/PayPalButton';
+// PayPal temporarily disabled to prevent SDK errors
 import HeritagePortal from '@/components/HeritagePortal';
 
 // Database Schema successfully removed from SamFox - now exists only in proper database settings
@@ -1654,13 +1653,10 @@ export default function SamFoxCreativeStudio() {
                           <CreditCard className="w-4 h-4 mr-2" />
                           Buy & Download
                         </Button>
-                        <div className="w-full">
-                          <PayPalButton 
-                            amount={design.price.toString()} 
-                            currency="USD" 
-                            intent="CAPTURE" 
-                          />
-                        </div>
+                        <Button variant="outline" className="w-full" size="sm">
+                          <CreditCard className="w-4 h-4 mr-2" />
+                          PayPal - ${design.price}
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
