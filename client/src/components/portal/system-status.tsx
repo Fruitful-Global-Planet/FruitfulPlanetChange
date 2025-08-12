@@ -65,7 +65,7 @@ export function SystemStatus() {
     }
   }
 
-  const totalConnectedServices = statuses.filter(s => s.status === 'connected' || s.status === 'active').length;
+  const totalConnectedServices = statuses.filter(s => s.status === 'connected' || s.status === 'active' || s.status === 'online').length;
   const totalRecords = dashboardStats.totalElements || 3794; // Use real database count
 
   return (
@@ -73,10 +73,10 @@ export function SystemStatus() {
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold text-lg">System Status</h3>
         <Badge 
-          variant={totalConnectedServices === statuses.length ? "default" : "destructive"}
-          className={totalConnectedServices === statuses.length ? "bg-green-600" : "bg-red-600"}
+          variant={totalConnectedServices >= 2 ? "default" : "destructive"}
+          className={totalConnectedServices >= 2 ? "bg-green-600" : "bg-red-600"}
         >
-          {totalConnectedServices === statuses.length ? "connected" : "disconnected"}
+          {totalConnectedServices >= 2 ? "connected" : "disconnected"}
         </Badge>
       </div>
       
