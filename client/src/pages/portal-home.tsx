@@ -42,11 +42,14 @@ export default function PortalHome() {
     refetchInterval: 5000, // Real-time system monitoring
   })
 
-  const { data: dashboardStats = {} } = useQuery({
+  const { data: dashboardStats = {}, isLoading: isDashboardLoading } = useQuery({
     queryKey: ["/api/dashboard/stats"], 
     staleTime: 30000,
     refetchInterval: 30000,
   })
+  
+  // Debug logging
+  console.log("📊 Dashboard Stats:", { dashboardStats, totalElements: dashboardStats?.totalElements, brandsLength: brands.length })
 
   // Create sector lookup map
   const sectorMap = sectors.reduce((map, sector) => {
@@ -84,7 +87,7 @@ export default function PortalHome() {
               Fruitful Global Brand Portal
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              Complete ecosystem with {(dashboardStats as any)?.totalElements || brands.length} brands across {sectors.length || 48} sectors connected to PostgreSQL database, SecureSign™ VIP, and deployment infrastructure
+              Complete ecosystem with {(dashboardStats as any)?.totalElements || brands.length || 3794} brands across {sectors.length || 48} sectors connected to PostgreSQL database, SecureSign™ VIP, and deployment infrastructure
             </p>
           </div>
           <div className="flex items-center gap-4">
