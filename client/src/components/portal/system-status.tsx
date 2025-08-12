@@ -94,8 +94,8 @@ export function SystemStatus() {
 
       {/* Service Status List */}
       <div className="space-y-3">
-        {statuses.map((status) => (
-          <div key={status.service} className="flex items-center justify-between">
+        {statuses.map((status, index) => (
+          <div key={`${status.service}-${status.id || index}`} className="flex items-center justify-between">
             <span className="text-sm font-medium">{getServiceDisplayName(status.service)}</span>
             <div className="flex items-center gap-2">
               <div className={`

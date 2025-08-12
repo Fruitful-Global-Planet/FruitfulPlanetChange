@@ -1,0 +1,48 @@
+Warning: Encountered two children with the same key, &#x60;VaultMesh™&#x60;. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.
+    at div
+    at div
+    at SystemStatus (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/src/components/portal/system-status.tsx:22:35)
+    at aside
+    at Sidebar (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/src/components/portal/sidebar.tsx:26:27)
+    at div
+    at div
+    at AuthenticatedApp (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/src/App.tsx?t=1755023506548&v=XBdtI6JvSuuHrw7KYw_S1:583:29)
+    at div
+    at OnboardingProvider (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/src/components/onboarding/onboarding-provider.tsx:104:38)
+    at Provider (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=785c22bf:38:15)
+    at TooltipProvider (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=785c22bf:65:5)
+    at ThemeProvider (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/src/hooks/use-theme.tsx:28:3)
+    at QueryClientProvider (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=785c22bf:2805:3)
+    at App (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/src/App.tsx?t=1755023506548&v=XBdtI6JvSuuHrw7KYw_S1:538:39)
+Warning: Encountered two children with the same key, &#x60;VaultMesh™&#x60;. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.
+    at div
+    at div
+    at SystemStatus (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/src/components/portal/system-status.tsx:22:35)
+    at aside
+    at Sidebar (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/src/components/portal/sidebar.tsx:26:27)
+    at div
+    at div
+    at AuthenticatedApp (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/src/App.tsx?t=1755023506548&v=XBdtI6JvSuuHrw7KYw_S1:583:29)
+    at div
+    at OnboardingProvider (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/src/components/onboarding/onboarding-provider.tsx:104:38)
+    at Provider (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=785c22bf:38:15)
+    at TooltipProvider (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=785c22bf:65:5)
+    at ThemeProvider (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/src/hooks/use-theme.tsx:28:3)
+    at QueryClientProvider (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=785c22bf:2805:3)
+    at App (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/src/App.tsx?t=1755023506548&v=XBdtI6JvSuuHrw7KYw_S1:538:39)
+Warning: Encountered two children with the same key, &#x60;VaultMesh™&#x60;. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.
+    at div
+    at div
+    at SystemStatus (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/src/components/portal/system-status.tsx:22:35)
+    at aside
+    at Sidebar (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/src/components/portal/sidebar.tsx:26:27)
+    at div
+    at div
+    at AuthenticatedApp (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/src/App.tsx?t=1755023506548&v=XBdtI6JvSuuHrw7KYw_S1:583:29)
+    at div
+    at OnboardingProvider (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/src/components/onboarding/onboarding-provider.tsx:104:38)
+    at Provider (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=785c22bf:38:15)
+    at TooltipProvider (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=785c22bf:65:5)
+    at ThemeProvider (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/src/hooks/use-theme.tsx:28:3)
+    at QueryClientProvider (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=785c22bf:2805:3)
+    at App (https://b9d3cbae-0dea-49d9-8581-20274bc8ce15-00-1w3w0zpis02dt.spock.replit.dev/src/App.tsx?t=1755023506548&v=XBdtI6JvSuuHrw7KYw_S1:538:39)
