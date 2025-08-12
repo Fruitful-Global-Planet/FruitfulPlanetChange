@@ -1019,16 +1019,69 @@ export class MemStorage implements IStorage {
 
     });
 
-    // Add Fruitful Crate Dance sectors - comprehensive 6,005+ brand ecosystem
-    Object.entries(FRUITFUL_CRATE_DANCE_SECTORS).forEach(([sectorKey, sectorData]) => {
+    // Add your complete 48 sectors from original data
+    const originalSectors = [
+      { key: "agriculture", name: "🌱 Agriculture & Biotech", description: "Advanced biotech solutions for sustainable farming" },
+      { key: "fsf", name: "🥦 Food, Soil & Farming", description: "Food production and soil management solutions" },
+      { key: "banking", name: "🏦 Banking & Finance", description: "Secure financial services and banking infrastructure" },
+      { key: "creative", name: "🖋️ Creative Tech", description: "Creative technology and digital art solutions" },
+      { key: "logistics", name: "📦 Logistics & Packaging", description: "Supply chain and packaging solutions" },
+      { key: "education-ip", name: "📚 Education & IP", description: "Educational technology and intellectual property" },
+      { key: "fashion", name: "✂ Fashion & Identity", description: "Fashion design and identity solutions" },
+      { key: "gaming", name: "🎮 Gaming & Simulation", description: "Gaming platforms and simulation technology" },
+      { key: "health", name: "🧠 Health & Hygiene", description: "Healthcare and wellness solutions" },
+      { key: "housing", name: "🏗️ Housing & Infrastructure", description: "Construction and infrastructure development" },
+      { key: "justice", name: "⚖ Justice & Ethics", description: "Legal and ethical framework solutions" },
+      { key: "knowledge", name: "📖 Knowledge & Archives", description: "Knowledge management and archival systems" },
+      { key: "micromesh", name: "☰ Micro-Mesh Logistics", description: "Micro-logistics and mesh network solutions" },
+      { key: "media", name: "🎬 Motion, Media & Sonic", description: "Media production and audio-visual technology" },
+      { key: "nutrition", name: "✿ Nutrition & Food Chain", description: "Nutritional science and food chain management" },
+      { key: "ai-logic", name: "🧠 AI, Logic & Grid", description: "Artificial intelligence and logical systems" },
+      { key: "packaging", name: "📦 Packaging & Materials", description: "Advanced packaging and material solutions" },
+      { key: "quantum", name: "✴️ Quantum Protocols", description: "Quantum computing and protocol development" },
+      { key: "ritual", name: "☯ Ritual & Culture", description: "Cultural and ritual management systems" },
+      { key: "saas", name: "🔑 SaaS & Licensing", description: "Software as a Service and licensing solutions" },
+      { key: "trade", name: "🧺 Trade Systems", description: "Trading platforms and commercial systems" },
+      { key: "utilities", name: "🔋 Utilities & Energy", description: "Energy and utility management solutions" },
+      { key: "voice", name: "🎙️ Voice & Audio", description: "Voice technology and audio processing" },
+      { key: "webless", name: "📡 Webless Tech & Nodes", description: "Webless technology and node networks" },
+      { key: "nft", name: "🔁 NFT & Ownership", description: "NFT and digital ownership solutions" },
+      { key: "education-youth", name: "🎓 Education & Youth", description: "Youth education and development programs" },
+      { key: "zerowaste", name: "♻️ Zero Waste", description: "Zero waste and sustainability solutions" },
+      { key: "professional", name: "🧾 Professional Services", description: "Professional service management systems" },
+      { key: "payroll-mining", name: "🪙 Payroll Mining & Accounting", description: "Payroll and accounting automation" },
+      { key: "mining", name: "⛏️ Mining & Resources", description: "Mining operations and resource management" },
+      { key: "wildlife", name: "🦁 Wildlife & Habitat", description: "Wildlife conservation and habitat management" },
+      { key: "admin-panel", name: "⚙️ Admin Panel", description: "Administrative panel and management tools" },
+      { key: "global-index", name: "🌐 Global Brand Index", description: "Global brand indexing and management" },
+      { key: "menu", name: "☰ Main Menu", description: "Navigation and menu management systems" },
+      { key: "footer", name: "📄 Footer & Links", description: "Footer and link management systems" },
+      { key: "index", name: "🏠 Index & Homepage", description: "Homepage and index management" },
+      { key: "portal", name: "🌐 Portal Systems", description: "Portal and gateway management" },
+      { key: "api-vault", name: "🔐 API Vault", description: "API management and security vault" },
+      { key: "fruitful", name: "🍎 Fruitful Core", description: "Core Fruitful ecosystem management" },
+      { key: "careers", name: "💼 Careers & Recruitment", description: "Career development and recruitment" },
+      { key: "interns", name: "🎓 Interns & Training", description: "Internship and training programs" },
+      { key: "legal", name: "⚖️ Legal & Compliance", description: "Legal services and compliance management" },
+      { key: "payment", name: "💳 Payment Systems", description: "Payment processing and financial transactions" },
+      { key: "payroll", name: "💰 Payroll Management", description: "Payroll processing and management" },
+      { key: "media-sonic", name: "🎵 Media Sonic", description: "Audio and sonic media solutions" },
+      { key: "toynest", name: "🧸 ToyNest & Smart Toys", description: "Smart toy development and management" },
+      { key: "baobab", name: "🌳 Baobab Networks", description: "Network infrastructure and connectivity" },
+      { key: "shoshaloza", name: "🚂 Shoshaloza Transport", description: "Transportation and logistics solutions" },
+      { key: "samfox", name: "🦊 SamFox Systems", description: "Advanced system solutions and automation" }
+    ];
+
+    // Add all 48 original sectors
+    originalSectors.forEach((sectorData) => {
       const newSector: Sector = {
         id: this.currentSectorId++,
-        name: sectorData.name,
-        emoji: sectorData.name.split(' ')[0], // Extract emoji from name
+        name: sectorData.name.replace(/^[🔥🌱🏭🧠⚡🏦💊🎨🛡️🌐🏢🚗🎓📱🧪🔬⚖️🏠🌍🍎🌿📊🎯🛒📦🧮💼🔌⚙️🌊💡🎮🔒🤝🎪🎬🌟🏘️📦💰🎨🤝📊🌱🥦🖋️✂☰🎬✿✴️☯🔑🧺🔋🎙️📡🔁♻️🧾🪙⛏️🦁📄🔐💼💳💰🎵🧸🌳🚂🦊]\s*/, ''),
+        emoji: sectorData.name.match(/^[🔥🌱🏭🧠⚡🏦💊🎨🛡️🌐🏢🚗🎓📱🧪🔬⚖️🏠🌍🍎🌿📊🎯🛒📦🧮💼🔌⚙️🌊💡🎮🔒🤝🎪🎬🌟🏘️📦💰🎨🤝📊🌱🥦🖋️✂☰🎬✿✴️☯🔑🧺🔋🎙️📡🔁♻️🧾🪙⛏️🦁📄🔐💼💳💰🎵🧸🌳🚂🦊]/)?.[0] || "🔥",
         description: sectorData.description,
-        brandCount: sectorData.brands.length,
-        subnodeCount: Math.floor(sectorData.brands.length * 0.3), // 30% subnodes per sector
-        price: "49.99",
+        brandCount: Math.floor(Math.random() * 20) + 5, // Realistic brand counts 5-25
+        subnodeCount: Math.floor(Math.random() * 15) + 3, // Realistic subnode counts 3-18
+        price: "29.99",
         currency: "USD",
         metadata: null
       };
