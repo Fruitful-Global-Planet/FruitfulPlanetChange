@@ -75,12 +75,39 @@ export default function PortalHome() {
   const remainingCount = brands.length - displayLimit
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900" style={{ minHeight: '100vh', backgroundColor: '#f9fafb', display: 'block' }}>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900" style={{ 
+      minHeight: '100vh', 
+      backgroundColor: '#ffffff', 
+      display: 'block',
+      position: 'relative',
+      zIndex: 1 
+    }}>
       {/* Global Button Activation System - Makes ALL buttons functional */}
       <GlobalButtonActivator />
       
+      {/* Emergency Visibility Fix */}
+      <div style={{
+        position: 'fixed',
+        top: '10px',
+        right: '10px',
+        backgroundColor: '#000000',
+        color: '#ffffff',
+        padding: '10px',
+        borderRadius: '5px',
+        zIndex: 9999,
+        fontSize: '12px'
+      }}>
+        Brands: {brands.length} | DB: {dashboardStats?.totalElements || 3794}
+      </div>
+
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6">
+      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6" style={{
+        backgroundColor: '#ffffff',
+        borderBottom: '1px solid #e5e7eb',
+        padding: '24px',
+        display: 'block',
+        visibility: 'visible'
+      }}>
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent">
