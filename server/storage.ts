@@ -2668,5 +2668,5 @@ export class MemStorage implements IStorage {
   }
 }
 
-// Temporarily using memory storage due to database endpoint issues
-export const storage = new MemStorage();
+// Using database storage to connect to your real PostgreSQL data
+export const storage = new DatabaseStorage();
