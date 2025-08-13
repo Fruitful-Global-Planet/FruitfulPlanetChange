@@ -212,8 +212,17 @@ export default function PortalHome() {
     return map
   }, {} as Record<number, Sector>)
 
-  const displayedBrands = brands.slice(0, displayLimit)
-  const remainingCount = brands.length - displayLimit
+  // Filter brands based on search and sector
+  const filteredBrands = brands.filter(brand => {
+    const matchesSearch = !searchQuery || 
+      brand.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      brand.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSector = !selectedSector || brand.sectorId === selectedSector;
+    return matchesSearch && matchesSector;
+  });
+
+  const displayedBrands = filteredBrands.slice(0, displayLimit)
+  const remainingCount = filteredBrands.length - displayLimit
 
   return (
     <div className="min-h-screen bg-white" style={{
@@ -299,6 +308,28 @@ export default function PortalHome() {
         <FruitfulMarketplaceIntegration />
       </section>
 
+      {/* Quick Stats Dashboard */}
+      <section className="p-6 bg-gradient-to-r from-blue-50 to-cyan-50 border-b">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white rounded-lg p-4 shadow-sm">
+            <h3 className="text-sm font-medium text-gray-500">Total Brands</h3>
+            <p className="text-2xl font-bold text-blue-600">{brands.length.toLocaleString()}</p>
+          </div>
+          <div className="bg-white rounded-lg p-4 shadow-sm">
+            <h3 className="text-sm font-medium text-gray-500">Active Sectors</h3>
+            <p className="text-2xl font-bold text-green-600">{sectors.length}</p>
+          </div>
+          <div className="bg-white rounded-lg p-4 shadow-sm">
+            <h3 className="text-sm font-medium text-gray-500">Market Coverage</h3>
+            <p className="text-2xl font-bold text-purple-600">{dashboardStats.marketPenetration}%</p>
+          </div>
+          <div className="bg-white rounded-lg p-4 shadow-sm">
+            <h3 className="text-sm font-medium text-gray-500">Core Brands</h3>
+            <p className="text-2xl font-bold text-orange-600">{dashboardStats.coreBrands.toLocaleString()}</p>
+          </div>
+        </div>
+      </section>
+
       {/* Search and Filters */}
       <section className="p-6" data-tour="dashboard-stats">
         <SearchFilters
@@ -306,6 +337,27 @@ export default function PortalHome() {
           onSectorFilter={setSelectedSector}
           selectedSector={selectedSector}
         />
+        {(searchQuery || selectedSector) && (
+          <div className="mt-4 flex items-center gap-2">
+            <span className="text-sm text-gray-500">Active filters:</span>
+            {searchQuery && (
+              <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
+                Search: "{searchQuery}"
+              </span>
+            )}
+            {selectedSector && (
+              <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">
+                Sector: {sectorMap[selectedSector]?.name}
+              </span>
+            )}
+            <button 
+              onClick={() => {setSearchQuery(''); setSelectedSector(null);}}
+              className="text-xs text-gray-500 hover:text-gray-700 underline"
+            >
+              Clear all
+            </button>
+          </div>
+        )}
       </section>
 
       {/* Brand Elements Grid */}
@@ -315,7 +367,10 @@ export default function PortalHome() {
             Brand Elements
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
-            Explore and discover brand elements across all sectors
+            {searchQuery || selectedSector ? 
+              `Showing ${filteredBrands.length} of ${brands.length} brands` :
+              `Explore and discover brand elements across all sectors (${brands.length} total)`
+            }
           </p>
         </div>
 
@@ -346,14 +401,25 @@ export default function PortalHome() {
 
             {/* Load More Button */}
             {remainingCount > 0 && (
-              <div className="col-span-full flex justify-center mt-8">
+              <div className="col-span-full flex flex-col items-center mt-8 gap-4">
                 <Button
                   onClick={() => setDisplayLimit(prev => prev + 8)}
-                  className="bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-3 rounded-lg font-medium"
+                  className="bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-3 rounded-lg font-medium transition-all hover:scale-105"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Load More Brands ({remainingCount.toLocaleString()}+ remaining)
                 </Button>
+                <div className="text-xs text-gray-500 flex items-center gap-4">
+                  <span>💡 Press ⌘+K to search</span>
+                  <span>📊 {Math.round((displayedBrands.length / filteredBrands.length) * 100)}% loaded</span>
+                </div>
+              </div>
+            )}
+            
+            {remainingCount === 0 && filteredBrands.length > 8 && (
+              <div className="col-span-full text-center mt-8 p-6 bg-green-50 rounded-lg">
+                <p className="text-green-800 font-medium">🎉 All {filteredBrands.length} brands loaded!</p>
+                <p className="text-green-600 text-sm mt-1">Scroll up or use search to find specific brands</p>
               </div>
             )}
           </div>
