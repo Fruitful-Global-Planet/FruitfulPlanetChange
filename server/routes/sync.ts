@@ -7,10 +7,11 @@ const router = Router();
 router.get('/complete-sync', async (req, res) => {
   try {
     // Fetch all critical data simultaneously for complete sync
-    const [sectors, brands, systemStatus] = await Promise.all([
+    const [sectors, brands, systemStatus, legalDocs] = await Promise.all([
       storage.getAllSectors(),
       storage.getAllBrands(),
-      storage.getSystemStatus() || []
+      storage.getSystemStatus() || [],
+      storage.getAllLegalDocuments ? storage.getAllLegalDocuments() : []
     ]);
 
     // Calculate comprehensive sync data
@@ -40,6 +41,16 @@ router.get('/complete-sync', async (req, res) => {
           services: Array.isArray(systemStatus) ? systemStatus.length : 0,
           status: Array.isArray(systemStatus) && systemStatus.length > 0 ? 'connected' : 'disconnected',
           uptime: '99.9%'
+        },
+        legal: {
+          count: Array.isArray(legalDocs) ? legalDocs.length : 0,
+          types: ['NDAs', 'Contracts', 'Licenses'],
+          lastUpdate: new Date().toISOString()
+        },
+        assets: {
+          totalSynced: (sectors.length + brands.length + (Array.isArray(legalDocs) ? legalDocs.length : 0)),
+          syncHealth: brands.length > 0 ? 'healthy' : 'needs_attention',
+          lastFullSync: new Date().toISOString()
         }
       },
       performance: {
