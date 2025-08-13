@@ -22,93 +22,147 @@ export default function PortalHome() {
   if (searchQuery) queryParams.set("search", searchQuery)
   if (selectedSector) queryParams.set("sectorId", selectedSector.toString())
 
-  // REAL DATABASE QUERIES - Connected to PostgreSQL with 3794+ total elements
-  // Direct fetch approach to bypass query key issues
-  const [brands, setBrands] = useState<Brand[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<any>(null)
-
-  useEffect(() => {
-    const fetchBrands = async () => {
-      try {
-        console.log("🔄 Starting brands fetch...")
-        setIsLoading(true)
-        setError(null)
-        
-        // Simpler fetch approach
-        const response = await fetch('/api/brands')
-        console.log("📡 Response status:", response.status)
-        
-        if (response.ok) {
-          const text = await response.text()
-          console.log("📦 Raw text length:", text.length)
-          
-          const data = JSON.parse(text)
-          console.log("📊 Parsed data type:", Array.isArray(data) ? `Array[${data.length}]` : typeof data)
-          
-          if (Array.isArray(data) && data.length > 0) {
-            setBrands(data)
-            console.log("✅ SUCCESS:", data.length, "brands loaded")
-            console.log("🔍 First brand:", data[0]?.name)
-          } else {
-            console.log("⚠️ Empty or invalid data received")
-            setBrands([])
-          }
-        } else {
-          throw new Error(`HTTP ${response.status}`)
-        }
-      } catch (err) {
-        console.error("❌ Fetch failed:", err)
-        setError(err)
-        
-        // Fallback: Set a minimal working state to show something
-        setBrands([{
-          id: 1,
-          name: "DroneTrace (Confirmed Working)",
-          description: "Backend confirmed working - API returns 3,794 brands",
-          sectorId: 252,
-          integration: "VaultMesh™"
-        } as any])
-        console.log("🔧 Fallback brand set for display")
-      } finally {
-        setIsLoading(false)
-        console.log("🏁 Fetch process completed")
+  // Use React Query for system status and sectors
+  const systemStatusQuery = useQuery({
+    queryKey: ["/api/system-status"],
+    queryFn: async () => {
+      console.log('🔍 Fetching system status...');
+      const response = await fetch('/api/system-status');
+      if (!response.ok) {
+        throw new Error('Failed to fetch system status');
       }
-    }
-    
-    fetchBrands()
-    const interval = setInterval(fetchBrands, 15000)
-    return () => clearInterval(interval)
-  }, [])
-  
-  // Debug the brands loading
-  console.log("🔍 Brands Query Debug:", { 
-    brandsCount: brands.length, 
-    isLoading, 
-    error
-  })
+      const data = await response.json();
+      console.log('📊 System Status API Response:', data);
+      return data;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchInterval: 5000, // Real-time system monitoring
+    refetchOnWindowFocus: false,
+    refetchOnMount: true
+  });
 
-  const { data: sectors = [] } = useQuery<Sector[]>({
+  const sectorsQuery = useQuery<Sector[]>({
     queryKey: ["/api/sectors"],
+    queryFn: async () => {
+      console.log('🔍 Fetching sectors...');
+      const response = await fetch('/api/sectors');
+      if (!response.ok) {
+        throw new Error('Failed to fetch sectors');
+      }
+      const data = await response.json();
+      console.log('📊 Sectors API Response:', { count: data.length, sample: data.slice(0, 3) });
+      return data;
+    },
     staleTime: 30000,
     refetchInterval: 30000, // Live data refresh
-  })
-  
-  // Additional live database connections for complete portal functionality
-  const { data: systemStatus = [] } = useQuery({
-    queryKey: ["/api/system-status"],
-    staleTime: 5000,
-    refetchInterval: 5000, // Real-time system monitoring
-  })
+    refetchOnWindowFocus: false,
+    refetchOnMount: true
+  });
 
-  const { data: dashboardStats = {}, isLoading: isDashboardLoading } = useQuery({
-    queryKey: ["/api/dashboard/stats"], 
-    staleTime: 30000,
-    refetchInterval: 30000,
-  })
-  
-  // Debug logging
-  console.log("📊 Dashboard Stats:", { dashboardStats, brandsLength: brands.length })
+  // Enhanced brands query with debug logging
+  const brandsQuery = useQuery({
+    queryKey: ['brands'],
+    queryFn: async () => {
+      console.log('🔍 Fetching brands from API...');
+      const response = await fetch('/api/brands');
+      if (!response.ok) {
+        throw new Error('Failed to fetch brands');
+      }
+      const data = await response.json();
+      console.log('📊 Brands API Response:', { count: data.length, sample: data.slice(0, 3) });
+      return data;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 3,
+    refetchOnWindowFocus: false,
+    refetchOnMount: true
+  });
+
+  console.log('🔍 Brands Query Debug:', {
+    brandsCount: brandsQuery.data?.length || 0,
+    isLoading: brandsQuery.isLoading,
+    error: brandsQuery.error?.message || null,
+    isSuccess: brandsQuery.isSuccess
+  });
+
+  // Enhanced dashboard stats query
+  const dashboardStatsQuery = useQuery({
+    queryKey: ['dashboard-stats'],
+    queryFn: async () => {
+      const response = await fetch('/api/dashboard/stats');
+      if (!response.ok) {
+        throw new Error('Failed to fetch dashboard stats');
+      }
+      const data = await response.json();
+      console.log('📊 Dashboard Stats API Response:', data);
+      return data;
+    },
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    retry: 2,
+    refetchOnWindowFocus: false,
+    refetchOnMount: true
+  });
+
+  console.log('📊 Dashboard Stats Debug:', {
+    dashboardStats: dashboardStatsQuery.data || {},
+    brandsLength: brandsQuery.data?.length || 0,
+    isLoading: dashboardStatsQuery.isLoading,
+    isSuccess: dashboardStatsQuery.isSuccess,
+    error: dashboardStatsQuery.error?.message || null
+  });
+
+  // Show loading state with better feedback
+  if (systemStatusQuery.isLoading || sectorsQuery.isLoading || brandsQuery.isLoading || dashboardStatsQuery.isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
+          <h2 className="text-2xl font-semibold text-gray-900 mt-4">Loading Portal...</h2>
+          <p className="text-gray-600">
+            {systemStatusQuery.isLoading && "Loading system status..."}
+            {sectorsQuery.isLoading && "Loading sectors..."}
+            {brandsQuery.isLoading && "Loading brands..."}
+            {dashboardStatsQuery.isLoading && "Loading dashboard stats..."}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle error states
+  if (systemStatusQuery.error || sectorsQuery.error || brandsQuery.error || dashboardStatsQuery.error) {
+    console.error('Portal loading errors:', {
+      systemStatus: systemStatusQuery.error?.message,
+      sectors: sectorsQuery.error?.message,
+      brands: brandsQuery.error?.message,
+      dashboardStats: dashboardStatsQuery.error?.message
+    });
+    // Optionally, render an error message component here
+  }
+
+  // Data access with proper fallbacks
+  const systemStatus = systemStatusQuery.data || [];
+  const sectors = sectorsQuery.data || [];
+  const brands = brandsQuery.data || [];
+  const dashboardStats = dashboardStatsQuery.data || {
+    totalElements: 0,
+    coreBrands: 0,
+    subNodes: 0,
+    sectors: 0,
+    legalDocuments: 0,
+    repositories: 0,
+    totalPayments: 0,
+    mediaProjects: 0,
+    processingEngines: 0,
+    integrationTiers: { tier1: 0, tier2: 0, tier3: 0 },
+    globalRevenue: "0",
+    activeBrands: 0,
+    marketPenetration: 0,
+    revenueGrowth: 0
+  };
+
+  // Ensure we have valid data
+  const hasValidData = dashboardStats.totalElements > 0 || brands.length > 0 || sectors.length > 0;
 
   // Create sector lookup map
   const sectorMap = sectors.reduce((map, sector) => {
@@ -134,10 +188,10 @@ export default function PortalHome() {
   const remainingCount = brands.length - displayLimit
 
   return (
-    <div className="min-h-screen bg-white" style={{ 
-      minHeight: '100vh', 
+    <div className="min-h-screen bg-white" style={{
+      minHeight: '100vh',
       width: '100%',
-      backgroundColor: '#ffffff', 
+      backgroundColor: '#ffffff',
       display: 'block',
       position: 'relative',
       zIndex: 1,
@@ -145,7 +199,7 @@ export default function PortalHome() {
     }}>
       {/* Global Button Activation System - Makes ALL buttons functional */}
       <GlobalButtonActivator />
-      
+
 
 
       {/* Header - Forced Visibility */}
@@ -172,7 +226,7 @@ export default function PortalHome() {
               Seedwave Portal - Working
             </h1>
             <p style={{ color: '#6b7280', fontSize: '14px' }}>
-              Database: {(dashboardStats as any)?.totalElements || 3794} brands | Loading: {isLoading ? 'Yes' : 'No'} | Loaded: {brands.length} brands
+              Database: {(dashboardStats as any)?.totalElements || 3794} brands | Loading: {brandsQuery.isLoading ? 'Yes' : 'No'} | Loaded: {brands.length} brands
             </p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -237,7 +291,7 @@ export default function PortalHome() {
           </p>
         </div>
 
-        {isLoading ? (
+        {brandsQuery.isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
               <div key={i} className="bg-white dark:bg-gray-800 rounded-xl p-6 animate-pulse">
