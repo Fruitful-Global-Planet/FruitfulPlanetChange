@@ -78,28 +78,35 @@ export default function PortalHome() {
     <div className="min-h-screen bg-white" style={{ 
       minHeight: '100vh', 
       width: '100%',
-      backgroundColor: '#ffffff !important', 
-      display: 'block !important',
+      backgroundColor: '#ffffff', 
+      display: 'block',
       position: 'relative',
       zIndex: 1,
-      visibility: 'visible !important'
+      visibility: 'visible'
     }}>
       {/* Global Button Activation System - Makes ALL buttons functional */}
       <GlobalButtonActivator />
       
-      {/* Emergency Visibility Fix */}
+      {/* Force Visibility Test */}
       <div style={{
         position: 'fixed',
-        top: '10px',
-        right: '10px',
-        backgroundColor: '#000000',
-        color: '#ffffff',
-        padding: '10px',
-        borderRadius: '5px',
-        zIndex: 9999,
-        fontSize: '12px'
+        top: '0',
+        left: '0',
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: '#ffffff',
+        zIndex: 10000,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '24px',
+        color: '#000000'
       }}>
-        Brands: {brands.length} | DB: {(dashboardStats as any)?.totalElements || 3794}
+        <div style={{ textAlign: 'center', padding: '40px', border: '3px solid #000' }}>
+          <h1>SEEDWAVE PORTAL TEST</h1>
+          <p>Brands: {brands.length} | DB: {(dashboardStats as any)?.totalElements || 3794}</p>
+          <p>Authentication: {isLoading ? 'Loading...' : 'Success'}</p>
+        </div>
       </div>
 
       {/* Header */}

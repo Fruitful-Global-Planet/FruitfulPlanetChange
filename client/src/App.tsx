@@ -313,29 +313,27 @@ function App() {
   console.log("🚀 Main App component rendering");
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light" storageKey="seedwave-ui-theme">
-        <TooltipProvider>
-          <OnboardingProvider>
-
-            
-            <div id="main-app-wrapper" style={{ 
-              minHeight: '100vh', 
-              backgroundColor: '#ffffff', 
-              width: '100%', 
-              position: 'relative',
-              display: 'block',
-              visibility: 'visible',
-              zIndex: 1
-            }}>
-
+    <div style={{
+      width: '100vw',
+      height: '100vh',
+      backgroundColor: '#ffffff',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      zIndex: 1000,
+      overflow: 'auto'
+    }}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider defaultTheme="light" storageKey="seedwave-ui-theme">
+          <TooltipProvider>
+            <OnboardingProvider>
               <AuthenticatedApp activePage={activePage} setActivePage={setActivePage} />
               <Toaster />
-            </div>
-          </OnboardingProvider>
-        </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+            </OnboardingProvider>
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </div>
   )
 }
 
@@ -365,11 +363,11 @@ function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; s
   
   return (
     <div className="flex flex-col min-h-screen bg-white" style={{
-      backgroundColor: '#ffffff !important',
+      backgroundColor: '#ffffff',
       minHeight: '100vh',
       width: '100%',
-      display: 'block !important',
-      visibility: 'visible !important'
+      display: 'block',
+      visibility: 'visible'
     }}>
       <div className="flex flex-1">
         <Sidebar activePage={activePage} setActivePage={setActivePage} />
