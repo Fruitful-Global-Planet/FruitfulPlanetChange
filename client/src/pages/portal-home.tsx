@@ -31,10 +31,12 @@ export default function PortalHome() {
       console.log('📊 System Status API Response:', data);
       return data;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    refetchInterval: 5000, // Real-time system monitoring
+    staleTime: 30000, // 30 seconds
+    gcTime: 5 * 60 * 1000, // 5 minutes
+    refetchInterval: 30000, // 30 second intervals
     refetchOnWindowFocus: false,
-    refetchOnMount: true
+    refetchOnMount: true,
+    enabled: true
   });
 
   const sectorsQuery = useQuery<Sector[]>({
@@ -50,9 +52,11 @@ export default function PortalHome() {
       return data;
     },
     staleTime: 30000,
-    refetchInterval: 30000, // Live data refresh
+    gcTime: 5 * 60 * 1000,
+    refetchInterval: 60000, // 1 minute intervals
     refetchOnWindowFocus: false,
-    refetchOnMount: true
+    refetchOnMount: true,
+    enabled: true
   });
 
   // Enhanced brands query with debug logging
@@ -68,10 +72,12 @@ export default function PortalHome() {
       console.log('📊 Brands API Response:', { count: data.length, sample: data.slice(0, 3) });
       return data;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: 3,
+    staleTime: 30000, // 30 seconds
+    gcTime: 5 * 60 * 1000, // 5 minutes
+    retry: 1,
     refetchOnWindowFocus: false,
-    refetchOnMount: true
+    refetchOnMount: true,
+    enabled: true // Explicitly enable the query
   });
 
   // Enhanced dashboard stats query
@@ -86,10 +92,12 @@ export default function PortalHome() {
       console.log('📊 Dashboard Stats API Response:', data);
       return data;
     },
-    staleTime: 2 * 60 * 1000, // 2 minutes
-    retry: 2,
+    staleTime: 60000, // 1 minute
+    gcTime: 5 * 60 * 1000, // 5 minutes
+    retry: 1,
     refetchOnWindowFocus: false,
-    refetchOnMount: true
+    refetchOnMount: true,
+    enabled: true
   });
 
   // Handle keyboard shortcuts - useEffect must be called consistently
@@ -127,18 +135,21 @@ export default function PortalHome() {
   });
 
   // Show loading state with better feedback
-  if (systemStatusQuery.isLoading || sectorsQuery.isLoading || brandsQuery.isLoading || dashboardStatsQuery.isLoading) {
+  const isAnyLoading = systemStatusQuery.isLoading || sectorsQuery.isLoading || brandsQuery.isLoading || dashboardStatsQuery.isLoading;
+  
+  if (isAnyLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
-        <div className="text-center">
+        <div className="text-center max-w-md">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
           <h2 className="text-2xl font-semibold text-gray-900 mt-4">Loading Portal...</h2>
-          <p className="text-gray-600">
-            {systemStatusQuery.isLoading && "Loading system status..."}
-            {sectorsQuery.isLoading && "Loading sectors..."}
-            {brandsQuery.isLoading && "Loading brands..."}
-            {dashboardStatsQuery.isLoading && "Loading dashboard stats..."}
-          </p>
+          <div className="text-gray-600 space-y-1 mt-2">
+            <p>System Status: {systemStatusQuery.isLoading ? "Loading..." : "✓ Ready"}</p>
+            <p>Sectors: {sectorsQuery.isLoading ? "Loading..." : "✓ Ready"}</p>
+            <p>Brands: {brandsQuery.isLoading ? "Loading..." : "✓ Ready"}</p>
+            <p>Dashboard: {dashboardStatsQuery.isLoading ? "Loading..." : "✓ Ready"}</p>
+          </div>
+          <p className="text-sm text-blue-600 mt-4">Database contains 3,794+ brands</p>
         </div>
       </div>
     );
