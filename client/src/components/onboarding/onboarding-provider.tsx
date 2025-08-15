@@ -124,6 +124,9 @@ export function OnboardingProvider({ children }: OnboardingProviderProps) {
   };
 
   const skipTour = () => {
+    const userId = (user as any)?.id || 'anonymous';
+    localStorage.setItem(`onboarding-complete-${userId}`, 'true');
+    setIsOnboardingComplete(true);
     setIsTourOpen(false);
   };
 
