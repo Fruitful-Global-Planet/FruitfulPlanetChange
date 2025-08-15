@@ -35,6 +35,7 @@ import { FruitfulSmartToys } from "@/components/portal/fruitful-smart-toys"
 import { BaobabSecurityNetwork } from "@/components/portal/baobab-security-network"
 import BuildNestDashboardPage from "@/pages/buildnest-dashboard"
 import PortalHome from "@/pages/portal-home"
+import EmergencyPortal from "@/pages/emergency-portal"
 import BrandsPage from "@/pages/brands"
 import SectorsPage from "@/pages/sectors"
 import NotFound from "@/pages/not-found"
@@ -66,8 +67,8 @@ function PageRouter({ activePage }: { activePage: string }) {
   switch (activePage) {
     case "home":
     case "marketplace":
-      console.log("🏠 Returning PortalHome component");
-      return <PortalHome />
+      console.log("🏠 Returning Emergency Portal for visibility");
+      return <EmergencyPortal />
     case "analytics":
       return (
         <div className="p-8">
