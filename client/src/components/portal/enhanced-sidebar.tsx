@@ -99,7 +99,14 @@ export function EnhancedSidebar({ onSectionSelect, activeSection }: SidebarSyncP
   };
 
   return (
-    <div className="w-80 bg-slate-50 border-r border-slate-200 p-6 space-y-6">
+    <div className="w-80 bg-slate-50 border-r border-slate-200 p-6 space-y-6 flex-shrink-0" style={{
+      position: 'fixed',
+      left: 0,
+      top: 0,
+      height: '100vh',
+      zIndex: 10,
+      overflowY: 'auto'
+    }}>
       {/* Database Status Header */}
       <Card className="p-4">
         <div className="flex items-center justify-between mb-4">
