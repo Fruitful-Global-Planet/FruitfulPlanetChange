@@ -123,9 +123,7 @@ export function OnboardingTour({
   const skipTour = () => {
     setIsVisible(false);
     setCurrentStep(0);
-    setTimeout(() => {
-      onClose();
-    }, 100);
+    onClose();
   };
 
   const getSpotlightStyle = () => {

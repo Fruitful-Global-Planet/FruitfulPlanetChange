@@ -292,7 +292,8 @@ export default function PortalHome() {
       backgroundColor: '#ffffff',
       position: 'relative',
       zIndex: 1,
-      visibility: 'visible'
+      visibility: 'visible',
+      display: 'block'
     }}>
       {/* Global Button Activation System - Makes ALL buttons functional */}
       <GlobalButtonActivator />

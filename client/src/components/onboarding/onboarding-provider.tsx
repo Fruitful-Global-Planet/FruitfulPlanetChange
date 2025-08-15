@@ -109,14 +109,13 @@ export function OnboardingProvider({ children }: OnboardingProviderProps) {
     const completed = localStorage.getItem(`onboarding-complete-${userId}`);
     setIsOnboardingComplete(!!completed);
 
-    // Auto-start tour for new users
-    if (isAuthenticated && user && !completed) {
-      const timer = setTimeout(() => {
-        setIsTourOpen(true);
-      }, 1500); // Delay to let the page load
-
-      return () => clearTimeout(timer);
-    }
+    // Auto-start tour disabled to prevent interface blocking
+    // if (isAuthenticated && user && !completed) {
+    //   const timer = setTimeout(() => {
+    //     setIsTourOpen(true);
+    //   }, 1500);
+    //   return () => clearTimeout(timer);
+    // }
   }, [user, isAuthenticated]);
 
   const startTour = () => {
