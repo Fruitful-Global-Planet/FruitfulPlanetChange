@@ -78,28 +78,48 @@ export default function PortalHome() {
     enabled: true
   });
 
-  // Enhanced brands query with debug logging
-  const brandsQuery = useQuery({
-    queryKey: ['brands'],
-    queryFn: async () => {
-      console.log('🔍 Fetching brands from API...');
-      const response = await fetch('/api/brands');
-      if (!response.ok) {
-        console.error('❌ Brands API Error:', response.status, response.statusText);
-        throw new Error(`Failed to fetch brands: ${response.status}`);
+  // Direct brands fetching - bypassing React Query issues
+  const [brands, setBrands] = React.useState<Brand[]>([])
+  const [brandsLoading, setBrandsLoading] = React.useState(true)
+  const [brandsError, setBrandsError] = React.useState<string | null>(null)
+
+  React.useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        console.log('🔍 Direct fetch: Loading brands...');
+        setBrandsLoading(true)
+        setBrandsError(null)
+        
+        const response = await fetch('/api/brands')
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+        
+        const data = await response.json()
+        if (Array.isArray(data)) {
+          setBrands(data)
+          console.log('✅ Direct fetch: Loaded', data.length, 'brands successfully')
+        }
+      } catch (error) {
+        console.error('❌ Direct fetch error:', error)
+        setBrandsError('Failed to load brands')
+      } finally {
+        setBrandsLoading(false)
       }
-      const data = await response.json();
-      console.log('📊 Brands API Response:', { count: data.length, sample: data.slice(0, 3) });
-      console.log('✅ Brands query completed successfully');
-      return data;
-    },
-    staleTime: 1000 * 60, // 1 minute
-    retry: 3,
-    retryDelay: 1000,
-    refetchOnWindowFocus: false,
-    refetchOnMount: true,
-    enabled: true
-  });
+    }
+
+    fetchBrands()
+    const interval = setInterval(fetchBrands, 15000)
+    return () => clearInterval(interval)
+  }, [])
+
+  // Mock query object for compatibility
+  const brandsQuery = {
+    data: brands,
+    isLoading: brandsLoading,
+    error: brandsError ? new Error(brandsError) : null,
+    isSuccess: brands.length > 0,
+    isFetching: brandsLoading,
+    status: brandsLoading ? 'pending' : 'success'
+  } as const;
 
   // Enhanced dashboard stats query
   const dashboardStatsQuery = useQuery<DashboardStats>({
@@ -236,7 +256,7 @@ export default function PortalHome() {
   // Data access with proper fallbacks
   const systemStatus = systemStatusQuery.data || [];
   const sectors = sectorsQuery.data || [];
-  const brands = brandsQuery.data || [];
+  // brands variable already defined above from direct fetch
   const dashboardStats = dashboardStatsQuery.data || {
     totalElements: 3794,
     coreBrands: 2862,
