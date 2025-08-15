@@ -286,11 +286,10 @@ export default function PortalHome() {
   const remainingCount = filteredBrands.length - displayLimit
 
   return (
-    <div className="min-h-screen bg-white flex" style={{
+    <div className="min-h-screen bg-white" style={{
       minHeight: '100vh',
       width: '100%',
       backgroundColor: '#ffffff',
-      display: 'flex',
       position: 'relative',
       zIndex: 1,
       visibility: 'visible'
@@ -307,7 +306,7 @@ export default function PortalHome() {
       />
 
       {/* Main Content Area */}
-      <div className="flex-1" style={{ marginLeft: '0', width: 'calc(100% - 320px)' }}>
+      <div style={{ marginLeft: '320px', width: 'calc(100% - 320px)' }}>
         {/* Enhanced Portal Header */}
         <header style={{
           backgroundColor: '#ffffff',
@@ -367,7 +366,7 @@ export default function PortalHome() {
           </div>
         </header>
 
-        <main className="p-8" style={{ marginLeft: '320px', width: 'calc(100% - 320px)' }}>
+        <main className="p-8">
         {/* Database Sync Status */}
         <section className="mb-8">
           <DatabaseAssetSync />

@@ -99,13 +99,14 @@ export function EnhancedSidebar({ onSectionSelect, activeSection }: SidebarSyncP
   };
 
   return (
-    <div className="w-80 bg-slate-50 border-r border-slate-200 p-6 space-y-6 flex-shrink-0" style={{
+    <div className="w-80 bg-slate-50 border-r border-slate-200 p-6 space-y-6" style={{
       position: 'fixed',
       left: 0,
       top: 0,
       height: '100vh',
       zIndex: 10,
-      overflowY: 'auto'
+      overflowY: 'auto',
+      width: '320px'
     }}>
       {/* Database Status Header */}
       <Card className="p-4">
