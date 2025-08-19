@@ -1,5 +1,4 @@
 import { useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
 
 interface GlobalFooterProps {
   className?: string;
@@ -8,11 +7,6 @@ interface GlobalFooterProps {
 export function GlobalFooter({ className = "" }: GlobalFooterProps) {
   const currentYear = new Date().getFullYear();
   const [, setLocation] = useLocation();
-
-  const { data: dashboardStats = {} } = useQuery({
-    queryKey: ["/api/dashboard/stats"],
-    staleTime: 30000,
-  });
 
   const handleNavigation = (path: string) => {
     setLocation(path);
@@ -132,7 +126,7 @@ export function GlobalFooter({ className = "" }: GlobalFooterProps) {
           </div>
           <div className="text-gray-500 dark:text-gray-500">
             © {currentYear} Fruitful Holdings. All rights reserved. | 
-            <span className="mx-1">{dashboardStats?.totalElements || 0} Brand Ecosystem</span> | 
+            <span className="mx-1">6,005+ Brand Ecosystem</span> | 
             <span className="mx-1">FAA.zone™ Certified</span>
           </div>
         </div>

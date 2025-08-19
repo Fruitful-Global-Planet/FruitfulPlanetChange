@@ -2,8 +2,6 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { seedDatabase } from "./seed-data";
-import { ExternalPortalIntegration } from "./services/external-portal-integration";
-import { GlobalBrandSyncManager } from "./services/global-brand-sync-manager";
 import { seedLegalDocuments } from "./seed-legal";
 import { seedAllMiningBrands } from "./mining-brands-seeder";
 import { updateSectorPricing } from "./update-sector-pricing";
@@ -65,16 +63,6 @@ app.use((req, res, next) => {
     } catch (error) {
       console.error("Failed to seed database:", error);
     }
-  }
-
-  // Initialize backend engine services
-  try {
-    console.log('🚀 Initializing Backend Intelligence Engine...');
-    await GlobalBrandSyncManager.initializeGlobalSync();
-    await ExternalPortalIntegration.initializeSolutionCatalog();
-    console.log('✅ Backend Intelligence Engine ready for external portal integration');
-  } catch (error) {
-    console.error("Failed to initialize backend engine:", error);
   }
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

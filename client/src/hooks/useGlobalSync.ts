@@ -29,29 +29,16 @@ export function useGlobalSync() {
     '/api/sync/complete-sync'
   ];
 
-  // Enhanced sync with intelligent cross-reference management
+  // Force refresh all queries every 3 seconds for complete sync
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
-        // Prioritized sync: critical data first, then cross-references
-        const criticalEndpoints = ['/api/sectors', '/api/brands', '/api/system-status'];
-        const crossRefEndpoints = ['/api/sync/complete-sync', '/api/dashboard/stats'];
-        
-        // Phase 1: Critical data sync
+        // Invalidate all queries simultaneously for complete sync
         await Promise.all(
-          criticalEndpoints.map(endpoint => 
+          syncEndpoints.map(endpoint => 
             queryClient.invalidateQueries({ queryKey: [endpoint] })
           )
         );
-        
-        // Phase 2: Cross-reference sync (delayed for data consistency)
-        setTimeout(async () => {
-          await Promise.all(
-            crossRefEndpoints.map(endpoint => 
-              queryClient.invalidateQueries({ queryKey: [endpoint] })
-            )
-          );
-        }, 1000);
         
         setSyncStatus(prev => ({
           ...prev,
@@ -63,10 +50,10 @@ export function useGlobalSync() {
         setSyncStatus(prev => ({
           ...prev,
           isConnected: false,
-          errors: [...prev.errors.slice(-4), `Enhanced sync error: ${(error as Error).message}`]
+          errors: [...prev.errors.slice(-4), `Sync error: ${(error as Error).message}`]
         }));
       }
-    }, 30000); // Optimized 30-second sync for better performance with large datasets
+    }, 3000); // Sync every 3 seconds for real-time feel
 
     return () => clearInterval(interval);
   }, [queryClient]);
