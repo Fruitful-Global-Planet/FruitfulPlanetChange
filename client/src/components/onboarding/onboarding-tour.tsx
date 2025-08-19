@@ -38,21 +38,12 @@ export function OnboardingTour({
     if (isOpen) {
       setIsVisible(true);
       updateTooltipPosition();
-      
-      const handleEscape = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-          skipTour();
-        }
-      };
-      
       window.addEventListener('resize', updateTooltipPosition);
       window.addEventListener('scroll', updateTooltipPosition);
-      window.addEventListener('keydown', handleEscape);
       
       return () => {
         window.removeEventListener('resize', updateTooltipPosition);
         window.removeEventListener('scroll', updateTooltipPosition);
-        window.removeEventListener('keydown', handleEscape);
       };
     } else {
       setIsVisible(false);
@@ -122,8 +113,9 @@ export function OnboardingTour({
 
   const skipTour = () => {
     setIsVisible(false);
-    setCurrentStep(0);
-    onClose();
+    setTimeout(() => {
+      onClose();
+    }, 300);
   };
 
   const getSpotlightStyle = () => {
@@ -152,13 +144,12 @@ export function OnboardingTour({
           {/* Backdrop Overlay */}
           <motion.div
             ref={overlayRef}
-            className="fixed inset-0 bg-black/60 z-[100] cursor-pointer"
+            className="fixed inset-0 bg-black/60 z-[100]"
             style={getSpotlightStyle()}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            onClick={skipTour}
           />
 
           {/* Welcome Message (First Step) */}

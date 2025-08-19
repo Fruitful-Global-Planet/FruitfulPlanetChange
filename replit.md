@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a full-stack TypeScript application, using React for the frontend and Express for the backend, designed as a comprehensive brand management portal for the "Fruitful Global" ecosystem. It provides a dashboard interface for managing over 3,794 authentic brands across 48 sectors, features advanced legal document management through SecureSign™ VIP, integrates with King Price insurance, and supports the deployment infrastructure for www.fruitfulcratedance.com. The project successfully connects to PostgreSQL database with all business data preserved and accessible. **CRITICAL NOTE: Replit UI shows "Database is frozen" status but this is a UI display bug - database has full read/write access and all operations work normally.** The system displays "connected" status with VaultMesh™ and FAA.ZONE™ operational, ensuring business continuity. **UPDATE**: Fruitful Python backend successfully transferred to Fruitful Global (January 2025).
+This is a full-stack TypeScript application, using React for the frontend and Express for the backend, designed as a comprehensive brand management portal for the "Fruitful Global" ecosystem. It provides a dashboard interface for managing over 6,005 brands across multiple sectors, features advanced legal document management through SecureSign™ VIP, integrates with King Price insurance, and supports the deployment infrastructure for www.fruitfulcratedance.com. The project aims to provide a robust platform for global brand management, featuring comprehensive data synchronization, real-time analytics, and advanced integration capabilities for various business functions.
 
 ## User Preferences
 
@@ -18,6 +18,8 @@ The application follows a monorepo structure, separating client, server, and sha
 - **Data-Driven**: All dashboard statistics, pricing, and system metrics are sourced from the PostgreSQL database, eliminating hardcoded data.
 - **Modularity**: Components and services are designed for reusability and clear separation of concerns.
 - **Scalability**: Architecture supports horizontal scaling and various deployment environments.
+- **Global Brand Synchronization**: Advanced cross-reference synchronization system for managing 3,794+ brands across 48 sectors with real-time integrity monitoring and specialized section handling for Fruitful Crate Dance brands.
+- **External Portal Integration**: Backend intelligence engine architecture designed to serve as the data processing backbone for the enhanced Tshwane AI Research Portal and other external systems. Provides branded solution recommendations, development pathways, and real-time brand intelligence for housing, energy, agriculture, mining, and entertainment solutions.
 
 **Technical Implementations:**
 - **Frontend**: React 18 with TypeScript, Vite for build tooling, Wouter for routing, shadcn/ui on Radix UI for UI components, Tailwind CSS for styling, and TanStack React Query for server state management.
@@ -34,7 +36,7 @@ The application follows a monorepo structure, separating client, server, and sha
     - PortalNest™ Intern Management System with AI monitoring and ecosystem education.
     - Integrated GitHub repository management.
     - Authentication via Replit Auth.
-    - **Access Portal Authentication System**: Complete 4-tier access system (Loyalty, Shareholder, Service Provider, Family) with registration, login, session management, and form validation.
+    - External Portal Backend Engine: Solution processing for Tshwane AI Research Portal with housing, energy, agriculture, mining, and entertainment intelligence delivery.
 
 ## External Dependencies
 

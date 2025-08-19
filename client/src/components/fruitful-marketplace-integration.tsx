@@ -128,11 +128,11 @@ export function FruitfulMarketplaceIntegration() {
       "Real-time Analytics"
     ]
     
-    const specificFeatures = (description || "").toLowerCase().includes('wildlife') ? [
+    const specificFeatures = description.toLowerCase().includes('wildlife') ? [
       "Conservation Tracking",
       "Species Monitoring",
       "Habitat Analysis"
-    ] : (description || "").toLowerCase().includes('secure') ? [
+    ] : description.toLowerCase().includes('secure') ? [
       "Enterprise Security",
       "Encrypted Storage", 
       "Compliance Ready"
@@ -158,8 +158,8 @@ export function FruitfulMarketplaceIntegration() {
   }
 
   const filteredProducts = marketplaceProducts.filter((product: any) => {
-    const matchesSearch = (product.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (product.description || "").toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         product.description.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesCategory = selectedCategory === "all" || product.category.toString() === selectedCategory
     return matchesSearch && matchesCategory
   })

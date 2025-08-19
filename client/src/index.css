@@ -74,47 +74,6 @@
     @apply border-border;
   }
   
-  /* EMERGENCY VISIBILITY OVERRIDE - Force all content to display */
-  body, html, #root {
-    background: white !important;
-    color: black !important;
-    min-height: 100vh !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-  
-  /* Force all major layout containers to be visible */
-  main, div, section, header, aside, nav {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-  
-  /* Ensure flex containers work */
-  .flex {
-    display: flex !important;
-  }
-  
-  /* Force text to be visible */
-  h1, h2, h3, h4, h5, h6, p, span, div {
-    color: inherit !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-  
-  /* Emergency brand card visibility */
-  [data-testid*="card"], [class*="card"], [class*="brand"] {
-    background: white !important;
-    border: 1px solid #e5e7eb !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    min-height: 100px !important;
-    padding: 16px !important;
-    margin: 8px !important;
-  }
-  
   body {
     @apply bg-gray-50;
     margin: 0;

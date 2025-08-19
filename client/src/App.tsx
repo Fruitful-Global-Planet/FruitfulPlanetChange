@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/toaster"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { ThemeProvider } from "@/components/ui/theme-provider"
 import { OnboardingProvider } from "@/components/onboarding/onboarding-provider"
-import { Button } from "@/components/ui/button"
 import InternPortalNestPage from "@/pages/intern-portalnest"
 import BanimalIntegrationPage from "@/pages/banimal-integration"
 import MotionMediaSonic from "@/pages/motion-media-sonic"
@@ -35,7 +34,6 @@ import { FruitfulSmartToys } from "@/components/portal/fruitful-smart-toys"
 import { BaobabSecurityNetwork } from "@/components/portal/baobab-security-network"
 import BuildNestDashboardPage from "@/pages/buildnest-dashboard"
 import PortalHome from "@/pages/portal-home"
-import EmergencyPortal from "@/pages/emergency-portal"
 import BrandsPage from "@/pages/brands"
 import SectorsPage from "@/pages/sectors"
 import NotFound from "@/pages/not-found"
@@ -55,7 +53,6 @@ import { GlobalSyncIndicator } from "@/components/global-sync-indicator"
 import SectorList from "@/pages/sector-list"
 import SettingsPage from "@/pages/settings"
 import AnalyticsPage from "@/pages/analytics"
-import { AccessPortal } from "@/components/portal/access-portal"
 import SectorMapping from "@/pages/sector-mapping"
 import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
@@ -248,30 +245,13 @@ function PageRouter({ activePage }: { activePage: string }) {
     case "fruitful-smart-toys":
       return <FruitfulSmartToys />
     case "samfox-creative-studio":
-      try {
-        return <SamFoxCreativeStudio />
-      } catch (error) {
-        console.error("SamFox Creative Studio error:", error);
-        return (
-          <div className="p-8">
-            <div className="text-center">
-              <h1 className="text-2xl font-bold mb-4">Sam Fox Creative Studio</h1>
-              <p className="text-muted-foreground">Loading creative studio...</p>
-              <Button onClick={() => window.location.reload()} className="mt-4">
-                Refresh Page
-              </Button>
-            </div>
-          </div>
-        )
-      }
+      return <SamFoxCreativeStudio />
     case "faa-quantum-nexus":
       return <FAAQuantumNexus />
     case "fruitful-business-plan":
       return <FruitfulBusinessPlan />
     case "fruitful-marketplace-marketing":
       return <FruitfulMarketplaceMarketing />
-    case "access-portal":
-      return <AccessPortal />
     default:
       // Check if it's a sector dashboard route
       if (activePage.startsWith("sector-")) {
@@ -314,29 +294,27 @@ function App() {
   console.log("🚀 Main App component rendering");
 
   return (
-    <div style={{
-      width: '100vw',
-      height: '100vh',
-      backgroundColor: '#ffffff',
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      zIndex: 1000,
-      overflow: 'auto'
-    }}>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider defaultTheme="light" storageKey="seedwave-ui-theme">
+        <TooltipProvider>
+          <OnboardingProvider>
+            <div id="main-app-wrapper" style={{ 
+              minHeight: '100vh', 
+              backgroundColor: '#ffffff', 
+              width: '100%', 
+              position: 'relative',
+              display: 'block',
+              visibility: 'visible',
+              zIndex: 1
+            }}>
 
-
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider defaultTheme="light" storageKey="seedwave-ui-theme">
-          <TooltipProvider>
-            <OnboardingProvider>
               <AuthenticatedApp activePage={activePage} setActivePage={setActivePage} />
               <Toaster />
-            </OnboardingProvider>
-          </TooltipProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
-    </div>
+            </div>
+          </OnboardingProvider>
+        </TooltipProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   )
 }
 
@@ -365,21 +343,10 @@ function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; s
   console.log("✅ Rendering main app UI");
   
   return (
-    <div className="flex flex-col min-h-screen bg-white" style={{
-      backgroundColor: '#ffffff',
-      minHeight: '100vh',
-      width: '100%',
-      display: 'block',
-      visibility: 'visible'
-    }}>
-      <div className="flex flex-1">
+    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900" style={{ display: 'flex', minHeight: '100vh', width: '100%', backgroundColor: '#f9fafb', position: 'relative', zIndex: 1 }}>
+      <div className="flex flex-1" style={{ flex: 1, display: 'flex' }}>
         <Sidebar activePage={activePage} setActivePage={setActivePage} />
-        <main className="flex-1 ml-0 md:ml-80 transition-all duration-300" style={{
-          backgroundColor: '#ffffff',
-          minHeight: '100vh',
-          display: 'block',
-          visibility: 'visible'
-        }}>
+        <main className="flex-1 ml-0 md:ml-80 transition-all duration-300" style={{ flex: 1, minHeight: '100vh', backgroundColor: '#ffffff', position: 'relative' }}>
           <PageRouter activePage={activePage} />
         </main>
       </div>

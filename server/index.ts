@@ -2,6 +2,8 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { seedDatabase } from "./seed-data";
+import { ExternalPortalIntegration } from "./services/external-portal-integration";
+import { GlobalBrandSyncManager } from "./services/global-brand-sync-manager";
 import { seedLegalDocuments } from "./seed-legal";
 import { seedAllMiningBrands } from "./mining-brands-seeder";
 import { updateSectorPricing } from "./update-sector-pricing";
@@ -46,25 +48,33 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
-  // Restore perfect database synchronization as shown in screenshot
+  // Seed database with comprehensive brand data in development
   if (app.get("env") === "development") {
     try {
-      console.log("🔄 Restoring perfect database sync (350 records)...");
       await seedDatabase();
       await seedLegalDocuments();
       console.log("💰 Updating sector pricing structure...");
       await updateSectorPricing();
-      
+
       console.log("🐻 Seeding Banimal ecosystem for charitable giving...");
       await storage.seedBanimalData();
       console.log("🎬 Seeding Motion, Media & Sonic engines...");
       await storage.seedMediaData();
       console.log("🚀 Seeding Omnilevel Interstellar operations...");
       await storage.seedInterstellarData();
-      console.log("✅ Database perfectly synchronized - 350 records restored");
     } catch (error) {
-      console.error("Database connection issue:", error);
+      console.error("Failed to seed database:", error);
     }
+  }
+
+  // Initialize backend engine services
+  try {
+    console.log('🚀 Initializing Backend Intelligence Engine...');
+    await GlobalBrandSyncManager.initializeGlobalSync();
+    await ExternalPortalIntegration.initializeSolutionCatalog();
+    console.log('✅ Backend Intelligence Engine ready for external portal integration');
+  } catch (error) {
+    console.error("Failed to initialize backend engine:", error);
   }
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

@@ -65,7 +65,7 @@ export function SystemStatus() {
     }
   }
 
-  const totalConnectedServices = statuses.filter(s => s.status === 'connected' || s.status === 'active' || s.status === 'online').length;
+  const totalConnectedServices = statuses.filter(s => s.status === 'connected' || s.status === 'active').length;
   const totalRecords = dashboardStats.totalElements || 3794; // Use real database count
 
   return (
@@ -73,10 +73,10 @@ export function SystemStatus() {
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold text-lg">System Status</h3>
         <Badge 
-          variant={totalConnectedServices >= 2 ? "default" : "destructive"}
-          className={totalConnectedServices >= 2 ? "bg-green-600" : "bg-red-600"}
+          variant={totalConnectedServices === statuses.length ? "default" : "destructive"}
+          className={totalConnectedServices === statuses.length ? "bg-green-600" : "bg-red-600"}
         >
-          {totalConnectedServices >= 2 ? "connected" : "disconnected"}
+          {totalConnectedServices === statuses.length ? "connected" : "disconnected"}
         </Badge>
       </div>
       
@@ -85,17 +85,17 @@ export function SystemStatus() {
         <div className="text-sm text-gray-600 dark:text-gray-400">Records:</div>
         <div className="text-2xl font-bold">{totalRecords.toLocaleString()}</div>
         <div className="text-sm text-gray-500 dark:text-gray-400">
-          PostgreSQL Database Connected - {totalConnectedServices} services operational
+          Live monitoring of {totalConnectedServices} system services
         </div>
         <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-          📊 Authentic Business Data Available
+          📊 Table: system_status
         </div>
       </div>
 
       {/* Service Status List */}
       <div className="space-y-3">
-        {statuses.map((status, index) => (
-          <div key={`${status.service}-${status.id || index}`} className="flex items-center justify-between">
+        {statuses.map((status) => (
+          <div key={status.service} className="flex items-center justify-between">
             <span className="text-sm font-medium">{getServiceDisplayName(status.service)}</span>
             <div className="flex items-center gap-2">
               <div className={`

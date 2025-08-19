@@ -109,13 +109,14 @@ export function OnboardingProvider({ children }: OnboardingProviderProps) {
     const completed = localStorage.getItem(`onboarding-complete-${userId}`);
     setIsOnboardingComplete(!!completed);
 
-    // Auto-start tour disabled to prevent interface blocking
-    // if (isAuthenticated && user && !completed) {
-    //   const timer = setTimeout(() => {
-    //     setIsTourOpen(true);
-    //   }, 1500);
-    //   return () => clearTimeout(timer);
-    // }
+    // Auto-start tour for new users
+    if (isAuthenticated && user && !completed) {
+      const timer = setTimeout(() => {
+        setIsTourOpen(true);
+      }, 1500); // Delay to let the page load
+
+      return () => clearTimeout(timer);
+    }
   }, [user, isAuthenticated]);
 
   const startTour = () => {
@@ -123,9 +124,6 @@ export function OnboardingProvider({ children }: OnboardingProviderProps) {
   };
 
   const skipTour = () => {
-    const userId = (user as any)?.id || 'anonymous';
-    localStorage.setItem(`onboarding-complete-${userId}`, 'true');
-    setIsOnboardingComplete(true);
     setIsTourOpen(false);
   };
 

@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -27,7 +26,7 @@ import {
   Cpu,
   Server
 } from 'lucide-react';
-// Using real database data instead of static data
+import { COMPREHENSIVE_BRAND_DATA } from '@shared/schema';
 
 interface BrandIdentity {
   name: string;
@@ -53,57 +52,52 @@ export function BrandIdentityManager() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [selectedBrand, setSelectedBrand] = useState<BrandIdentity | null>(null);
 
-  // Fetch real brands from database
-  const { data: brands = [], isLoading: brandsLoading } = useQuery({
-    queryKey: ['/api/brands'],
-  });
-
-  // Fetch real sectors from database  
-  const { data: sectors = [], isLoading: sectorsLoading } = useQuery({
-    queryKey: ['/api/sectors'],
-  });
-
-  // Convert database brands to BrandIdentity format using real data
+  // Generate comprehensive brand identities from authentic schema data
   const brandIdentities = useMemo(() => {
-    if (!brands.length || !sectors.length) return [];
+    const identities: BrandIdentity[] = [];
     
-    return brands.map((brand: any) => {
-      const sector = sectors.find((s: any) => s.id === brand.sectorId);
-      const brandHash = brand.name.split('').reduce((a: number, b: string) => a + b.charCodeAt(0), 0);
-      const statusOptions = ['active', 'development', 'maintenance'];
-      const brandSlug = brand.name.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/--+/g, '-');
-      
-      return {
-        name: brand.name,
-        sector: sector?.name || 'Unknown',
-        sectorName: sector?.name || 'Unknown Sector',
-        repositoryUrl: `https://github.com/fruitful-ecosystem/${brandSlug}`,
-        businessUrl: `https://${brandSlug}.fruitful.business`,
-        dashboardUrl: `https://dashboard.${brandSlug}.fruitful.business`,
-        status: statusOptions[brandHash % 3] as any,
-        revenue: Math.floor((brandHash % 5000000) + 100000 + (brandHash % 1000000)),
-        users: Math.floor((brandHash % 300000) + 5000 + (brandHash % 50000)),
-        uptime: 94 + ((brandHash % 600) / 100),
-        lastUpdated: `${(brandHash % 30) + 1} days ago`,
-        description: brand.description || `Professional ${sector?.name || 'business'} platform delivering innovative solutions through ${brand.name} technology`,
-        features: [
-          `${brand.name} Analytics Engine`,
-          `Advanced ${brand.name} API`,
-          `${brand.name} Cloud Infrastructure`,
-          `${brand.name} Security Suite`,
-          `${brand.name} Multi-Platform Support`,
-          `${brand.name} Real-time Monitoring`,
-          `${brand.name} Business Intelligence`,
-          `${brand.name} Integration Hub`
-        ].slice(0, 3 + (brandHash % 4)),
-        techStack: [
-          'React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Redis', 'Docker', 
-          'AWS', 'GraphQL', 'Next.js', 'MongoDB', 'Kubernetes', 'Python',
-          'Go', 'Rust', 'WebSocket', 'REST API', 'GraphQL', 'Microservices'
-        ].slice(0, 4 + (brandHash % 6))
-      } as BrandIdentity;
+    Object.entries(COMPREHENSIVE_BRAND_DATA).forEach(([sectorKey, sectorData]) => {
+      sectorData.brands.forEach((brandName, brandIndex) => {
+        // Create deterministic but varied data based on brand name hash
+        const brandHash = brandName.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+        const statusOptions = ['active', 'development', 'maintenance'];
+        const brandSlug = brandName.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/--+/g, '-');
+        
+        const identity: BrandIdentity = {
+          name: brandName, // Using actual authentic brand names
+          sector: sectorKey,
+          sectorName: sectorData.name,
+          repositoryUrl: `https://github.com/fruitful-ecosystem/${brandSlug}`,
+          businessUrl: `https://${brandSlug}.fruitful.business`,
+          dashboardUrl: `https://dashboard.${brandSlug}.fruitful.business`,
+          status: statusOptions[brandHash % 3] as any,
+          revenue: Math.floor((brandHash % 5000000) + 100000 + (brandHash % 1000000)),
+          users: Math.floor((brandHash % 300000) + 5000 + (brandHash % 50000)),
+          uptime: 94 + ((brandHash % 600) / 100),
+          lastUpdated: `${(brandHash % 30) + 1} days ago`,
+          description: `Professional ${sectorData.name.replace(/[🔥🌱🏭🧠⚡🏦💊🎨🛡️🌐🏢🚗🎓📱🧪🔬⚖️🏠🌍🍎🌿📊🎯🛒📦🧮💼🔌⚙️🌊💡🎮🔒]/g, '').trim()} platform delivering innovative solutions through ${brandName} technology`,
+          features: [
+            `${brandName} Analytics Engine`,
+            `Advanced ${brandName} API`,
+            `${brandName} Cloud Infrastructure`,
+            `${brandName} Security Suite`,
+            `${brandName} Multi-Platform Support`,
+            `${brandName} Real-time Monitoring`,
+            `${brandName} Business Intelligence`,
+            `${brandName} Integration Hub`
+          ].slice(0, 3 + (brandHash % 4)),
+          techStack: [
+            'React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Redis', 'Docker', 
+            'AWS', 'GraphQL', 'Next.js', 'MongoDB', 'Kubernetes', 'Python',
+            'Go', 'Rust', 'WebSocket', 'REST API', 'GraphQL', 'Microservices'
+          ].slice(0, 4 + (brandHash % 6))
+        };
+        identities.push(identity);
+      });
     });
-  }, [brands, sectors]);
+    
+    return identities;
+  }, []);
 
   // Filter brands based on search, sector, and status
   const filteredBrands = useMemo(() => {
@@ -141,18 +135,6 @@ export function BrandIdentityManager() {
   const activeBrands = brandIdentities.filter(b => b.status === 'active').length;
   const totalRevenue = brandIdentities.reduce((sum, b) => sum + b.revenue, 0);
   const totalUsers = brandIdentities.reduce((sum, b) => sum + b.users, 0);
-
-  // Show loading state while fetching data
-  if (brandsLoading || sectorsLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">Loading authentic brand data...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800">
@@ -257,8 +239,8 @@ export function BrandIdentityManager() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Sectors</SelectItem>
-                    {sectors.map((sector: any) => (
-                      <SelectItem key={sector.id} value={sector.name}>
+                    {Object.entries(COMPREHENSIVE_BRAND_DATA).map(([key, sector]) => (
+                      <SelectItem key={key} value={key}>
                         {sector.name}
                       </SelectItem>
                     ))}
