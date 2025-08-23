@@ -319,62 +319,67 @@ export function SectorOnboardingFlow() {
         </div>
 
         {/* Onboarding Flow Selection */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
           {onboardingFlows.map((flow, index) => (
             <motion.div
               key={flow.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
+              className="flex h-full"
             >
-              <Card className="bg-gray-800 border-gray-700 hover:border-green-500 transition-all duration-300 hover:transform hover:scale-105">
-                <CardHeader>
+              <Card className="bg-gray-800 border-gray-700 hover:border-green-500 transition-all duration-300 hover:transform hover:scale-105 flex flex-col w-full min-h-[480px]">
+                <CardHeader className="flex-shrink-0">
                   <CardTitle className="flex items-center justify-between text-white">
                     <span className="flex items-center gap-2">
                       <Sparkles className="h-5 w-5 text-green-400" />
                       {flow.name}
                     </span>
-                    <Badge className={`${getDifficultyColor(flow.difficulty)} text-white`}>
+                    <Badge className={`${getDifficultyColor(flow.difficulty)} text-white flex-shrink-0`}>
                       {flow.difficulty}
                     </Badge>
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="text-gray-300">{flow.description}</p>
-                  
-                  <div className="flex justify-between text-sm text-gray-400">
-                    <span className="flex items-center gap-1">
-                      <Target className="h-4 w-4" />
-                      {flow.steps.length} steps
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Zap className="h-4 w-4" />
-                      {flow.totalTime}
-                    </span>
-                  </div>
+                <CardContent className="flex flex-col flex-grow justify-between space-y-4">
+                  <div className="space-y-4 flex-grow">
+                    <p className="text-gray-300 text-sm leading-relaxed">{flow.description}</p>
+                    
+                    <div className="flex justify-between text-sm text-gray-400 bg-gray-900/50 rounded-lg p-3">
+                      <span className="flex items-center gap-1">
+                        <Target className="h-4 w-4" />
+                        {flow.steps.length} steps
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Zap className="h-4 w-4" />
+                        {flow.totalTime}
+                      </span>
+                    </div>
 
-                  <div className="space-y-2">
-                    <div className="text-sm font-medium text-gray-300">Steps Overview:</div>
-                    <div className="space-y-1">
-                      {flow.steps.map((step, stepIndex) => (
-                        <div key={step.id} className="flex items-center gap-2 text-sm text-gray-400">
-                          <span className="text-lg">{getCategoryIcon(step.category)}</span>
-                          <span>{step.title}</span>
-                          {completedSteps.has(step.id) && (
-                            <CheckCircle className="h-4 w-4 text-green-400" />
-                          )}
-                        </div>
-                      ))}
+                    <div className="space-y-2 flex-grow">
+                      <div className="text-sm font-medium text-gray-300">Steps Overview:</div>
+                      <div className="space-y-1 max-h-32 overflow-y-auto custom-scrollbar">
+                        {flow.steps.map((step, stepIndex) => (
+                          <div key={step.id} className="flex items-center gap-2 text-sm text-gray-400 py-1">
+                            <span className="text-base flex-shrink-0">{getCategoryIcon(step.category)}</span>
+                            <span className="truncate flex-1">{step.title}</span>
+                            {completedSteps.has(step.id) && (
+                              <CheckCircle className="h-4 w-4 text-green-400 flex-shrink-0" />
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
 
-                  <Button 
-                    className="w-full bg-gradient-to-r from-green-500 to-cyan-500 hover:from-green-600 hover:to-cyan-600 text-white font-bold"
-                    onClick={() => handleStartOnboarding(flow.id)}
-                  >
-                    <PlayCircle className="h-5 w-5 mr-2" />
-                    Start Flow
-                  </Button>
+                  <div className="flex-shrink-0 pt-2">
+                    <Button 
+                      className="w-full bg-gradient-to-r from-green-500 to-cyan-500 hover:from-green-600 hover:to-cyan-600 text-white font-bold h-12 text-sm"
+                      onClick={() => handleStartOnboarding(flow.id)}
+                    >
+                      <PlayCircle className="h-4 w-4 mr-2" />
+                      Start Flow
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>
