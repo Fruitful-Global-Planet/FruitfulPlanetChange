@@ -69,7 +69,7 @@ export function SystemStatus() {
   const totalRecords = dashboardStats.totalElements || 3794; // Use real database count
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg p-6 mb-6 border border-gray-200 dark:border-gray-700" data-tour="system-status">
+    <div className="bg-white dark:bg-gray-800 rounded-lg p-6 mb-6 border border-gray-200 dark:border-gray-700">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold text-lg">System Status</h3>
         <Badge 
