@@ -1695,6 +1695,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Register ChatGPT Integration Routes
+  const { registerChatGPTRoutes } = await import("./routes/chatgpt-extraction");
+  registerChatGPTRoutes(app);
+
   const httpServer = createServer(app);
   return httpServer;
 }

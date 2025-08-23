@@ -46,6 +46,7 @@ import SamFoxCreativeStudio from "@/pages/samfox-creative-studio"
 import FAAQuantumNexus from "@/pages/faa-quantum-nexus"
 import FruitfulBusinessPlan from "@/pages/fruitful-business-plan"
 import FruitfulMarketplaceMarketing from "@/pages/fruitful-marketplace-marketing"
+import ChatGPTIntegration from "@/pages/chatgpt-integration"
 import Landing from "@/pages/landing"
 import SectorDashboard from "@/pages/sector-dashboard"
 import SectorIndividualPage from "@/pages/sector-individual"
@@ -252,6 +253,8 @@ function PageRouter({ activePage }: { activePage: string }) {
       return <FruitfulBusinessPlan />
     case "fruitful-marketplace-marketing":
       return <FruitfulMarketplaceMarketing />
+    case "chatgpt-integration":
+      return <ChatGPTIntegration />
     default:
       // Check if it's a sector dashboard route
       if (activePage.startsWith("sector-")) {
