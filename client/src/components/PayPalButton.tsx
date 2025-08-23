@@ -99,6 +99,13 @@ export default function PayPalButton({
         .then((data) => {
           return data.clientToken;
         });
+      
+      // Skip PayPal initialization if using mock token (development mode)
+      if (clientToken === "mock_client_token_for_development") {
+        console.warn("PayPal SDK skipped - using mock token in development");
+        return;
+      }
+        
       const sdkInstance = await (window as any).paypal.createInstance({
         clientToken,
         components: ["paypal-payments"],
@@ -135,7 +142,11 @@ export default function PayPalButton({
         }
       };
     } catch (e) {
-      console.error(e);
+      console.error("PayPal initialization error:", e);
+      // Gracefully handle PayPal errors in development
+      if (e && typeof e === 'object' && 'code' in e && e.code === 'ERR_INIT_SDK_CLIENT_TOKEN_INVALID') {
+        console.warn("PayPal SDK initialization failed - using development mode fallback");
+      }
     }
   };
 
