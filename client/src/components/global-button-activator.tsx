@@ -10,6 +10,9 @@ export function GlobalButtonActivator() {
 
     // Function to activate any button, link, or clickable element
     const activateButton = (element: HTMLElement, action: string) => {
+      // Skip if already activated
+      if (element.getAttribute('data-activated')) return
+      
       const htmlElement = element as HTMLElement & { onclick: ((e: Event) => boolean) | null }
       if (!htmlElement.onclick) {
         htmlElement.onclick = (e) => {
@@ -52,6 +55,9 @@ export function GlobalButtonActivator() {
           
           return false
         }
+        
+        // Mark as activated to prevent re-processing
+        element.setAttribute('data-activated', 'true')
         
         // Add visual feedback
         element.style.cursor = "pointer"
@@ -97,21 +103,33 @@ export function GlobalButtonActivator() {
         activateButton(elem as HTMLElement, `Data Action ${index + 1}`)
       })
 
-      const totalElements = document.querySelectorAll("button, a, [role='button'], .cursor-pointer, .brand-card").length
+      const totalElements = document.querySelectorAll("button[data-activated], a[data-activated]").length
       console.log(`🎯 Activated ${totalElements} interactive elements`)
     }
 
     // Initial activation
     activateAllInteractiveElements()
 
-    // Re-activate when new elements are added (for dynamic content)
+    // Re-activate only when truly necessary (debounced)
+    let activationTimeout: NodeJS.Timeout
     const observer = new MutationObserver(() => {
-      setTimeout(activateAllInteractiveElements, 100)
+      clearTimeout(activationTimeout)
+      activationTimeout = setTimeout(() => {
+        // Only reactivate if there are actually new unactivated elements
+        const newElements = document.querySelectorAll("button:not([data-activated]), a:not([data-activated])")
+        if (newElements.length > 0) {
+          console.log(`🔄 Activating ${newElements.length} new elements only`)
+          newElements.forEach((elem, index) => {
+            activateButton(elem as HTMLElement, `New Element ${index + 1}`)
+            elem.setAttribute('data-activated', 'true')
+          })
+        }
+      }, 500) // Much longer debounce
     })
 
     observer.observe(document.body, {
       childList: true,
-      subtree: true,
+      subtree: false, // Don't watch deep changes
     })
 
     // Cleanup
