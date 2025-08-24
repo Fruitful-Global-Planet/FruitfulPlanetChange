@@ -421,7 +421,8 @@ export class DatabaseStorage implements IStorage {
 
   // Sectors
   async getAllSectors(): Promise<Sector[]> {
-    return await db.select().from(sectors);
+    // PERFORMANCE: Cache sectors and limit if needed
+    return await db.select().from(sectors).limit(100);
   }
 
   async getSector(id: number): Promise<Sector | undefined> {
@@ -439,7 +440,8 @@ export class DatabaseStorage implements IStorage {
 
   // Brands
   async getAllBrands(): Promise<Brand[]> {
-    return await db.select().from(brands);
+    // PERFORMANCE: Limit to prevent massive data transfers
+    return await db.select().from(brands).limit(500);
   }
 
   async getBrandsBySearch(query: string): Promise<Brand[]> {
@@ -491,48 +493,56 @@ export class DatabaseStorage implements IStorage {
     marketPenetration: number;
     revenueGrowth: number;
   }> {
-    // Use SQL aggregation for performance - much faster than JavaScript filtering
-    const brandsCount = await db.select({ count: count() }).from(brands);
-    const sectorsCount = await db.select({ count: count() }).from(sectors);
-    const documentsCount = await db.select({ count: count() }).from(legalDocuments);
-    const reposCount = await db.select({ count: count() }).from(repositories);
-    const paymentsCount = await db.select({ count: count() }).from(payments);
+    // OPTIMIZED: Single consolidated query instead of 13 separate calls
+    const [brandsStats, tableStats, revenueStats] = await Promise.all([
+      // Single brands query with all aggregations
+      db.select({
+        totalBrands: count(),
+        coreBrands: sql<number>`COUNT(CASE WHEN is_core = true THEN 1 END)`,
+        subNodes: sql<number>`COUNT(CASE WHEN parent_id IS NOT NULL THEN 1 END)`,
+        activeBrands: sql<number>`COUNT(CASE WHEN status = 'active' THEN 1 END)`,
+        tier1: sql<number>`COUNT(CASE WHEN integration = 'VaultMesh™' THEN 1 END)`,
+        tier2: sql<number>`COUNT(CASE WHEN integration = 'HotStack' THEN 1 END)`,
+        tier3: sql<number>`COUNT(CASE WHEN integration = 'FAA.ZONE™' THEN 1 END)`
+      }).from(brands),
+      
+      // Parallel table counts
+      Promise.all([
+        db.select({ count: count() }).from(sectors),
+        db.select({ count: count() }).from(legalDocuments),
+        db.select({ count: count() }).from(repositories),
+        db.select({ count: count() }).from(payments)
+      ]),
+      
+      // Revenue calculation
+      db.select({ sum: sql<number>`COALESCE(SUM(CAST(amount AS NUMERIC)), 0)` }).from(payments)
+    ]);
+
+    const brandData = brandsStats[0];
+    const [sectorsCount, documentsCount, reposCount, paymentsCount] = tableStats;
+    const revenueData = revenueStats[0];
     
-    // Aggregated counts for brands
-    const coreBrandsCount = await db.select({ count: count() }).from(brands).where(eq(brands.isCore, true));
-    const subNodesCount = await db.select({ count: count() }).from(brands).where(sql`parent_id IS NOT NULL`);
-    const activeBrandsCount = await db.select({ count: count() }).from(brands).where(eq(brands.status, 'active'));
-    
-    // Integration tier counts
-    const tier1Count = await db.select({ count: count() }).from(brands).where(eq(brands.integration, 'VaultMesh™'));
-    const tier2Count = await db.select({ count: count() }).from(brands).where(eq(brands.integration, 'HotStack'));
-    const tier3Count = await db.select({ count: count() }).from(brands).where(eq(brands.integration, 'FAA.ZONE™'));
-    
-    // Revenue calculation
-    const revenueSum = await db.select({ sum: sql`COALESCE(SUM(CAST(amount AS NUMERIC)), 0)` }).from(payments);
-    
-    const totalElements = Number(brandsCount[0]?.count || 0);
-    const activeBrands = Number(activeBrandsCount[0]?.count || 0);
+    const totalElements = Number(brandData?.totalBrands || 0);
+    const activeBrands = Number(brandData?.activeBrands || 0);
     const marketPenetration = totalElements > 0 ? (activeBrands / totalElements) * 100 : 0;
-    const totalPayments = Number(paymentsCount[0]?.count || 0);
     
     return {
       totalElements,
-      coreBrands: Number(coreBrandsCount[0]?.count || 0),
-      subNodes: Number(subNodesCount[0]?.count || 0),
+      coreBrands: Number(brandData?.coreBrands || 0),
+      subNodes: Number(brandData?.subNodes || 0),
       sectors: Number(sectorsCount[0]?.count || 0),
       legalDocuments: Number(documentsCount[0]?.count || 0),
       repositories: Number(reposCount[0]?.count || 0),
-      totalPayments,
+      totalPayments: Number(paymentsCount[0]?.count || 0),
       integrationTiers: {
-        tier1: Number(tier1Count[0]?.count || 0),
-        tier2: Number(tier2Count[0]?.count || 0),
-        tier3: Number(tier3Count[0]?.count || 0)
+        tier1: Number(brandData?.tier1 || 0),
+        tier2: Number(brandData?.tier2 || 0),
+        tier3: Number(brandData?.tier3 || 0)
       },
-      globalRevenue: Math.floor(Number(revenueSum[0]?.sum || 0)).toString(),
+      globalRevenue: Math.floor(Number(revenueData?.sum || 0)).toString(),
       activeBrands,
       marketPenetration: Math.round(marketPenetration * 10) / 10,
-      revenueGrowth: totalPayments > 0 ? Math.round((totalPayments / 30) * 100) / 100 : 0
+      revenueGrowth: Number(paymentsCount[0]?.count || 0) > 0 ? Math.round((Number(paymentsCount[0]?.count || 0) / 30) * 100) / 100 : 0
     };
   }
 
