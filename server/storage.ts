@@ -19,6 +19,12 @@ import {
   processingEngines,
   interstellarNodes,
   globalLogicConfigs,
+  // SamFox Studio Tables
+  artworks,
+  portfolioProjects,
+  artworkCategories,
+  artworkOrders,
+  studioSettings,
   type User, 
   type InsertUser, 
   type Sector, 
@@ -59,6 +65,17 @@ import {
   type InsertInterstellarNode,
   type GlobalLogicConfig,
   type InsertGlobalLogicConfig,
+  // SamFox Studio Types
+  type Artwork,
+  type InsertArtwork,
+  type PortfolioProject,
+  type InsertPortfolioProject,
+  type ArtworkCategory,
+  type InsertArtworkCategory,
+  type ArtworkOrder,
+  type InsertArtworkOrder,
+  type StudioSettings,
+  type InsertStudioSettings,
   COMPREHENSIVE_BRAND_DATA
 } from "@shared/schema";
 import { db } from "./db";
@@ -207,6 +224,66 @@ export interface IStorage {
 
   // Banimal Ecosystem
   seedBanimalData(): Promise<void>;
+
+  // =================================================================
+  // SAMFOX STUDIO STANDALONE METHODS
+  // =================================================================
+  
+  // Artwork Gallery Management
+  getAllArtworks(): Promise<Artwork[]>;
+  getArtwork(id: number): Promise<Artwork | undefined>;
+  getArtworksByCategory(category: string): Promise<Artwork[]>;
+  getFeaturedArtworks(): Promise<Artwork[]>;
+  getAvailableArtworks(): Promise<Artwork[]>;
+  createArtwork(artwork: InsertArtwork): Promise<Artwork>;
+  updateArtwork(id: number, updates: Partial<InsertArtwork>): Promise<Artwork>;
+  deleteArtwork(id: number): Promise<void>;
+  searchArtworks(query: string): Promise<Artwork[]>;
+  
+  // Portfolio Management
+  getAllPortfolioProjects(): Promise<PortfolioProject[]>;
+  getPortfolioProject(id: number): Promise<PortfolioProject | undefined>;
+  getFeaturedPortfolioProjects(): Promise<PortfolioProject[]>;
+  getPortfolioProjectsByCategory(category: string): Promise<PortfolioProject[]>;
+  createPortfolioProject(project: InsertPortfolioProject): Promise<PortfolioProject>;
+  updatePortfolioProject(id: number, updates: Partial<InsertPortfolioProject>): Promise<PortfolioProject>;
+  deletePortfolioProject(id: number): Promise<void>;
+  
+  // Category Management
+  getAllArtworkCategories(): Promise<ArtworkCategory[]>;
+  getArtworkCategory(id: number): Promise<ArtworkCategory | undefined>;
+  getActiveArtworkCategories(): Promise<ArtworkCategory[]>;
+  createArtworkCategory(category: InsertArtworkCategory): Promise<ArtworkCategory>;
+  updateArtworkCategory(id: number, updates: Partial<InsertArtworkCategory>): Promise<ArtworkCategory>;
+  deleteArtworkCategory(id: number): Promise<void>;
+  
+  // Order Management
+  getAllArtworkOrders(): Promise<ArtworkOrder[]>;
+  getArtworkOrder(id: number): Promise<ArtworkOrder | undefined>;
+  getArtworkOrderByOrderId(orderId: string): Promise<ArtworkOrder | undefined>;
+  getOrdersByArtwork(artworkId: number): Promise<ArtworkOrder[]>;
+  createArtworkOrder(order: InsertArtworkOrder): Promise<ArtworkOrder>;
+  updateArtworkOrder(id: number, updates: Partial<InsertArtworkOrder>): Promise<ArtworkOrder>;
+  updateOrderStatus(orderId: string, status: string): Promise<ArtworkOrder>;
+  
+  // Studio Settings
+  getStudioSettings(): Promise<StudioSettings | undefined>;
+  updateStudioSettings(settings: InsertStudioSettings): Promise<StudioSettings>;
+  
+  // Analytics & Stats
+  getSamFoxDashboardStats(): Promise<{
+    totalArtworks: number;
+    totalSales: number;
+    totalRevenue: string;
+    featuredArtworks: number;
+    portfolioProjects: number;
+    categories: number;
+    pendingOrders: number;
+    popularCategory: string;
+  }>;
+  
+  // Seed SamFox Data
+  seedSamFoxData(): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -746,6 +823,346 @@ export class DatabaseStorage implements IStorage {
 
   async getVaultActions(): Promise<VaultAction[]> {
     return await db.select().from(vaultActions);
+  }
+
+  // =================================================================
+  // SAMFOX STUDIO STANDALONE IMPLEMENTATION
+  // =================================================================
+
+  // Artwork Gallery Management
+  async getAllArtworks(): Promise<Artwork[]> {
+    return await db.select().from(artworks).orderBy(desc(artworks.createdAt));
+  }
+
+  async getArtwork(id: number): Promise<Artwork | undefined> {
+    const [artwork] = await db.select().from(artworks).where(eq(artworks.id, id));
+    return artwork;
+  }
+
+  async getArtworksByCategory(category: string): Promise<Artwork[]> {
+    return await db.select().from(artworks)
+      .where(eq(artworks.category, category))
+      .orderBy(desc(artworks.createdAt));
+  }
+
+  async getFeaturedArtworks(): Promise<Artwork[]> {
+    return await db.select().from(artworks)
+      .where(eq(artworks.featured, true))
+      .orderBy(desc(artworks.createdAt));
+  }
+
+  async getAvailableArtworks(): Promise<Artwork[]> {
+    return await db.select().from(artworks)
+      .where(eq(artworks.isAvailable, true))
+      .orderBy(desc(artworks.createdAt));
+  }
+
+  async createArtwork(artwork: InsertArtwork): Promise<Artwork> {
+    const [result] = await db.insert(artworks).values(artwork).returning();
+    return result;
+  }
+
+  async updateArtwork(id: number, updates: Partial<InsertArtwork>): Promise<Artwork> {
+    const [result] = await db
+      .update(artworks)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(artworks.id, id))
+      .returning();
+    return result;
+  }
+
+  async deleteArtwork(id: number): Promise<void> {
+    await db.delete(artworks).where(eq(artworks.id, id));
+  }
+
+  async searchArtworks(query: string): Promise<Artwork[]> {
+    return await db.select().from(artworks)
+      .where(
+        or(
+          ilike(artworks.title, `%${query}%`),
+          ilike(artworks.description, `%${query}%`),
+          ilike(artworks.category, `%${query}%`)
+        )
+      )
+      .orderBy(desc(artworks.createdAt));
+  }
+
+  // Portfolio Management
+  async getAllPortfolioProjects(): Promise<PortfolioProject[]> {
+    return await db.select().from(portfolioProjects)
+      .orderBy(portfolioProjects.sortOrder, desc(portfolioProjects.createdAt));
+  }
+
+  async getPortfolioProject(id: number): Promise<PortfolioProject | undefined> {
+    const [project] = await db.select().from(portfolioProjects).where(eq(portfolioProjects.id, id));
+    return project;
+  }
+
+  async getFeaturedPortfolioProjects(): Promise<PortfolioProject[]> {
+    return await db.select().from(portfolioProjects)
+      .where(eq(portfolioProjects.featured, true))
+      .orderBy(portfolioProjects.sortOrder, desc(portfolioProjects.createdAt));
+  }
+
+  async getPortfolioProjectsByCategory(category: string): Promise<PortfolioProject[]> {
+    return await db.select().from(portfolioProjects)
+      .where(eq(portfolioProjects.category, category))
+      .orderBy(portfolioProjects.sortOrder, desc(portfolioProjects.createdAt));
+  }
+
+  async createPortfolioProject(project: InsertPortfolioProject): Promise<PortfolioProject> {
+    const [result] = await db.insert(portfolioProjects).values(project).returning();
+    return result;
+  }
+
+  async updatePortfolioProject(id: number, updates: Partial<InsertPortfolioProject>): Promise<PortfolioProject> {
+    const [result] = await db
+      .update(portfolioProjects)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(portfolioProjects.id, id))
+      .returning();
+    return result;
+  }
+
+  async deletePortfolioProject(id: number): Promise<void> {
+    await db.delete(portfolioProjects).where(eq(portfolioProjects.id, id));
+  }
+
+  // Category Management
+  async getAllArtworkCategories(): Promise<ArtworkCategory[]> {
+    return await db.select().from(artworkCategories)
+      .orderBy(artworkCategories.sortOrder, artworkCategories.name);
+  }
+
+  async getArtworkCategory(id: number): Promise<ArtworkCategory | undefined> {
+    const [category] = await db.select().from(artworkCategories).where(eq(artworkCategories.id, id));
+    return category;
+  }
+
+  async getActiveArtworkCategories(): Promise<ArtworkCategory[]> {
+    return await db.select().from(artworkCategories)
+      .where(eq(artworkCategories.isActive, true))
+      .orderBy(artworkCategories.sortOrder, artworkCategories.name);
+  }
+
+  async createArtworkCategory(category: InsertArtworkCategory): Promise<ArtworkCategory> {
+    const [result] = await db.insert(artworkCategories).values(category).returning();
+    return result;
+  }
+
+  async updateArtworkCategory(id: number, updates: Partial<InsertArtworkCategory>): Promise<ArtworkCategory> {
+    const [result] = await db
+      .update(artworkCategories)
+      .set(updates)
+      .where(eq(artworkCategories.id, id))
+      .returning();
+    return result;
+  }
+
+  async deleteArtworkCategory(id: number): Promise<void> {
+    await db.delete(artworkCategories).where(eq(artworkCategories.id, id));
+  }
+
+  // Order Management
+  async getAllArtworkOrders(): Promise<ArtworkOrder[]> {
+    return await db.select().from(artworkOrders).orderBy(desc(artworkOrders.createdAt));
+  }
+
+  async getArtworkOrder(id: number): Promise<ArtworkOrder | undefined> {
+    const [order] = await db.select().from(artworkOrders).where(eq(artworkOrders.id, id));
+    return order;
+  }
+
+  async getArtworkOrderByOrderId(orderId: string): Promise<ArtworkOrder | undefined> {
+    const [order] = await db.select().from(artworkOrders).where(eq(artworkOrders.orderId, orderId));
+    return order;
+  }
+
+  async getOrdersByArtwork(artworkId: number): Promise<ArtworkOrder[]> {
+    return await db.select().from(artworkOrders)
+      .where(eq(artworkOrders.artworkId, artworkId))
+      .orderBy(desc(artworkOrders.createdAt));
+  }
+
+  async createArtworkOrder(order: InsertArtworkOrder): Promise<ArtworkOrder> {
+    const [result] = await db.insert(artworkOrders).values(order).returning();
+    return result;
+  }
+
+  async updateArtworkOrder(id: number, updates: Partial<InsertArtworkOrder>): Promise<ArtworkOrder> {
+    const [result] = await db
+      .update(artworkOrders)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(artworkOrders.id, id))
+      .returning();
+    return result;
+  }
+
+  async updateOrderStatus(orderId: string, status: string): Promise<ArtworkOrder> {
+    const [result] = await db
+      .update(artworkOrders)
+      .set({ status, updatedAt: new Date() })
+      .where(eq(artworkOrders.orderId, orderId))
+      .returning();
+    return result;
+  }
+
+  // Studio Settings
+  async getStudioSettings(): Promise<StudioSettings | undefined> {
+    const [settings] = await db.select().from(studioSettings).limit(1);
+    return settings;
+  }
+
+  async updateStudioSettings(settings: InsertStudioSettings): Promise<StudioSettings> {
+    // Check if settings exist
+    const existing = await this.getStudioSettings();
+    
+    if (existing) {
+      const [result] = await db
+        .update(studioSettings)
+        .set({ ...settings, updatedAt: new Date() })
+        .where(eq(studioSettings.id, existing.id))
+        .returning();
+      return result;
+    } else {
+      const [result] = await db.insert(studioSettings).values(settings).returning();
+      return result;
+    }
+  }
+
+  // Analytics & Stats
+  async getSamFoxDashboardStats(): Promise<{
+    totalArtworks: number;
+    totalSales: number;
+    totalRevenue: string;
+    featuredArtworks: number;
+    portfolioProjects: number;
+    categories: number;
+    pendingOrders: number;
+    popularCategory: string;
+  }> {
+    const [artworkStats, orderStats, categoryStats, portfolioStats] = await Promise.all([
+      // Artwork statistics
+      db.select({
+        totalArtworks: count(),
+        featuredArtworks: sql<number>`COUNT(CASE WHEN featured = true THEN 1 END)`
+      }).from(artworks),
+      
+      // Order statistics
+      db.select({
+        totalSales: sql<number>`COUNT(CASE WHEN status = 'completed' THEN 1 END)`,
+        pendingOrders: sql<number>`COUNT(CASE WHEN status = 'pending' THEN 1 END)`,
+        totalRevenue: sql<number>`COALESCE(SUM(CASE WHEN status = 'completed' THEN CAST(amount AS NUMERIC) END), 0)`
+      }).from(artworkOrders),
+      
+      // Category count
+      db.select({ categories: count() }).from(artworkCategories),
+      
+      // Portfolio count
+      db.select({ portfolioProjects: count() }).from(portfolioProjects)
+    ]);
+
+    // Get most popular category
+    const [popularCategoryResult] = await db.select({
+      category: artworks.category,
+      count: count()
+    })
+    .from(artworks)
+    .groupBy(artworks.category)
+    .orderBy(desc(count()))
+    .limit(1);
+
+    return {
+      totalArtworks: Number(artworkStats[0]?.totalArtworks || 0),
+      totalSales: Number(orderStats[0]?.totalSales || 0),
+      totalRevenue: (orderStats[0]?.totalRevenue || 0).toString(),
+      featuredArtworks: Number(artworkStats[0]?.featuredArtworks || 0),
+      portfolioProjects: Number(portfolioStats[0]?.portfolioProjects || 0),
+      categories: Number(categoryStats[0]?.categories || 0),
+      pendingOrders: Number(orderStats[0]?.pendingOrders || 0),
+      popularCategory: popularCategoryResult?.category || 'Character Art'
+    };
+  }
+
+  // Seed SamFox Data
+  async seedSamFoxData(): Promise<void> {
+    try {
+      // Check if already seeded
+      const existingArtworks = await db.select().from(artworks).limit(1);
+      if (existingArtworks.length > 0) {
+        console.log('🎨 SamFox Studio data already seeded');
+        return;
+      }
+
+      console.log('🎨 Seeding SamFox Studio with artwork gallery...');
+      
+      // Seed categories first
+      const categories = [
+        { name: 'Character Art', emoji: '🎭', description: 'Original character designs and illustrations' },
+        { name: 'Digital Art', emoji: '🎨', description: 'Digital paintings and artwork' },
+        { name: 'Brand Design', emoji: '🏷️', description: 'Brand identity and marketing materials' },
+        { name: 'Typography', emoji: '✍️', description: 'Text-based artistic designs' },
+        { name: 'Abstract', emoji: '🌀', description: 'Abstract and experimental art' },
+        { name: 'Portrait', emoji: '👤', description: 'Portrait and people artwork' },
+        { name: 'Cultural Art', emoji: '🌍', description: 'Cultural tribute and heritage art' }
+      ];
+
+      for (const category of categories) {
+        await this.createArtworkCategory(category);
+      }
+
+      // Seed portfolio projects
+      const portfolioProjects = [
+        {
+          title: 'Madiba Mock',
+          description: 'Nelson Mandela tribute piece featuring creative ice cream concept',
+          imageUrl: '/assets/samfox-main/Madiba_mock.png',
+          category: 'Digital Art',
+          tags: ['Portrait Art', 'Cultural Tribute', 'Hand-drawn Style'],
+          medium: 'Digital illustration',
+          style: 'Stylized portrait with playful ice cream concept',
+          theme: 'Mama & Tata - celebrating South African heritage',
+          featured: true,
+          sortOrder: 1,
+          artistId: '45291790' // Default user
+        },
+        {
+          title: 'Banimal Collection',
+          description: 'Animal-themed children\'s clothing and soft toy brand',
+          imageUrl: '/assets/Banimal_1753055992604.png',
+          category: 'Brand Design',
+          tags: ['Character Design', 'Children\'s Brand', 'Product Design'],
+          medium: 'Brand development',
+          style: 'Children\'s product design',
+          theme: 'Animal characters for kids',
+          clientName: 'Banimal Soft Toys',
+          featured: true,
+          sortOrder: 2,
+          artistId: '45291790'
+        }
+      ];
+
+      for (const project of portfolioProjects) {
+        await this.createPortfolioProject(project);
+      }
+
+      // Seed studio settings
+      await this.updateStudioSettings({
+        studioName: 'SamFox Creative Studio',
+        studioDescription: 'Digital art portfolio and commercial gallery platform',
+        artistName: 'SamFox',
+        artistBio: 'Digital artist specializing in character design, cultural art, and brand development',
+        contactEmail: 'hello@samfox.studio',
+        socialLinks: {
+          linkedin: 'https://linkedin.com/in/samfox',
+          portfolio: 'https://samfox.studio'
+        }
+      });
+
+      console.log('✅ SamFox Studio seeding completed!');
+    } catch (error) {
+      console.error('❌ Error seeding SamFox Studio data:', error);
+    }
   }
 
   // Seed initial Banimal data

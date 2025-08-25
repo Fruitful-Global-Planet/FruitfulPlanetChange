@@ -1676,6 +1676,201 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // =================================================================
+  // SAMFOX STUDIO STANDALONE API ROUTES
+  // =================================================================
+  
+  // Portfolio projects API
+  app.get("/api/samfox/portfolio", async (req, res) => {
+    try {
+      const projects = await storage.getAllPortfolioProjects();
+      res.json(projects);
+    } catch (error) {
+      console.error("Error fetching portfolio projects:", error);
+      res.status(500).json({ error: "Failed to fetch portfolio projects" });
+    }
+  });
+
+  app.get("/api/samfox/portfolio/featured", async (req, res) => {
+    try {
+      const projects = await storage.getFeaturedPortfolioProjects();
+      res.json(projects);
+    } catch (error) {
+      console.error("Error fetching featured portfolio:", error);
+      res.status(500).json({ error: "Failed to fetch featured portfolio" });
+    }
+  });
+
+  app.get("/api/samfox/portfolio/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const project = await storage.getPortfolioProject(id);
+      if (!project) {
+        return res.status(404).json({ error: "Portfolio project not found" });
+      }
+      res.json(project);
+    } catch (error) {
+      console.error("Error fetching portfolio project:", error);
+      res.status(500).json({ error: "Failed to fetch portfolio project" });
+    }
+  });
+
+  // Artwork gallery API
+  app.get("/api/samfox/artworks", async (req, res) => {
+    try {
+      const { category, featured, available } = req.query;
+      
+      let artworks;
+      if (category) {
+        artworks = await storage.getArtworksByCategory(category as string);
+      } else if (featured === 'true') {
+        artworks = await storage.getFeaturedArtworks();
+      } else if (available === 'true') {
+        artworks = await storage.getAvailableArtworks();
+      } else {
+        artworks = await storage.getAllArtworks();
+      }
+      
+      res.json(artworks);
+    } catch (error) {
+      console.error("Error fetching artworks:", error);
+      res.status(500).json({ error: "Failed to fetch artworks" });
+    }
+  });
+
+  app.get("/api/samfox/artworks/search", async (req, res) => {
+    try {
+      const { q } = req.query;
+      if (!q) {
+        return res.status(400).json({ error: "Search query required" });
+      }
+      
+      const artworks = await storage.searchArtworks(q as string);
+      res.json(artworks);
+    } catch (error) {
+      console.error("Error searching artworks:", error);
+      res.status(500).json({ error: "Failed to search artworks" });
+    }
+  });
+
+  app.get("/api/samfox/artworks/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const artwork = await storage.getArtwork(id);
+      if (!artwork) {
+        return res.status(404).json({ error: "Artwork not found" });
+      }
+      res.json(artwork);
+    } catch (error) {
+      console.error("Error fetching artwork:", error);
+      res.status(500).json({ error: "Failed to fetch artwork" });
+    }
+  });
+
+  // Categories API
+  app.get("/api/samfox/categories", async (req, res) => {
+    try {
+      const categories = await storage.getActiveArtworkCategories();
+      res.json(categories);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      res.status(500).json({ error: "Failed to fetch categories" });
+    }
+  });
+
+  // Orders API
+  app.get("/api/samfox/orders", async (req, res) => {
+    try {
+      const orders = await storage.getAllArtworkOrders();
+      res.json(orders);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      res.status(500).json({ error: "Failed to fetch orders" });
+    }
+  });
+
+  app.get("/api/samfox/orders/:orderId", async (req, res) => {
+    try {
+      const orderId = req.params.orderId;
+      const order = await storage.getArtworkOrderByOrderId(orderId);
+      if (!order) {
+        return res.status(404).json({ error: "Order not found" });
+      }
+      res.json(order);
+    } catch (error) {
+      console.error("Error fetching order:", error);
+      res.status(500).json({ error: "Failed to fetch order" });
+    }
+  });
+
+  // Studio settings API
+  app.get("/api/samfox/settings", async (req, res) => {
+    try {
+      const settings = await storage.getStudioSettings();
+      res.json(settings || {
+        studioName: "SamFox Creative Studio",
+        studioDescription: "Digital art portfolio and commercial gallery platform",
+        artistName: "SamFox",
+        artistBio: "Digital artist specializing in character design, cultural art, and brand development",
+        contactEmail: "hello@samfox.studio"
+      });
+    } catch (error) {
+      console.error("Error fetching studio settings:", error);
+      res.status(500).json({ error: "Failed to fetch studio settings" });
+    }
+  });
+
+  // Dashboard stats API
+  app.get("/api/samfox/dashboard/stats", async (req, res) => {
+    try {
+      const stats = await storage.getSamFoxDashboardStats();
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching SamFox dashboard stats:", error);
+      res.status(500).json({ error: "Failed to fetch dashboard stats" });
+    }
+  });
+
+  // Protected admin routes (for when auth is implemented)
+  app.post("/api/samfox/artworks", isAuthenticated, async (req, res) => {
+    try {
+      const artwork = await storage.createArtwork(req.body);
+      res.json(artwork);
+    } catch (error) {
+      console.error("Error creating artwork:", error);
+      res.status(500).json({ error: "Failed to create artwork" });
+    }
+  });
+
+  app.put("/api/samfox/artworks/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const artwork = await storage.updateArtwork(id, req.body);
+      res.json(artwork);
+    } catch (error) {
+      console.error("Error updating artwork:", error);
+      res.status(500).json({ error: "Failed to update artwork" });
+    }
+  });
+
+  app.delete("/api/samfox/artworks/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteArtwork(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting artwork:", error);
+      res.status(500).json({ error: "Failed to delete artwork" });
+    }
+  });
+
+  // Initialize SamFox data on server startup
+  try {
+    await storage.seedSamFoxData();
+  } catch (error) {
+    console.error("Error initializing SamFox Studio data:", error);
+  }
+
   // Register ChatGPT Integration Routes
   const { registerChatGPTRoutes } = await import("./routes/chatgpt-extraction");
   registerChatGPTRoutes(app);

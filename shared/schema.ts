@@ -229,6 +229,146 @@ export type SonicGridConnection = typeof sonicGridConnections.$inferSelect;
 export type InsertVaultAction = z.infer<typeof insertVaultActionSchema>;
 export type VaultAction = typeof vaultActions.$inferSelect;
 
+// =================================================================
+// SAMFOX STUDIO STANDALONE APP SCHEMA
+// =================================================================
+// Independent art portfolio and commercial gallery platform
+
+// SamFox Artwork Gallery - Commercial designs for sale
+export const artworks = pgTable("artworks", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  imageUrl: text("image_url").notNull(),
+  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  category: text("category").notNull(), // "Character Art", "Typography", "Abstract", etc.
+  tags: jsonb("tags").$type<string[]>().default([]),
+  medium: text("medium"), // "Digital illustration", "Digital art", etc.
+  isAvailable: boolean("is_available").default(true),
+  salesCount: integer("sales_count").default(0),
+  featured: boolean("featured").default(false),
+  artistId: varchar("artist_id").references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// SamFox Portfolio Projects - Featured creative work
+export const portfolioProjects = pgTable("portfolio_projects", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  imageUrl: text("image_url").notNull(),
+  category: text("category").notNull(), // "Digital Art", "Brand Design", "Character Design"
+  tags: jsonb("tags").$type<string[]>().default([]),
+  medium: text("medium"),
+  style: text("style"),
+  theme: text("theme"),
+  clientName: text("client_name"), // For client work
+  projectYear: integer("project_year"),
+  featured: boolean("featured").default(false),
+  sortOrder: integer("sort_order").default(0),
+  artistId: varchar("artist_id").references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// SamFox Categories for organizing artwork
+export const artworkCategories = pgTable("artwork_categories", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull().unique(),
+  description: text("description"),
+  emoji: text("emoji"),
+  color: text("color"), // For UI theming
+  sortOrder: integer("sort_order").default(0),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// SamFox Sales/Orders for commercial gallery
+export const artworkOrders = pgTable("artwork_orders", {
+  id: serial("id").primaryKey(),
+  orderId: varchar("order_id").unique().notNull(),
+  artworkId: integer("artwork_id").references(() => artworks.id),
+  customerEmail: varchar("customer_email"),
+  customerName: varchar("customer_name"),
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  currency: text("currency").default("USD"),
+  paymentProvider: text("payment_provider"), // "paypal", "stripe", etc.
+  paymentId: text("payment_id"), // External payment ID
+  status: text("status").notNull().default("pending"), // pending, paid, completed, cancelled
+  notes: text("notes"),
+  deliveryMethod: text("delivery_method").default("digital"), // digital, print, etc.
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// SamFox Studio Settings for app configuration
+export const studioSettings = pgTable("studio_settings", {
+  id: serial("id").primaryKey(),
+  studioName: text("studio_name").default("SamFox Creative Studio"),
+  studioDescription: text("studio_description"),
+  studioLogo: text("studio_logo"),
+  artistName: text("artist_name").default("SamFox"),
+  artistBio: text("artist_bio"),
+  artistImage: text("artist_image"),
+  contactEmail: text("contact_email"),
+  socialLinks: jsonb("social_links").$type<{ [key: string]: string }>().default({}),
+  businessSettings: jsonb("business_settings").$type<{
+    currency: string;
+    taxRate?: number;
+    shippingRate?: number;
+    commissionRate?: number;
+  }>().default({ currency: "USD" }),
+  themeSettings: jsonb("theme_settings").$type<{
+    primaryColor: string;
+    secondaryColor: string;
+    accentColor: string;
+    fontFamily: string;
+  }>().default({ primaryColor: "#8b5cf6", secondaryColor: "#ec4899", accentColor: "#06b6d4", fontFamily: "Inter" }),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Schema validation for SamFox models
+export const insertArtworkSchema = createInsertSchema(artworks).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertPortfolioProjectSchema = createInsertSchema(portfolioProjects).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertArtworkCategorySchema = createInsertSchema(artworkCategories).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertArtworkOrderSchema = createInsertSchema(artworkOrders).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertStudioSettingsSchema = createInsertSchema(studioSettings).omit({
+  id: true,
+  updatedAt: true,
+});
+
+// Types for SamFox models
+export type InsertArtwork = z.infer<typeof insertArtworkSchema>;
+export type Artwork = typeof artworks.$inferSelect;
+export type InsertPortfolioProject = z.infer<typeof insertPortfolioProjectSchema>;
+export type PortfolioProject = typeof portfolioProjects.$inferSelect;
+export type InsertArtworkCategory = z.infer<typeof insertArtworkCategorySchema>;
+export type ArtworkCategory = typeof artworkCategories.$inferSelect;
+export type InsertArtworkOrder = z.infer<typeof insertArtworkOrderSchema>;
+export type ArtworkOrder = typeof artworkOrders.$inferSelect;
+export type InsertStudioSettings = z.infer<typeof insertStudioSettingsSchema>;
+export type StudioSettings = typeof studioSettings.$inferSelect;
+
 // Motion, Media & Sonic Studio Tables
 export const mediaProjects = pgTable("media_projects", {
   id: serial("id").primaryKey(),
