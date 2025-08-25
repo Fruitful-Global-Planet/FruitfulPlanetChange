@@ -55,6 +55,7 @@ import SectorList from "@/pages/sector-list"
 import SettingsPage from "@/pages/settings"
 import AnalyticsPage from "@/pages/analytics"
 import SectorMapping from "@/pages/sector-mapping"
+import PlanetChange from "@/pages/planet-change"
 import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
 import { GlobalFooter } from "@/components/ui/global-footer"
@@ -180,6 +181,8 @@ function PageRouter({ activePage }: { activePage: string }) {
           <SectorRelationshipMapping />
         </div>
       )
+    case "planet-change":
+      return <PlanetChange />
     case "fruitful-crate-dance":
       return (
         <div className="p-8">
