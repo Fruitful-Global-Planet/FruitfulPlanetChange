@@ -221,6 +221,23 @@ export function SeedwaveAdmin() {
     }, 1000);
   };
 
+  // Handler functions for sector actions
+  const handleViewSector = (sector: any) => {
+    console.log(`🔍 Viewing sector details for: ${sector.sector}`);
+    toast({
+      title: `Viewing ${sector.sector}`,
+      description: `Core Brands: ${sector.coreBrands} | Nodes: ${sector.totalNodes} | Fee: $${sector.monthlyFee} | Tier: ${sector.tier}`,
+    });
+  };
+
+  const handleDeploySector = (sector: any) => {
+    console.log(`🚀 Deploying sector: ${sector.sector}`);
+    toast({
+      title: `Deploying ${sector.sector}`,
+      description: `Initializing deployment for ${sector.totalNodes} nodes in ${sector.tier} tier`,
+    });
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 flex items-center justify-center p-4">
@@ -459,8 +476,24 @@ export function SeedwaveAdmin() {
                         </td>
                         <td className="border border-gray-300 dark:border-gray-700 p-3">
                           <div className="flex gap-2">
-                            <Button size="sm" variant="outline">View</Button>
-                            <Button size="sm" variant="outline">Deploy</Button>
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => handleViewSector(sector)}
+                              data-testid={`button-view-sector-${index}`}
+                            >
+                              <Eye className="w-3 h-3 mr-1" />
+                              View
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => handleDeploySector(sector)}
+                              data-testid={`button-deploy-sector-${index}`}
+                            >
+                              <Zap className="w-3 h-3 mr-1" />
+                              Deploy
+                            </Button>
                           </div>
                         </td>
                       </tr>
