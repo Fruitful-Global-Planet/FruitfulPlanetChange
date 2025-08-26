@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+import { ScrollBreathGlyphs } from "./ScrollBreathGlyphs";
 
 interface SectorTransitionEffectsProps {
   isVisible: boolean;
@@ -148,6 +149,13 @@ export function SectorTransitionEffects({
             />
           ))}
         </div>
+
+        {/* ScrollBinder Breath Glyphs Integration */}
+        <ScrollBreathGlyphs 
+          isActive={true}
+          intensity="intense"
+          scrollPosition={progress * 100}
+        />
       </motion.div>
     </AnimatePresence>
   );

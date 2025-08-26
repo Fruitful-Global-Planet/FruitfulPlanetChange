@@ -59,6 +59,7 @@ import PlanetChange from "@/pages/planet-change"
 import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
 import { GlobalFooter } from "@/components/ui/global-footer"
+import { ScrollBreathGlyphs, useScrollBreathGlyphs } from "@/components/animations/ScrollBreathGlyphs"
 
 // Page router component that renders content based on active page
 function PageRouter({ activePage }: { activePage: string }) {
@@ -324,6 +325,7 @@ function App() {
 
 function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; setActivePage: (page: string) => void }) {
   const { isAuthenticated, isLoading } = useAuth();
+  const { scrollPosition, isActive, intensity } = useScrollBreathGlyphs({ intensity: 'medium' });
 
   console.log("🔍 AuthenticatedApp render - isLoading:", isLoading, "isAuthenticated:", isAuthenticated, "activePage:", activePage);
 
@@ -356,6 +358,13 @@ function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; s
       </div>
       <GlobalFooter className="ml-0 md:ml-80" />
       <GlobalSyncIndicator />
+      
+      {/* ScrollBinder Breath Glyphs Global Integration */}
+      <ScrollBreathGlyphs 
+        isActive={isActive || activePage !== "home"}
+        intensity={intensity}
+        scrollPosition={scrollPosition}
+      />
     </div>
   );
 }

@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ScrollBinder Breath Glyphs Custom Gradients */
+.bg-gradient-radial {
+  background: radial-gradient(ellipse at center, var(--tw-gradient-stops));
+}
+
 :root {
   /* Light Theme Variables */
   --background: hsl(0, 0%, 100%);
