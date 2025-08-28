@@ -25,6 +25,9 @@ import {
   artworkCategories,
   artworkOrders,
   studioSettings,
+  // Sector Mapping System Tables
+  sectorRelationships,
+  sectorMappingCache,
   type User, 
   type InsertUser, 
   type Sector, 
@@ -76,6 +79,11 @@ import {
   type InsertArtworkOrder,
   type StudioSettings,
   type InsertStudioSettings,
+  // Sector Mapping System Types
+  type SectorRelationship,
+  type InsertSectorRelationship,
+  type SectorMappingCache,
+  type InsertSectorMappingCache,
   COMPREHENSIVE_BRAND_DATA
 } from "@shared/schema";
 import { db } from "./db";
@@ -2093,6 +2101,233 @@ export class MemStorage implements IStorage {
         .returning();
       return created;
     }
+  }
+
+  // ========================================
+  // INTERACTIVE SECTOR MAPPING SYSTEM
+  // ========================================
+  
+  // Sector Relationships
+  async getSectorRelationships(): Promise<SectorRelationship[]> {
+    return await db.select().from(sectorRelationships);
+  }
+
+  async createSectorRelationship(relationship: InsertSectorRelationship): Promise<SectorRelationship> {
+    const [newRelationship] = await db.insert(sectorRelationships).values([relationship]).returning();
+    return newRelationship;
+  }
+
+  async updateSectorRelationship(id: number, updates: Partial<InsertSectorRelationship>): Promise<SectorRelationship> {
+    const [updated] = await db.update(sectorRelationships).set(updates).where(eq(sectorRelationships.id, id)).returning();
+    return updated;
+  }
+
+  async deleteSectorRelationship(id: number): Promise<void> {
+    await db.delete(sectorRelationships).where(eq(sectorRelationships.id, id));
+  }
+
+  // Network Analysis
+  async getNetworkStatistics(): Promise<any> {
+    const [relationshipCount] = await db.select({ count: count() }).from(sectorRelationships);
+    const [sectorCount] = await db.select({ count: count() }).from(sectors);
+    
+    const avgConnections = relationshipCount.count / Math.max(sectorCount.count, 1);
+    const maxPossibleConnections = (sectorCount.count * (sectorCount.count - 1)) / 2;
+    const networkDensity = (relationshipCount.count / Math.max(maxPossibleConnections, 1)) * 100;
+
+    return {
+      totalConnections: relationshipCount.count,
+      totalSectors: sectorCount.count,
+      avgConnections: Math.round(avgConnections * 10) / 10,
+      networkDensity: Math.round(networkDensity),
+      lastCalculated: new Date().toISOString()
+    };
+  }
+
+  async getCriticalPaths(limit: number = 10): Promise<any[]> {
+    const relationships = await db.select()
+      .from(sectorRelationships)
+      .orderBy(desc(sectorRelationships.strength))
+      .limit(limit);
+
+    const criticalPaths = [];
+    for (const rel of relationships) {
+      const [sourceNode] = await db.select().from(sectors).where(eq(sectors.id, rel.sourceId));
+      const [targetNode] = await db.select().from(sectors).where(eq(sectors.id, rel.targetId));
+      
+      if (sourceNode && targetNode) {
+        criticalPaths.push({
+          path: `${sourceNode.name} → ${targetNode.name}`,
+          strength: rel.strength,
+          type: rel.relationshipType,
+          bidirectional: rel.bidirectional
+        });
+      }
+    }
+
+    return criticalPaths;
+  }
+
+  async getInfluenceMap(): Promise<any> {
+    const relationships = await this.getSectorRelationships();
+    const influenceMap: { [sectorId: string]: { inbound: number, outbound: number, totalInfluence: number } } = {};
+
+    relationships.forEach(rel => {
+      const sourceId = rel.sourceId.toString();
+      const targetId = rel.targetId.toString();
+      
+      if (!influenceMap[sourceId]) {
+        influenceMap[sourceId] = { inbound: 0, outbound: 0, totalInfluence: 0 };
+      }
+      if (!influenceMap[targetId]) {
+        influenceMap[targetId] = { inbound: 0, outbound: 0, totalInfluence: 0 };
+      }
+
+      const weight = parseFloat(rel.strength as any) || 0;
+      influenceMap[sourceId].outbound += weight;
+      influenceMap[targetId].inbound += weight;
+    });
+
+    // Calculate total influence scores
+    Object.keys(influenceMap).forEach(sectorId => {
+      const data = influenceMap[sectorId];
+      data.totalInfluence = (data.inbound + data.outbound) / 2;
+    });
+
+    return influenceMap;
+  }
+
+  // Export Functions
+  async exportMatrixData(format: string = 'json'): Promise<string> {
+    const relationships = await this.getSectorRelationships();
+    const allSectors = await this.getAllSectors();
+    
+    if (format === 'csv') {
+      const csvLines = ['Source,Target,Strength,Type,Bidirectional'];
+      
+      for (const rel of relationships) {
+        const source = allSectors.find(s => s.id === rel.sourceId);
+        const target = allSectors.find(s => s.id === rel.targetId);
+        
+        if (source && target) {
+          csvLines.push([
+            source.name.replace(/,/g, ';'),
+            target.name.replace(/,/g, ';'),
+            rel.strength,
+            rel.relationshipType,
+            rel.bidirectional ? 'true' : 'false'
+          ].join(','));
+        }
+      }
+      
+      return csvLines.join('\n');
+    }
+
+    return JSON.stringify({
+      sectors: allSectors,
+      relationships,
+      exportDate: new Date().toISOString()
+    }, null, 2);
+  }
+
+  async exportHierarchyData(): Promise<string> {
+    const allSectors = await this.getAllSectors();
+    const hierarchy: { [tier: string]: Sector[] } = {};
+    
+    allSectors.forEach(sector => {
+      const pricing = sector.metadata?.pricing?.monthly || 79.99;
+      let tier = 'Standard';
+      
+      if (pricing >= 300) tier = 'Enterprise';
+      else if (pricing >= 150) tier = 'Infrastructure';
+      else if (pricing >= 100) tier = 'Professional';
+      
+      if (!hierarchy[tier]) hierarchy[tier] = [];
+      hierarchy[tier].push(sector);
+    });
+
+    return JSON.stringify({
+      hierarchy,
+      tierCounts: Object.keys(hierarchy).reduce((acc, tier) => {
+        acc[tier] = hierarchy[tier].length;
+        return acc;
+      }, {} as { [tier: string]: number }),
+      exportDate: new Date().toISOString()
+    }, null, 2);
+  }
+
+  async exportNetworkData(format: string = 'json'): Promise<string> {
+    const relationships = await this.getSectorRelationships();
+    const allSectors = await this.getAllSectors();
+    const networkStats = await this.getNetworkStatistics();
+    
+    if (format === 'csv') {
+      const csvLines = ['NodeId,NodeName,Emoji,Tier,Connections'];
+      
+      for (const sector of allSectors) {
+        const connections = relationships.filter(rel => 
+          rel.sourceId === sector.id || rel.targetId === sector.id
+        ).length;
+        
+        const pricing = sector.metadata?.pricing?.monthly || 79.99;
+        let tier = 'Standard';
+        if (pricing >= 300) tier = 'Enterprise';
+        else if (pricing >= 150) tier = 'Infrastructure';
+        else if (pricing >= 100) tier = 'Professional';
+        
+        csvLines.push([
+          sector.id,
+          sector.name.replace(/,/g, ';'),
+          sector.emoji,
+          tier,
+          connections
+        ].join(','));
+      }
+      
+      return csvLines.join('\n');
+    }
+
+    return JSON.stringify({
+      nodes: allSectors,
+      relationships,
+      networkStats,
+      exportDate: new Date().toISOString()
+    }, null, 2);
+  }
+
+  // Sector Node Operations
+  async updateSectorNode(sectorId: number, updates: any): Promise<Sector> {
+    const [updated] = await db.update(sectors).set(updates).where(eq(sectors.id, sectorId)).returning();
+    return updated;
+  }
+
+  async getSectorDependencies(sectorId: number): Promise<any> {
+    const relationships = await db.select()
+      .from(sectorRelationships)
+      .where(
+        or(
+          eq(sectorRelationships.sourceId, sectorId),
+          eq(sectorRelationships.targetId, sectorId)
+        )
+      );
+
+    const dependencies = [];
+    const dependents = [];
+
+    for (const rel of relationships) {
+      if (rel.relationshipType === 'dependency') {
+        if (rel.sourceId === sectorId) {
+          const [target] = await db.select().from(sectors).where(eq(sectors.id, rel.targetId));
+          if (target) dependencies.push(target);
+        }
+        if (rel.targetId === sectorId) {
+          const [source] = await db.select().from(sectors).where(eq(sectors.id, rel.sourceId));
+          if (source) dependents.push(source);
+        }
+      }
+    }
+
+    return { dependencies, dependents };
   }
 }
 

@@ -146,6 +146,46 @@ export const insertAdminPanelBrandSchema = createInsertSchema(adminPanelBrands).
 export type UpsertUser = typeof users.$inferInsert;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
+
+// Sector Mapping System Tables
+export const sectorRelationships = pgTable("sector_relationships", {
+  id: serial("id").primaryKey(),
+  sourceId: integer("source_id").notNull().references(() => sectors.id),
+  targetId: integer("target_id").notNull().references(() => sectors.id),
+  strength: numeric("strength", { precision: 3, scale: 2 }).notNull(),
+  relationshipType: varchar("relationship_type", { length: 20 }).notNull(),
+  description: text("description"),
+  bidirectional: boolean("bidirectional").default(false),
+  weight: integer("weight").default(1),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const sectorMappingCache = pgTable("sector_mapping_cache", {
+  id: serial("id").primaryKey(),
+  cacheKey: varchar("cache_key", { length: 255 }).notNull().unique(),
+  cacheData: jsonb("cache_data").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Sector Mapping Schema Validation
+export const insertSectorRelationshipSchema = createInsertSchema(sectorRelationships).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertSectorMappingCacheSchema = createInsertSchema(sectorMappingCache).omit({
+  id: true,
+  createdAt: true,
+});
+
+// Sector Mapping Types
+export type SectorRelationship = typeof sectorRelationships.$inferSelect;
+export type InsertSectorRelationship = z.infer<typeof insertSectorRelationshipSchema>;
+export type SectorMappingCache = typeof sectorMappingCache.$inferSelect;
+export type InsertSectorMappingCache = z.infer<typeof insertSectorMappingCacheSchema>;
 export type InsertSector = z.infer<typeof insertSectorSchema>;
 export type Sector = typeof sectors.$inferSelect;
 export type InsertBrand = z.infer<typeof insertBrandSchema>;

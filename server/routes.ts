@@ -72,6 +72,100 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Register database schema routes for comprehensive data integration
   app.use('/api/database', databaseSchemaRoutes);
 
+  // ========================================
+  // INTERACTIVE SECTOR MAPPING SYSTEM ROUTES
+  // ========================================
+  
+  // Get all sector relationships
+  app.get('/api/sector-mapping/relationships', async (req, res) => {
+    try {
+      const relationships = await storage.getSectorRelationships();
+      res.json(relationships);
+    } catch (error) {
+      console.error('Error fetching sector relationships:', error);
+      res.status(500).json({ error: 'Failed to fetch sector relationships' });
+    }
+  });
+
+  // Create new sector relationship
+  app.post('/api/sector-mapping/relationships', async (req, res) => {
+    try {
+      const relationshipData = req.body;
+      const relationship = await storage.createSectorRelationship(relationshipData);
+      res.status(201).json(relationship);
+    } catch (error) {
+      console.error('Error creating sector relationship:', error);
+      res.status(500).json({ error: 'Failed to create sector relationship' });
+    }
+  });
+
+  // Bulk create sector relationships
+  app.post('/api/sector-mapping/relationships/bulk', async (req, res) => {
+    try {
+      const { relationships } = req.body;
+      const results = [];
+      
+      for (const relationshipData of relationships) {
+        try {
+          const relationship = await storage.createSectorRelationship(relationshipData);
+          results.push(relationship);
+        } catch (error) {
+          console.warn('Failed to create relationship:', relationshipData, error);
+        }
+      }
+      
+      res.status(201).json({ 
+        created: results.length, 
+        total: relationships.length,
+        relationships: results 
+      });
+    } catch (error) {
+      console.error('Error bulk creating sector relationships:', error);
+      res.status(500).json({ error: 'Failed to bulk create sector relationships' });
+    }
+  });
+
+  // Get network statistics
+  app.get('/api/sector-mapping/network-stats', async (req, res) => {
+    try {
+      const stats = await storage.getNetworkStatistics();
+      res.json(stats);
+    } catch (error) {
+      console.error('Error fetching network stats:', error);
+      res.status(500).json({ error: 'Failed to fetch network statistics' });
+    }
+  });
+
+  // Get critical paths analysis
+  app.get('/api/sector-mapping/critical-paths', async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 10;
+      const criticalPaths = await storage.getCriticalPaths(limit);
+      res.json(criticalPaths);
+    } catch (error) {
+      console.error('Error fetching critical paths:', error);
+      res.status(500).json({ error: 'Failed to fetch critical paths' });
+    }
+  });
+
+  // Export network data
+  app.get('/api/sector-mapping/export/network', async (req, res) => {
+    try {
+      const format = req.query.format as string || 'json';
+      const networkData = await storage.exportNetworkData(format);
+      
+      const extension = format === 'csv' ? 'csv' : 'json';
+      const mimeType = format === 'csv' ? 'text/csv' : 'application/json';
+      
+      res.setHeader('Content-Type', mimeType);
+      res.setHeader('Content-Disposition', `attachment; filename="sector-network.${extension}"`);
+      res.send(networkData);
+    } catch (error) {
+      console.error('Error exporting network data:', error);
+      res.status(500).json({ error: 'Failed to export network data' });
+    }
+  });
+
   // PayPal payment routes
   app.get("/paypal/setup", async (req, res) => {
       await loadPaypalDefault(req, res);

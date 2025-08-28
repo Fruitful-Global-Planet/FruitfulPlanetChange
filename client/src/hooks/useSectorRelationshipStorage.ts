@@ -86,11 +86,11 @@ export class SectorRelationshipStorageService {
   }
 
   public getAllRelationships(): SectorRelationship[] {
-    return Array.from(this.relationships.values());
+    return [...this.relationships.values()];
   }
 
   public getAllNodes(): SectorNode[] {
-    return Array.from(this.nodes.values());
+    return [...this.nodes.values()];
   }
 
   // Matrix operations with focused integration
@@ -240,7 +240,7 @@ export function useSectorRelationshipStorage() {
   const initializeStorage = useCallback(async () => {
     try {
       // Convert sectors to nodes with proper positioning
-      const nodes: SectorNode[] = sectors.map((sector: any, index: number) => ({
+      const nodes: SectorNode[] = (sectors as any[]).map((sector: any, index: number) => ({
         id: sector.id,
         name: sector.name,
         emoji: sector.emoji,
