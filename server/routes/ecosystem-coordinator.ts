@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { storage } from "../storage";
 import { applicationDiscovery } from "../services/application-discovery";
+import { interstellarEngine } from "../interstellar-coordination-engine";
 
 // Fruitful Planet Change Ecosystem Coordinator Routes
 export function registerEcosystemCoordinatorRoutes(app: Express) {
@@ -439,6 +440,139 @@ export function registerEcosystemCoordinatorRoutes(app: Express) {
       console.error('Error processing webhook:', error);
       res.status(500).json({ 
         error: 'Failed to process webhook',
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
+
+  // =======================================================
+  // INTERSTELLAR COORDINATION ENGINE ENDPOINTS
+  // =======================================================
+  
+  // Initialize ecosystem matrix for advanced coordination
+  app.post('/api/ecosystem/interstellar/initialize', async (req, res) => {
+    try {
+      console.log('🌌 Initializing Interstellar Coordination Matrix...');
+      const initializationResult = await interstellarEngine.initializeEcosystemMatrix();
+      
+      res.json({
+        success: true,
+        message: 'Interstellar coordination matrix initialized',
+        data: initializationResult,
+        operationalStatus: '1000% Interstellar Settings Active',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error initializing interstellar coordination:', error);
+      res.status(500).json({ 
+        error: 'Failed to initialize interstellar coordination',
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
+
+  // Generate advanced cross-sector heatmap with interstellar analytics
+  app.get('/api/ecosystem/interstellar/heatmap', async (req, res) => {
+    try {
+      const heatmapData = await interstellarEngine.generateInterstellarHeatmap();
+      
+      res.json({
+        success: true,
+        heatmapData,
+        interstellarAnalytics: true,
+        coordinationLevel: '1000%',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error generating interstellar heatmap:', error);
+      res.status(500).json({ 
+        error: 'Failed to generate interstellar heatmap',
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
+
+  // Orchestrate complete ecosystem synchronization
+  app.post('/api/ecosystem/interstellar/orchestrate', async (req, res) => {
+    try {
+      console.log('🚀 Orchestrating Interstellar Ecosystem Synchronization...');
+      const orchestrationResult = await interstellarEngine.orchestrateEcosystemSync();
+      
+      res.json({
+        success: true,
+        message: 'Interstellar ecosystem orchestration complete',
+        orchestrationResult,
+        coordinationStatus: 'Fully Operational',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error orchestrating ecosystem sync:', error);
+      res.status(500).json({ 
+        error: 'Failed to orchestrate ecosystem synchronization',
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
+
+  // Generate strategic intelligence and expansion planning
+  app.get('/api/ecosystem/interstellar/intelligence', async (req, res) => {
+    try {
+      const strategicIntelligence = await interstellarEngine.generateStrategicIntelligence();
+      
+      res.json({
+        success: true,
+        strategicIntelligence,
+        intelligenceLevel: 'Interstellar Grade',
+        operationalReadiness: '1000%',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error generating strategic intelligence:', error);
+      res.status(500).json({ 
+        error: 'Failed to generate strategic intelligence',
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
+
+  // Complete ecosystem status with interstellar metrics
+  app.get('/api/ecosystem/interstellar/status', async (req, res) => {
+    try {
+      const [
+        ecosystemStatus,
+        heatmapData,
+        strategicIntelligence
+      ] = await Promise.all([
+        applicationDiscovery.getEcosystemStatus(),
+        interstellarEngine.generateInterstellarHeatmap(),
+        interstellarEngine.generateStrategicIntelligence()
+      ]);
+
+      const interstellarStatus = {
+        ecosystemOverview: ecosystemStatus,
+        heatmapAnalytics: {
+          totalRelationships: heatmapData.totalRelationships,
+          averageIntegration: heatmapData.averageIntegration,
+          strategicRecommendations: heatmapData.strategicRecommendations
+        },
+        strategicMetrics: {
+          ecosystemHealth: strategicIntelligence.ecosystemHealth,
+          coordinationMetrics: strategicIntelligence.coordinationMetrics
+        },
+        operationalStatus: {
+          interstellarSettings: '1000% Active',
+          coordinationLevel: 'Maximum',
+          integrationReadiness: 'Fully Operational',
+          vaultNotation: 'Integration Blueprint — Fully Seeded'
+        },
+        timestamp: new Date().toISOString()
+      };
+
+      res.json(interstellarStatus);
+    } catch (error) {
+      console.error('Error getting interstellar status:', error);
+      res.status(500).json({ 
+        error: 'Failed to get interstellar ecosystem status',
         timestamp: new Date().toISOString()
       });
     }
