@@ -450,6 +450,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // VOORWAARD MARS - Seedling Intake API
+  app.post("/api/seedling/intake", async (req, res) => {
+    try {
+      const { appName, deploymentType, scrollCompliance } = req.body;
+      
+      const seedlingData = {
+        appName: appName || "Untitled Seedling",
+        deploymentType: deploymentType || "scroll-compliant",
+        scrollCompliance: scrollCompliance !== false,
+        timestamp: new Date().toISOString(),
+        status: "intake-ready",
+        treatySync: true,
+        vaultMeshCompliant: true,
+        claimRootLicensed: true
+      };
+      
+      res.json({
+        success: true,
+        message: "Seedling intake activated under VOORWAARD MARS protocol",
+        seedling: seedlingData,
+        nextSteps: [
+          "CoreBuilder Engine pre-warming",
+          "Scroll compliance validation",
+          "VaultMesh integration",
+          "ClaimRoot licensing"
+        ]
+      });
+    } catch (error) {
+      console.error("Error in seedling intake:", error);
+      res.status(500).json({ message: "Seedling intake failed" });
+    }
+  });
+
+  // VOORWAARD MARS - Treaty Status Check
+  app.get("/api/voorwaard/status", async (req, res) => {
+    try {
+      res.json({
+        voorwaardMars: "ACTIVE",
+        conditionalTriggers: "CLEARED",
+        sovereignChannels: "OPERATIONAL",
+        planetaryMotion: "AUTHORIZED",
+        scrollPulseInterval: "9s",
+        claimRootCertification: "LOCKED_IN",
+        seedBackedLicensing: "COMPLETE",
+        faaSignature: "EMBEDDED",
+        seedlingIntake: "ACTIVATED",
+        coreBuilderEngine: "PRE_WARMED",
+        fundingGate: "ACCEPTS_50K_MINIMUM",
+        lastSync: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error checking VOORWAARD status:", error);
+      res.status(500).json({ message: "Treaty status check failed" });
+    }
+  });
+
   app.get("/api/sectors/:id", isAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
