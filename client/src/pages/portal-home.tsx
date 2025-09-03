@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { Rocket, HelpCircle, Plus } from "lucide-react"
+import { Rocket, HelpCircle, Plus, CreditCard, Shield } from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { SearchFilters } from "@/components/portal/search-filters"
 import { InteractiveBrandCard } from "@/components/interactive-brand-card"
@@ -104,6 +105,43 @@ export default function PortalHome() {
       {/* Quantified Sidebar Menu - Live Sidebar Items with Metadata */}
       <section className="p-6">
         <QuantifiedSidebarMenu />
+      </section>
+
+      {/* ClaimRoot Checkout Integration */}
+      <section className="p-6">
+        <Card className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-500/20">
+          <CardHeader>
+            <CardTitle className="flex items-center text-amber-400">
+              <Shield className="w-6 h-6 mr-2" />
+              🧬 ClaimRoot License Checkout
+            </CardTitle>
+            <CardDescription>
+              VaultLevel 7 licensing system now available
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-slate-300 mb-4">
+              Secure scroll-compliant licensing for Technology sector with full FAA-X13 treaty compliance.
+            </p>
+            <div className="flex gap-4">
+              <Button 
+                onClick={() => window.open('/#/claimroot-checkout', '_blank')}
+                className="bg-amber-500 hover:bg-amber-600 text-black"
+              >
+                Open License Checkout
+              </Button>
+              <a 
+                href="https://www.paypal.com/ncp/payment/K9BPET82JDRQ4"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-black font-medium rounded-lg transition-all"
+              >
+                <CreditCard className="w-4 h-4 mr-2" />
+                Direct Purchase - $1,140 USD
+              </a>
+            </div>
+          </CardContent>
+        </Card>
       </section>
 
       {/* Database Integration Status - Shows PostgreSQL Connection */}
