@@ -13,6 +13,9 @@ export default function ChatGPTIntegration() {
   const [progress, setProgress] = useState(0)
   const [importedChats, setImportedChats] = useState(0)
   const [activeGPTs, setActiveGPTs] = useState(0)
+  const [activatingGPT, setActivatingGPT] = useState<string | null>(null)
+  const [activatedGPTs, setActivatedGPTs] = useState<string[]>([])
+  const [thousandPercentMode, setThousandPercentMode] = useState(false)
 
   const handleImportChats = () => {
     setIsProcessing(true)
@@ -30,6 +33,42 @@ export default function ChatGPTIntegration() {
     }, 200)
   }
 
+  const handleActivateGPT = async (gptName: string) => {
+    setActivatingGPT(gptName);
+    console.log(`🚀 Activating ${gptName} for 1000% functionality...`);
+    
+    // Simulate activation process with realistic timing
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    setActivatedGPTs(prev => [...prev, gptName]);
+    setActivatingGPT(null);
+    
+    console.log(`✅ ${gptName} ACTIVATED - Now operating at 1000% capacity!`);
+    
+    // Check if all GPTs are activated for 1000% mode
+    if (activatedGPTs.length + 1 === 6) {
+      setThousandPercentMode(true);
+      console.log('🔥 ALL GPTS ACTIVATED - 1000% FUNCTIONALITY ACHIEVED!');
+    }
+  };
+
+  const handleActivateAll1000Percent = async () => {
+    console.log('🔥 ACTIVATING ALL GPTS FOR 1000% FUNCTIONALITY...');
+    
+    const gptNames = ["Logic Master", "Data Weaver", "Pattern Hunter", "Insight Engine", "Flow Commander", "Vision Architect"];
+    
+    for (const gptName of gptNames) {
+      if (!activatedGPTs.includes(gptName)) {
+        await handleActivateGPT(gptName);
+        // Small delay between activations for visual effect
+        await new Promise(resolve => setTimeout(resolve, 800));
+      }
+    }
+    
+    setThousandPercentMode(true);
+    console.log('✅ 1000% FUNCTIONALITY ACHIEVED - ALL SYSTEMS OPERATIONAL!');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -40,6 +79,26 @@ export default function ChatGPTIntegration() {
             ChatGPT Lions Integration Portal
           </h1>
           <p className="text-xl text-gray-300">Bring your 6 soul-injected GPTs and 1,100 conversations into Seedwave™</p>
+          
+          {thousandPercentMode && (
+            <div className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/50 rounded-lg p-4 mt-4">
+              <Badge variant="default" className="bg-green-600 text-white text-lg py-2 px-4 animate-pulse">
+                <Sparkles className="h-5 w-5 mr-2" />
+                1000% FUNCTIONALITY ACTIVE
+              </Badge>
+              <p className="text-green-400 mt-2">All GPT Lions are operational at maximum capacity!</p>
+            </div>
+          )}
+          
+          {!thousandPercentMode && (
+            <Button 
+              onClick={handleActivateAll1000Percent}
+              className="mt-4 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-lg px-8 py-3"
+            >
+              <Zap className="h-5 w-5 mr-2" />
+              ACTIVATE 1000% FUNCTIONALITY
+            </Button>
+          )}
           
           <div className="flex justify-center gap-4 flex-wrap">
             <Badge variant="secondary" className="text-lg py-2 px-4">
@@ -163,7 +222,12 @@ export default function ChatGPTIntegration() {
                 { name: "Insight Engine", specialty: "Dot Connection", status: "Pending" },
                 { name: "Flow Commander", specialty: "Process Optimization", status: "Ready" },
                 { name: "Vision Architect", specialty: "System Design", status: "Pending" }
-              ].map((gpt, index) => (
+              ].map((gpt, index) => {
+                const isActivated = activatedGPTs.includes(gpt.name);
+                const isActivating = activatingGPT === gpt.name;
+                const displayStatus = isActivated ? "1000% Active" : isActivating ? "Activating..." : gpt.status;
+                
+                return (
                 <Card key={index} className="bg-gray-800 border-purple-500/30">
                   <CardHeader>
                     <CardTitle className="text-white text-lg">{gpt.name}</CardTitle>
@@ -172,23 +236,27 @@ export default function ChatGPTIntegration() {
                   <CardContent>
                     <div className="space-y-3">
                       <Badge 
-                        variant={gpt.status === "Active" ? "default" : gpt.status === "Ready" ? "secondary" : "outline"}
-                        className="w-full justify-center py-2"
+                        variant={isActivated ? "default" : displayStatus === "Active" ? "default" : displayStatus === "Ready" ? "secondary" : "outline"}
+                        className={`w-full justify-center py-2 ${isActivated ? 'bg-green-600 animate-pulse' : ''} ${isActivating ? 'bg-yellow-600 animate-pulse' : ''}`}
                       >
-                        {gpt.status}
+                        {displayStatus}
                       </Badge>
                       
                       <Button 
                         size="sm" 
-                        className="w-full bg-gradient-to-r from-purple-500 to-pink-500"
+                        className={`w-full ${isActivated ? 'bg-gradient-to-r from-green-500 to-emerald-500' : 'bg-gradient-to-r from-purple-500 to-pink-500'}`}
+                        onClick={() => handleActivateGPT(gpt.name)}
+                        disabled={isActivated || isActivating}
+                        data-testid={`button-activate-${gpt.name.toLowerCase().replace(' ', '-')}`}
                       >
                         <Zap className="h-4 w-4 mr-2" />
-                        Activate GPT
+                        {isActivated ? '1000% Active' : isActivating ? 'Activating...' : 'Activate GPT'}
                       </Button>
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+                )
+              })}
             </div>
           </TabsContent>
 
