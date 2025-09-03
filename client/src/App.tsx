@@ -48,6 +48,7 @@ import FruitfulBusinessPlan from "@/pages/fruitful-business-plan"
 import FruitfulMarketplaceMarketing from "@/pages/fruitful-marketplace-marketing"
 import ChatGPTIntegration from "@/pages/chatgpt-integration"
 import FAAIntakeChecklist from "@/pages/faa-intake-checklist"
+import OmniuniversalButtonValidator from "@/pages/omniuniversal-button-validator"
 import Landing from "@/pages/landing"
 import SectorDashboard from "@/pages/sector-dashboard"
 import SectorIndividualPage from "@/pages/sector-individual"
@@ -263,6 +264,8 @@ function PageRouter({ activePage }: { activePage: string }) {
       return <ChatGPTIntegration />
     case "faa-intake-checklist":
       return <FAAIntakeChecklist />
+    case "omniuniversal-button-validator":
+      return <OmniuniversalButtonValidator />
     case "ecosystem-coordinator":
       return <EcosystemCoordinator />
     default:

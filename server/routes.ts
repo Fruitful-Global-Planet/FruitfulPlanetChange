@@ -2128,6 +2128,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const { registerChatGPTRoutes } = await import("./routes/chatgpt-extraction");
   registerChatGPTRoutes(app);
 
+  // Import button validation engine after other imports to avoid errors
+  const { buttonValidator } = await import("./button-validation-engine");
+
+  // Button Validation API Routes
+  app.post("/api/button-validation/scan", async (req, res) => {
+    try {
+      console.log('🔍 OMNIUNIVERSAL BUTTON SCAN REQUESTED...');
+      await buttonValidator.scanAllFiles();
+      const status = buttonValidator.getStatus();
+      res.json({
+        message: "Button validation scan completed",
+        status: status.status,
+        results: status
+      });
+    } catch (error) {
+      console.error("Button validation scan failed:", error);
+      res.status(500).json({ 
+        error: "Button validation scan failed", 
+        details: (error as Error).message 
+      });
+    }
+  });
+
+  app.post("/api/button-validation/repair", async (req, res) => {
+    try {
+      console.log('🔧 AUTO-REPAIR SYSTEM REQUESTED...');
+      await buttonValidator.autoRepairButtons();
+      const status = buttonValidator.getStatus();
+      res.json({
+        message: "Button auto-repair completed",
+        repaired: status.repairedCount,
+        status: status.status
+      });
+    } catch (error) {
+      console.error("Button auto-repair failed:", error);
+      res.status(500).json({ 
+        error: "Button auto-repair failed", 
+        details: (error as Error).message 
+      });
+    }
+  });
+
+  app.get("/api/button-validation/status", (req, res) => {
+    try {
+      const status = buttonValidator.getStatus();
+      res.json(status);
+    } catch (error) {
+      console.error("Error fetching button validation status:", error);
+      res.status(500).json({ 
+        error: "Failed to fetch button validation status", 
+        details: (error as Error).message 
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
