@@ -150,6 +150,32 @@ export default function PortalHome() {
         </Card>
       </section>
 
+      {/* Dynamic Button Repair Engine */}
+      <section className="p-6">
+        <Card className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border-blue-500/20">
+          <CardHeader>
+            <CardTitle className="flex items-center text-blue-400">
+              <Shield className="w-6 h-6 mr-2" />
+              🔧 Dynamic Button Repair Engine
+            </CardTitle>
+            <CardDescription>
+              AI-powered button monitoring and auto-repair system
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-slate-300 mb-4">
+              Real-time scanning with intelligent repair suggestions for all UI buttons across the ecosystem.
+            </p>
+            <Button 
+              onClick={() => window.open('/#/button-repair-dashboard', '_blank')}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              Open Repair Dashboard
+            </Button>
+          </CardContent>
+        </Card>
+      </section>
+
       {/* Database Integration Status - Shows PostgreSQL Connection */}
       <section className="p-6">
         <DatabaseIntegrationStatus />

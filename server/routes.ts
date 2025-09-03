@@ -22,6 +22,7 @@ import adminPanelRoutes from './routes/admin-panel';
 import syncRoutes from './routes/sync';
 import databaseSchemaRoutes from './routes/database-schema';
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
+import { buttonRepairEngine } from "./dynamic-button-repair";
 
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -665,6 +666,124 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Standalone HTML Checkout Page Endpoint
   app.get("/checkout.html", async (req, res) => {
     res.sendFile('public/claimroot-checkout.html', { root: process.cwd() });
+  });
+
+  // Dynamic Button Repair Engine Endpoints
+  app.get("/api/button-repair/scan", async (req, res) => {
+    try {
+      const page_url = req.query.page_url as string || "/";
+      const issues = await buttonRepairEngine.scanForButtonIssues(page_url);
+      
+      res.json({
+        scan_timestamp: new Date().toISOString(),
+        page_url,
+        issues_detected: issues.length,
+        issues: issues,
+        status: "scan_complete"
+      });
+    } catch (error) {
+      console.error("Error scanning buttons:", error);
+      res.status(500).json({ message: "Button scan failed" });
+    }
+  });
+
+  app.get("/api/button-repair/suggestions/:issue_id", async (req, res) => {
+    try {
+      const issue_id = req.params.issue_id;
+      const issue = buttonRepairEngine['detectedIssues'].find(i => i.id === issue_id);
+      
+      if (!issue) {
+        return res.status(404).json({ message: "Issue not found" });
+      }
+      
+      const suggestion = buttonRepairEngine.generateRepairSuggestion(issue);
+      
+      res.json({
+        issue,
+        suggestion,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error generating suggestion:", error);
+      res.status(500).json({ message: "Suggestion generation failed" });
+    }
+  });
+
+  app.post("/api/button-repair/execute", async (req, res) => {
+    try {
+      const { issue_id, user_confirmed } = req.body;
+      
+      if (!user_confirmed) {
+        return res.status(400).json({ message: "User confirmation required for repair execution" });
+      }
+      
+      const issue = buttonRepairEngine['detectedIssues'].find(i => i.id === issue_id);
+      if (!issue) {
+        return res.status(404).json({ message: "Issue not found" });
+      }
+      
+      const suggestion = buttonRepairEngine.generateRepairSuggestion(issue);
+      const result = await buttonRepairEngine.executeRepair(suggestion);
+      
+      res.json({
+        issue_id,
+        repair_executed: result.success,
+        message: result.message,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error executing repair:", error);
+      res.status(500).json({ message: "Repair execution failed" });
+    }
+  });
+
+  app.get("/api/button-repair/analytics", async (req, res) => {
+    try {
+      const analytics = buttonRepairEngine.getRepairAnalytics();
+      
+      res.json({
+        ...analytics,
+        vault_status: "active",
+        monitoring_status: "operational",
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error fetching repair analytics:", error);
+      res.status(500).json({ message: "Analytics fetch failed" });
+    }
+  });
+
+  app.post("/api/button-repair/start-monitoring", async (req, res) => {
+    try {
+      const { interval_seconds = 30 } = req.body;
+      
+      await buttonRepairEngine.startContinuousMonitoring(interval_seconds);
+      
+      res.json({
+        monitoring_started: true,
+        interval_seconds,
+        message: "VaultMesh continuous button monitoring activated",
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error starting monitoring:", error);
+      res.status(500).json({ message: "Monitoring start failed" });
+    }
+  });
+
+  app.post("/api/button-repair/stop-monitoring", async (req, res) => {
+    try {
+      buttonRepairEngine.stopMonitoring();
+      
+      res.json({
+        monitoring_stopped: true,
+        message: "Button monitoring stopped",
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error stopping monitoring:", error);
+      res.status(500).json({ message: "Monitoring stop failed" });
+    }
   });
 
   app.get("/api/sectors/:id", isAuthenticated, async (req, res) => {

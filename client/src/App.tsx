@@ -50,6 +50,7 @@ import ChatGPTIntegration from "@/pages/chatgpt-integration"
 import FAAIntakeChecklist from "@/pages/faa-intake-checklist"
 import OmniuniversalButtonValidator from "@/pages/omniuniversal-button-validator"
 import ClaimRootCheckoutPage from "@/pages/claimroot-checkout"
+import ButtonRepairDashboard from "@/pages/button-repair-dashboard"
 import Landing from "@/pages/landing"
 import SectorDashboard from "@/pages/sector-dashboard"
 import SectorIndividualPage from "@/pages/sector-individual"
@@ -269,6 +270,8 @@ function PageRouter({ activePage }: { activePage: string }) {
       return <OmniuniversalButtonValidator />
     case "claimroot-checkout":
       return <ClaimRootCheckoutPage />
+    case "button-repair-dashboard":
+      return <ButtonRepairDashboard />
     case "ecosystem-coordinator":
       return <EcosystemCoordinator />
     default:
