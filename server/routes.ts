@@ -84,6 +84,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const { registerFrontendTraceRoutes } = await import('./routes/frontend-trace');
   registerFrontendTraceRoutes(app);
 
+  // Register dynamic sidebar items API for programmatic consumption
+  const { registerSidebarItemsRoutes } = await import('./routes/sidebar-items');
+  registerSidebarItemsRoutes(app);
+
   // ========================================
   // INTERACTIVE SECTOR MAPPING SYSTEM ROUTES
   // ========================================
