@@ -2329,6 +2329,152 @@ export class MemStorage implements IStorage {
 
     return { dependencies, dependents };
   }
+
+  // Cross-Sector Heatmap Data Methods
+  async getSectorRelationships(): Promise<any[]> {
+    // Generate synthetic relationship data based on actual sectors
+    const sectorsData = await this.getAllSectors();
+    const relationships = [];
+    
+    // Create relationships between sectors based on their characteristics
+    for (let i = 0; i < sectorsData.length; i++) {
+      for (let j = i + 1; j < sectorsData.length; j++) {
+        const source = sectorsData[i];
+        const target = sectorsData[j];
+        
+        // Calculate relationship strength based on sector characteristics
+        const relationshipStrength = this.calculateSectorRelationshipStrength(source, target);
+        
+        if (relationshipStrength > 10) { // Only include meaningful relationships
+          relationships.push({
+            id: relationships.length + 1,
+            sourceId: source.id,
+            targetId: target.id,
+            strength: relationshipStrength.toString(),
+            type: this.determineSectorRelationshipType(source, target),
+            bidirectional: true,
+            integrationPotential: relationshipStrength * (0.8 + Math.random() * 0.4),
+            strategicValue: relationshipStrength * (0.7 + Math.random() * 0.6),
+            operationalSynergy: relationshipStrength * (0.6 + Math.random() * 0.8)
+          });
+        }
+      }
+    }
+    
+    return relationships;
+  }
+
+  async getInfluenceMap(): Promise<Record<string, any>> {
+    const sectorsData = await this.getAllSectors();
+    const influenceMap: Record<string, any> = {};
+    
+    for (const sector of sectorsData) {
+      const influence = this.calculateSectorInfluence(sector);
+      influenceMap[sector.id] = {
+        totalInfluence: influence,
+        brandCount: sector.brandCount || 0,
+        marketReach: influence * 1.2,
+        networkEffect: influence * 0.9
+      };
+    }
+    
+    return influenceMap;
+  }
+
+  async getNetworkStatistics(): Promise<any> {
+    const sectorsData = await this.getAllSectors();
+    const relationships = await this.getSectorRelationships();
+    
+    const totalPossibleConnections = (sectorsData.length * (sectorsData.length - 1)) / 2;
+    const actualConnections = relationships.length;
+    const networkDensity = (actualConnections / totalPossibleConnections) * 100;
+    
+    const avgRelationshipStrength = relationships.reduce((sum, rel) => sum + parseFloat(rel.strength), 0) / relationships.length;
+    
+    return {
+      totalSectors: sectorsData.length,
+      totalConnections: actualConnections,
+      networkDensity: Math.round(networkDensity),
+      averageRelationshipStrength: Math.round(avgRelationshipStrength),
+      strongConnections: relationships.filter(r => parseFloat(r.strength) > 70).length,
+      weakConnections: relationships.filter(r => parseFloat(r.strength) < 30).length
+    };
+  }
+
+  private calculateSectorRelationshipStrength(sector1: Sector, sector2: Sector): number {
+    // Base strength calculation using sector names and characteristics
+    let strength = 20; // Base relationship strength
+    
+    // Check for complementary sectors
+    const complementaryPairs = [
+      ['Agriculture', 'Food'],
+      ['Banking', 'Finance'],
+      ['Housing', 'Infrastructure'],
+      ['Creative', 'Marketing'],
+      ['Technology', 'AI'],
+      ['Energy', 'Utilities'],
+      ['Education', 'Youth'],
+      ['Health', 'Hygiene'],
+      ['Logistics', 'Packaging'],
+      ['Gaming', 'Entertainment']
+    ];
+    
+    for (const [term1, term2] of complementaryPairs) {
+      if ((sector1.name.includes(term1) && sector2.name.includes(term2)) ||
+          (sector1.name.includes(term2) && sector2.name.includes(term1))) {
+        strength += 40;
+        break;
+      }
+    }
+    
+    // Add variation based on sector characteristics
+    if (sector1.brandCount && sector2.brandCount) {
+      const brandSynergy = Math.min((sector1.brandCount + sector2.brandCount) / 100, 20);
+      strength += brandSynergy;
+    }
+    
+    // Add some randomization for realistic variation
+    strength += Math.random() * 20 - 10;
+    
+    return Math.max(0, Math.min(100, Math.round(strength)));
+  }
+
+  private determineSectorRelationshipType(sector1: Sector, sector2: Sector): string {
+    const types = ['synergy', 'complementary', 'collaborative', 'integrated', 'strategic'];
+    return types[Math.floor(Math.random() * types.length)];
+  }
+
+  private calculateSectorInfluence(sector: Sector): number {
+    let influence = 40; // Base influence
+    
+    // Influence based on brand count
+    if (sector.brandCount) {
+      influence += Math.min(sector.brandCount * 2, 30);
+    }
+    
+    // Influence based on sector type
+    const highInfluenceSectors = ['Banking', 'Finance', 'Technology', 'AI', 'Energy', 'Infrastructure'];
+    const mediumInfluenceSectors = ['Agriculture', 'Health', 'Education', 'Creative', 'Logistics'];
+    
+    for (const term of highInfluenceSectors) {
+      if (sector.name.includes(term)) {
+        influence += 25;
+        break;
+      }
+    }
+    
+    for (const term of mediumInfluenceSectors) {
+      if (sector.name.includes(term)) {
+        influence += 15;
+        break;
+      }
+    }
+    
+    // Add some variation
+    influence += Math.random() * 10 - 5;
+    
+    return Math.max(0, Math.min(100, Math.round(influence)));
+  }
 }
 
 export const storage = new DatabaseStorage();

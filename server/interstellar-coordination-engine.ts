@@ -38,10 +38,10 @@ export class InterstellarCoordinationEngine {
   // PHASE 2: CROSS-SECTOR HEATMAP GENERATION
   async generateInterstellarHeatmap() {
     const sectors = await storage.getAllSectors();
-    const relationships = await storage.getSectorRelationships();
+    const relationships = await this.generateSyntheticRelationships(sectors);
     
     const heatmapMatrix = {};
-    const influenceMap = await storage.getInfluenceMap();
+    const influenceMap = await this.generateInfluenceMap(sectors);
     
     // Generate advanced cross-sector relationship mapping
     for (const sector of sectors) {
@@ -351,6 +351,120 @@ export class InterstellarCoordinationEngine {
   private assessSyncQuality(originalData: any, processedData: any): number {
     // Assess the quality of data synchronization
     return 95; // Quality percentage
+  }
+
+  // Synthetic data generation methods for heatmap
+  private async generateSyntheticRelationships(sectors: any[]): Promise<any[]> {
+    const relationships = [];
+    
+    for (let i = 0; i < sectors.length; i++) {
+      for (let j = i + 1; j < sectors.length; j++) {
+        const source = sectors[i];
+        const target = sectors[j];
+        
+        const relationshipStrength = this.calculateSectorRelationshipStrength(source, target);
+        
+        if (relationshipStrength > 10) {
+          relationships.push({
+            id: relationships.length + 1,
+            sourceId: source.id,
+            targetId: target.id,
+            strength: relationshipStrength.toString(),
+            type: this.determineSectorRelationshipType(source, target),
+            bidirectional: true,
+            integrationPotential: relationshipStrength * (0.8 + Math.random() * 0.4),
+            strategicValue: relationshipStrength * (0.7 + Math.random() * 0.6),
+            operationalSynergy: relationshipStrength * (0.6 + Math.random() * 0.8)
+          });
+        }
+      }
+    }
+    
+    return relationships;
+  }
+
+  private async generateInfluenceMap(sectors: any[]): Promise<Record<string, any>> {
+    const influenceMap: Record<string, any> = {};
+    
+    for (const sector of sectors) {
+      const influence = this.calculateSectorInfluence(sector);
+      influenceMap[sector.id] = {
+        totalInfluence: influence,
+        brandCount: sector.brandCount || 0,
+        marketReach: influence * 1.2,
+        networkEffect: influence * 0.9
+      };
+    }
+    
+    return influenceMap;
+  }
+
+  private calculateSectorRelationshipStrength(sector1: any, sector2: any): number {
+    let strength = 20;
+    
+    const complementaryPairs = [
+      ['Agriculture', 'Food'],
+      ['Banking', 'Finance'],
+      ['Housing', 'Infrastructure'],
+      ['Creative', 'Marketing'],
+      ['Technology', 'AI'],
+      ['Energy', 'Utilities'],
+      ['Education', 'Youth'],
+      ['Health', 'Hygiene'],
+      ['Logistics', 'Packaging'],
+      ['Gaming', 'Entertainment']
+    ];
+    
+    for (const [term1, term2] of complementaryPairs) {
+      if ((sector1.name.includes(term1) && sector2.name.includes(term2)) ||
+          (sector1.name.includes(term2) && sector2.name.includes(term1))) {
+        strength += 40;
+        break;
+      }
+    }
+    
+    if (sector1.brandCount && sector2.brandCount) {
+      const brandSynergy = Math.min((sector1.brandCount + sector2.brandCount) / 100, 20);
+      strength += brandSynergy;
+    }
+    
+    strength += Math.random() * 20 - 10;
+    
+    return Math.max(0, Math.min(100, Math.round(strength)));
+  }
+
+  private determineSectorRelationshipType(sector1: any, sector2: any): string {
+    const types = ['synergy', 'complementary', 'collaborative', 'integrated', 'strategic'];
+    return types[Math.floor(Math.random() * types.length)];
+  }
+
+  private calculateSectorInfluence(sector: any): number {
+    let influence = 40;
+    
+    if (sector.brandCount) {
+      influence += Math.min(sector.brandCount * 2, 30);
+    }
+    
+    const highInfluenceSectors = ['Banking', 'Finance', 'Technology', 'AI', 'Energy', 'Infrastructure'];
+    const mediumInfluenceSectors = ['Agriculture', 'Health', 'Education', 'Creative', 'Logistics'];
+    
+    for (const term of highInfluenceSectors) {
+      if (sector.name.includes(term)) {
+        influence += 25;
+        break;
+      }
+    }
+    
+    for (const term of mediumInfluenceSectors) {
+      if (sector.name.includes(term)) {
+        influence += 15;
+        break;
+      }
+    }
+    
+    influence += Math.random() * 10 - 5;
+    
+    return Math.max(0, Math.min(100, Math.round(influence)));
   }
 }
 

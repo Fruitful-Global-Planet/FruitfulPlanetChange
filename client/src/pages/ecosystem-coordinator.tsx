@@ -26,6 +26,7 @@ import {
   XCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { CrossSectorHeatmap } from '@/components/heatmap/CrossSectorHeatmap';
 
 interface EcosystemDashboard {
   totalSectors: number;
@@ -496,19 +497,9 @@ export function EcosystemCoordinator() {
             )}
           </TabsContent>
 
-          {/* Other tabs would be implemented similarly */}
+          {/* Cross-Sector Heatmap Visualizer */}
           <TabsContent value="heatmap">
-            <Card>
-              <CardHeader>
-                <CardTitle>Cross-Sector Heatmap Analytics</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <Map className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                  <p className="text-gray-600">Heatmap visualization coming soon...</p>
-                </div>
-              </CardContent>
-            </Card>
+            <CrossSectorHeatmap />
           </TabsContent>
 
           <TabsContent value="roadmap">
