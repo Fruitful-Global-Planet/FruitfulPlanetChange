@@ -13,8 +13,9 @@ import {
 } from "@shared/schema";
 import { IntegrationManager } from "./services/integration-manager";
 import { getAPIConfig } from "../shared/api-config";
-import { setupAuth, isAuthenticated } from "./replitAuth"
+import { setupAuth, isAuthenticated } from "./replitAuth";
 import { registerSectorRoutes } from "./routes/sectors";
+import { dnsIntegration } from "./services/dns-integration";
 import { ExtensionScanner } from "./extension-scanner";
 import { registerAdminPanelRoutes } from './routes-admin-panel';
 import adminPanelRoutes from './routes/admin-panel';
@@ -95,6 +96,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Register ecosystem coordinator routes for Fruitful Planet Change integration
   const { registerEcosystemCoordinatorRoutes } = await import('./routes/ecosystem-coordinator');
   registerEcosystemCoordinatorRoutes(app);
+
+  // ========================================
+  // DNS MONITORING SYSTEM ROUTES
+  // ========================================
+  
+  // Get current DNS status
+  app.get('/api/dns/status', async (req, res) => {
+    try {
+      const status = await dnsIntegration.checkDNSStatus();
+      res.json(status);
+    } catch (error) {
+      console.error('Error checking DNS status:', error);
+      res.status(500).json({ error: 'Failed to check DNS status' });
+    }
+  });
+
+  // Get Genesis Layer sync status with DNS
+  app.get('/api/dns/genesis-sync', async (req, res) => {
+    try {
+      const syncStatus = await dnsIntegration.syncWithGenesisLayer();
+      res.json(syncStatus);
+    } catch (error) {
+      console.error('Error getting Genesis Layer sync status:', error);
+      res.status(500).json({ error: 'Failed to get Genesis Layer sync status' });
+    }
+  });
+
+  // Start DNS monitoring (for manual trigger)
+  app.post('/api/dns/start-monitoring', async (req, res) => {
+    try {
+      await dnsIntegration.startDNSMonitoring();
+      res.json({ 
+        success: true, 
+        message: 'DNS monitoring started for fruitfulplanet.com' 
+      });
+    } catch (error) {
+      console.error('Error starting DNS monitoring:', error);
+      res.status(500).json({ error: 'Failed to start DNS monitoring' });
+    }
+  });
 
   // ========================================
   // INTERACTIVE SECTOR MAPPING SYSTEM ROUTES
