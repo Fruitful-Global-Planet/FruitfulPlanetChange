@@ -42,7 +42,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         profileImageUrl: null,
       });
     }
-    
+
     // In production, use proper authentication
     const authenticateMiddleware = isAuthenticated;
     authenticateMiddleware(req, res, () => {
@@ -59,19 +59,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Register sector routes
   registerSectorRoutes(app);
-  
+
   // Register MineNest mining routes
   registerMineNestRoutes(app);
-  
+
   // Register Admin Panel routes
   registerAdminPanelRoutes(app, storage);
-  
+
   // Register new admin panel API routes
   app.use('/api/admin-panel', adminPanelRoutes);
-  
+
   // Register sync routes for real-time synchronization
   app.use('/api/sync', syncRoutes);
-  
+
   // Register database schema routes for comprehensive data integration
   app.use('/api/database', databaseSchemaRoutes);
 
@@ -102,14 +102,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ========================================
   // DNS MONITORING SYSTEM ROUTES
   // ========================================
-  
+
   // Get current DNS status
   app.get('/api/dns/status', async (req, res) => {
     try {
       const status = await dnsIntegration.checkDNSStatus();
       res.json(status);
-    } catch (error) {
-      console.error('Error checking DNS status:', error);
+    } catch (error: Error) {
+      console.error('Error checking DNS status:', error.message);
       res.status(500).json({ error: 'Failed to check DNS status' });
     }
   });
@@ -119,8 +119,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const syncStatus = await dnsIntegration.syncWithGenesisLayer();
       res.json(syncStatus);
-    } catch (error) {
-      console.error('Error getting Genesis Layer sync status:', error);
+    } catch (error: Error) {
+      console.error('Error getting Genesis Layer sync status:', error.message);
       res.status(500).json({ error: 'Failed to get Genesis Layer sync status' });
     }
   });
@@ -133,8 +133,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         success: true, 
         message: 'DNS monitoring started for fruitfulplanet.com' 
       });
-    } catch (error) {
-      console.error('Error starting DNS monitoring:', error);
+    } catch (error: Error) {
+      console.error('Error starting DNS monitoring:', error.message);
       res.status(500).json({ error: 'Failed to start DNS monitoring' });
     }
   });
@@ -142,14 +142,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ========================================
   // INTERACTIVE SECTOR MAPPING SYSTEM ROUTES
   // ========================================
-  
+
   // Get all sector relationships
   app.get('/api/sector-mapping/relationships', async (req, res) => {
     try {
       const relationships = await storage.getSectorRelationships();
       res.json(relationships);
-    } catch (error) {
-      console.error('Error fetching sector relationships:', error);
+    } catch (error: Error) {
+      console.error('Error fetching sector relationships:', error.message);
       res.status(500).json({ error: 'Failed to fetch sector relationships' });
     }
   });
@@ -160,8 +160,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const relationshipData = req.body;
       const relationship = await storage.createSectorRelationship(relationshipData);
       res.status(201).json(relationship);
-    } catch (error) {
-      console.error('Error creating sector relationship:', error);
+    } catch (error: Error) {
+      console.error('Error creating sector relationship:', error.message);
       res.status(500).json({ error: 'Failed to create sector relationship' });
     }
   });
@@ -171,23 +171,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { relationships } = req.body;
       const results = [];
-      
+
       for (const relationshipData of relationships) {
         try {
           const relationship = await storage.createSectorRelationship(relationshipData);
           results.push(relationship);
-        } catch (error) {
-          console.warn('Failed to create relationship:', relationshipData, error);
+        } catch (error: Error) {
+          console.warn('Failed to create relationship:', relationshipData, error.message);
         }
       }
-      
+
       res.status(201).json({ 
         created: results.length, 
         total: relationships.length,
         relationships: results 
       });
-    } catch (error) {
-      console.error('Error bulk creating sector relationships:', error);
+    } catch (error: Error) {
+      console.error('Error bulk creating sector relationships:', error.message);
       res.status(500).json({ error: 'Failed to bulk create sector relationships' });
     }
   });
@@ -197,8 +197,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const stats = await storage.getNetworkStatistics();
       res.json(stats);
-    } catch (error) {
-      console.error('Error fetching network stats:', error);
+    } catch (error: Error) {
+      console.error('Error fetching network stats:', error.message);
       res.status(500).json({ error: 'Failed to fetch network statistics' });
     }
   });
@@ -209,8 +209,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const limit = parseInt(req.query.limit as string) || 10;
       const criticalPaths = await storage.getCriticalPaths(limit);
       res.json(criticalPaths);
-    } catch (error) {
-      console.error('Error fetching critical paths:', error);
+    } catch (error: Error) {
+      console.error('Error fetching critical paths:', error.message);
       res.status(500).json({ error: 'Failed to fetch critical paths' });
     }
   });
@@ -220,15 +220,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const format = req.query.format as string || 'json';
       const networkData = await storage.exportNetworkData(format);
-      
+
       const extension = format === 'csv' ? 'csv' : 'json';
       const mimeType = format === 'csv' ? 'text/csv' : 'application/json';
-      
+
       res.setHeader('Content-Type', mimeType);
       res.setHeader('Content-Disposition', `attachment; filename="sector-network.${extension}"`);
       res.send(networkData);
-    } catch (error) {
-      console.error('Error exporting network data:', error);
+    } catch (error: Error) {
+      console.error('Error exporting network data:', error.message);
       res.status(500).json({ error: 'Failed to export network data' });
     }
   });
@@ -236,15 +236,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ========================================
   // TRIPLE-SYNC INTEGRATION ENDPOINTS
   // ========================================
-  
+
   // Triple-sync validation endpoint
   app.get('/api/triple-sync/validate', async (req, res) => {
     try {
       const { tripleSyncValidator } = await import('./triple-sync-validator');
       const validation = await tripleSyncValidator.validateTripleSync();
       res.json(validation);
-    } catch (error) {
-      console.error('Error validating triple-sync:', error);
+    } catch (error: Error) {
+      console.error('Error validating triple-sync:', error.message);
       res.status(500).json({ error: 'Triple-sync validation failed' });
     }
   });
@@ -260,8 +260,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         timestamp: new Date().toISOString(),
         appName: 'HSOMNI9000'
       });
-    } catch (error) {
-      console.error('Error checking sync status:', error);
+    } catch (error: Error) {
+      console.error('Error checking sync status:', error.message);
       res.status(500).json({ 
         syncAllowed: false, 
         reason: 'Status check failed',
@@ -273,21 +273,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ========================================
   // LIVE AUDIT SYSTEM ENDPOINTS
   // ========================================
-  
+
   // Activate canonical source of display truth
   app.post('/api/audit/activate-canonical', async (req, res) => {
     try {
       const { liveAuditSystem } = await import('./live-audit-system');
       const canonicalState = await liveAuditSystem.activateCanonicalSource();
-      
+
       console.log('🔒 Canonical Source of Display Truth ACTIVATED');
       res.json({
         success: true,
         canonicalState,
         message: 'Canonical source activated - Backend is now truth authority'
       });
-    } catch (error) {
-      console.error('Error activating canonical source:', error);
+    } catch (error: Error) {
+      console.error('Error activating canonical source:', error.message);
       res.status(500).json({ 
         success: false, 
         error: 'Failed to activate canonical source' 
@@ -300,10 +300,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { liveAuditSystem } = await import('./live-audit-system');
       const syncResult = await liveAuditSystem.forceSyncFromBackend();
-      
+
       res.json(syncResult);
-    } catch (error) {
-      console.error('Error forcing sync:', error);
+    } catch (error: Error) {
+      console.error('Error forcing sync:', error.message);
       res.status(500).json({ 
         success: false, 
         error: 'Force sync failed' 
@@ -316,10 +316,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { liveAuditSystem } = await import('./live-audit-system');
       const rerenderCheck = await liveAuditSystem.checkRerenderNeeded();
-      
+
       res.json(rerenderCheck);
-    } catch (error) {
-      console.error('Error checking rerender status:', error);
+    } catch (error: Error) {
+      console.error('Error checking rerender status:', error.message);
       res.status(500).json({ 
         rerenderNeeded: true, 
         reason: 'Rerender check failed' 
@@ -340,12 +340,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/paypal/order/:orderID/capture", async (req, res) => {
     await capturePaypalOrder(req, res);
   });
-  
+
   // DISABLED: Heavy sync operations causing CPU bottleneck
   // const { syncComprehensiveBrandData } = await import('./comprehensive-brand-sync-clean');
   // const { syncAllComprehensiveBrands } = await import('./complete-brand-sync');
   // const { syncAllComprehensiveGlobalData } = await import('./global-comprehensive-sync');
-  
+
   // DISABLED: Heavy sync operations causing CPU bottleneck
   app.post('/api/sync/comprehensive-brands', async (req, res) => {
     res.status(503).json({
@@ -357,7 +357,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log('🔄 Starting comprehensive brand data synchronization from API...');
       const result = await syncComprehensiveBrandData();
-      
+
       if (result.success) {
         console.log(`✅ Sync completed: ${result.totalAdded} brands added across ${result.sectorsProcessed || 0} sectors`);
         res.json({
@@ -378,8 +378,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           error: result.error
         });
       }
-    } catch (error) {
-      console.error('❌ API Error during comprehensive sync:', error);
+    } catch (error: Error) {
+      console.error('❌ API Error during comprehensive sync:', error.message);
       res.status(500).json({
         success: false,
         message: 'Internal server error during brand synchronization',
@@ -396,13 +396,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const sectors = await storage.getAllSectors();
       const brands = await storage.getAllBrands();
-      
+
       // Calculate real brand counts per sector from database
       const sectorsWithRealData = sectors.map(sector => {
         const sectorBrands = brands.filter(brand => brand.sectorId === sector.id);
         const coreBrands = sectorBrands.filter(brand => !brand.parentId);
         const subNodes = sectorBrands.filter(brand => brand.parentId);
-        
+
         return {
           ...sector,
           brandCount: coreBrands.length,
@@ -410,10 +410,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           totalElements: sectorBrands.length
         };
       });
-      
+
       res.json(sectorsWithRealData);
-    } catch (error) {
-      console.error("Error fetching sectors:", error);
+    } catch (error: Error) {
+      console.error("Error fetching sectors:", error.message);
       res.status(500).json({ message: "Failed to fetch sectors from database" });
     }
   });
@@ -423,13 +423,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const sectors = await storage.getAllSectors();
       const brands = await storage.getAllBrands();
-      
+
       // Calculate real brand counts per sector from database
       const sectorsWithRealData = sectors.map(sector => {
         const sectorBrands = brands.filter(brand => brand.sectorId === sector.id);
         const coreBrands = sectorBrands.filter(brand => !brand.parentId);
         const subNodes = sectorBrands.filter(brand => brand.parentId);
-        
+
         return {
           ...sector,
           brandCount: coreBrands.length,
@@ -438,7 +438,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           displayReady: true
         };
       });
-      
+
       res.json({
         timestamp: new Date().toISOString(),
         source: "display-optimized",
@@ -446,8 +446,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         description: "Sectors optimized for display rendering",
         sectors: sectorsWithRealData
       });
-    } catch (error) {
-      console.error("Error fetching sectors for display:", error);
+    } catch (error: Error) {
+      console.error("Error fetching sectors for display:", error.message);
       res.status(500).json({ message: "Failed to fetch sectors for display" });
     }
   });
@@ -456,7 +456,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/seedling/intake", async (req, res) => {
     try {
       const { appName, deploymentType, scrollCompliance } = req.body;
-      
+
       const seedlingData = {
         appName: appName || "Untitled Seedling",
         deploymentType: deploymentType || "scroll-compliant",
@@ -467,7 +467,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         vaultMeshCompliant: true,
         claimRootLicensed: true
       };
-      
+
       res.json({
         success: true,
         message: "Seedling intake activated under VOORWAARD MARS protocol",
@@ -479,8 +479,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           "ClaimRoot licensing"
         ]
       });
-    } catch (error) {
-      console.error("Error in seedling intake:", error);
+    } catch (error: Error) {
+      console.error("Error in seedling intake:", error.message);
       res.status(500).json({ message: "Seedling intake failed" });
     }
   });
@@ -502,8 +502,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         fundingGate: "ACCEPTS_50K_MINIMUM",
         lastSync: new Date().toISOString()
       });
-    } catch (error) {
-      console.error("Error checking VOORWAARD status:", error);
+    } catch (error: Error) {
+      console.error("Error checking VOORWAARD status:", error.message);
       res.status(500).json({ message: "Treaty status check failed" });
     }
   });
@@ -533,8 +533,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: "Omniuniversal button scan completed successfully",
         results: scanResults
       });
-    } catch (error) {
-      console.error("Error in button validation scan:", error);
+    } catch (error: Error) {
+      console.error("Error in button validation scan:", error.message);
       res.status(500).json({ message: "Button validation scan failed" });
     }
   });
@@ -562,8 +562,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         repaired: repairResults.repairedCount,
         results: repairResults
       });
-    } catch (error) {
-      console.error("Error in button validation repair:", error);
+    } catch (error: Error) {
+      console.error("Error in button validation repair:", error.message);
       res.status(500).json({ message: "Button validation repair failed" });
     }
   });
@@ -598,8 +598,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         treaty_compliant: true,
         vault_level: 7
       });
-    } catch (error) {
-      console.error("Error creating ClaimRoot checkout:", error);
+    } catch (error: Error) {
+      console.error("Error creating ClaimRoot checkout:", error.message);
       res.status(500).json({ message: "ClaimRoot checkout failed" });
     }
   });
@@ -608,7 +608,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/treaty/log", async (req, res) => {
     try {
       const { sector, brand, scroll, payer_email, paypal_txn_id } = req.body;
-      
+
       const treatyLog = {
         sector: sector,
         brand: brand,
@@ -629,8 +629,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         flame_id: treatyLog.flame_seal,
         treaty_compliant: true
       });
-    } catch (error) {
-      console.error("Error logging treaty claim:", error);
+    } catch (error: Error) {
+      console.error("Error logging treaty claim:", error.message);
       res.status(500).json({ message: "TreatyFlame logging failed" });
     }
   });
@@ -639,7 +639,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/claimroot/button/:sector", async (req, res) => {
     try {
       const sector = req.params.sector;
-      
+
       const buttonHtml = `
 <div id="paypal-container-K9BPET82JDRQ4-${sector}"></div>
 <script 
@@ -658,8 +658,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         vault_level: 7,
         status: "ready"
       });
-    } catch (error) {
-      console.error("Error generating ClaimRoot button:", error);
+    } catch (error: Error) {
+      console.error("Error generating ClaimRoot button:", error.message);
       res.status(500).json({ message: "Button generation failed" });
     }
   });
@@ -673,14 +673,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // =================================================================
   // CLOUDFLARE WORKERS DATA SYNCHRONIZATION ROUTES
   // =================================================================
-  
+
   // Get current ecosystem data for Cloudflare Workers
   app.get('/api/cloudflare/ecosystem-data', async (req, res) => {
     try {
       const ecosystemData = await cloudflareDataSync.getEcosystemData();
       res.json(ecosystemData);
-    } catch (error) {
-      console.error('Error getting ecosystem data:', error);
+    } catch (error: Error) {
+      console.error('Error getting ecosystem data:', error.message);
       res.status(500).json({ message: 'Failed to get ecosystem data' });
     }
   });
@@ -691,8 +691,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('🚨 FORCE SYNC TRIGGERED: Aligning Cloudflare Workers with HSOMNI9000 data...');
       const result = await cloudflareDataSync.forceDataAlignment();
       res.json(result);
-    } catch (error) {
-      console.error('Error forcing Cloudflare sync:', error);
+    } catch (error: Error) {
+      console.error('Error forcing Cloudflare sync:', error.message);
       res.status(500).json({ message: 'Failed to force sync with Cloudflare Workers' });
     }
   });
@@ -702,8 +702,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const result = await cloudflareDataSync.syncToCloudflareWorkers();
       res.json(result);
-    } catch (error) {
-      console.error('Error syncing to Cloudflare Workers:', error);
+    } catch (error: Error) {
+      console.error('Error syncing to Cloudflare Workers:', error.message);
       res.status(500).json({ message: 'Failed to sync to Cloudflare Workers' });
     }
   });
@@ -716,7 +716,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const page_url = req.query.page_url as string || "/";
       const issues = await buttonRepairEngine.scanForButtonIssues(page_url);
-      
+
       res.json({
         scan_timestamp: new Date().toISOString(),
         page_url,
@@ -724,8 +724,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         issues: issues,
         status: "scan_complete"
       });
-    } catch (error) {
-      console.error("Error scanning buttons:", error);
+    } catch (error: Error) {
+      console.error("Error scanning buttons:", error.message);
       res.status(500).json({ message: "Button scan failed" });
     }
   });
@@ -734,20 +734,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const issue_id = req.params.issue_id;
       const issue = buttonRepairEngine['detectedIssues'].find(i => i.id === issue_id);
-      
+
       if (!issue) {
         return res.status(404).json({ message: "Issue not found" });
       }
-      
+
       const suggestion = buttonRepairEngine.generateRepairSuggestion(issue);
-      
+
       res.json({
         issue,
         suggestion,
         timestamp: new Date().toISOString()
       });
-    } catch (error) {
-      console.error("Error generating suggestion:", error);
+    } catch (error: Error) {
+      console.error("Error generating suggestion:", error.message);
       res.status(500).json({ message: "Suggestion generation failed" });
     }
   });
@@ -755,27 +755,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/button-repair/execute", async (req, res) => {
     try {
       const { issue_id, user_confirmed } = req.body;
-      
+
       if (!user_confirmed) {
         return res.status(400).json({ message: "User confirmation required for repair execution" });
       }
-      
+
       const issue = buttonRepairEngine['detectedIssues'].find(i => i.id === issue_id);
       if (!issue) {
         return res.status(404).json({ message: "Issue not found" });
       }
-      
+
       const suggestion = buttonRepairEngine.generateRepairSuggestion(issue);
       const result = await buttonRepairEngine.executeRepair(suggestion);
-      
+
       res.json({
         issue_id,
         repair_executed: result.success,
         message: result.message,
         timestamp: new Date().toISOString()
       });
-    } catch (error) {
-      console.error("Error executing repair:", error);
+    } catch (error: Error) {
+      console.error("Error executing repair:", error.message);
       res.status(500).json({ message: "Repair execution failed" });
     }
   });
@@ -783,15 +783,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/button-repair/analytics", async (req, res) => {
     try {
       const analytics = buttonRepairEngine.getRepairAnalytics();
-      
+
       res.json({
         ...analytics,
         vault_status: "active",
         monitoring_status: "operational",
         timestamp: new Date().toISOString()
       });
-    } catch (error) {
-      console.error("Error fetching repair analytics:", error);
+    } catch (error: Error) {
+      console.error("Error fetching repair analytics:", error.message);
       res.status(500).json({ message: "Analytics fetch failed" });
     }
   });
@@ -799,17 +799,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/button-repair/start-monitoring", async (req, res) => {
     try {
       const { interval_seconds = 30 } = req.body;
-      
+
       await buttonRepairEngine.startContinuousMonitoring(interval_seconds);
-      
+
       res.json({
         monitoring_started: true,
         interval_seconds,
         message: "VaultMesh continuous button monitoring activated",
         timestamp: new Date().toISOString()
       });
-    } catch (error) {
-      console.error("Error starting monitoring:", error);
+    } catch (error: Error) {
+      console.error("Error starting monitoring:", error.message);
       res.status(500).json({ message: "Monitoring start failed" });
     }
   });
@@ -817,14 +817,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/button-repair/stop-monitoring", async (req, res) => {
     try {
       buttonRepairEngine.stopMonitoring();
-      
+
       res.json({
         monitoring_stopped: true,
         message: "Button monitoring stopped",
         timestamp: new Date().toISOString()
       });
-    } catch (error) {
-      console.error("Error stopping monitoring:", error);
+    } catch (error: Error) {
+      console.error("Error stopping monitoring:", error.message);
       res.status(500).json({ message: "Monitoring stop failed" });
     }
   });
@@ -834,25 +834,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       const sector = await storage.getSector(id);
       const brands = await storage.getBrandsBySector(id);
-      
+
       if (!sector) {
         return res.status(404).json({ message: "Sector not found in database" });
       }
-      
+
       // Calculate real metrics from database
       const coreBrands = brands.filter(brand => !brand.parentId);
       const subNodes = brands.filter(brand => brand.parentId);
-      
+
       const sectorWithRealData = {
         ...sector,
         brandCount: coreBrands.length,
         subnodeCount: subNodes.length,
         totalElements: brands.length
       };
-      
+
       res.json(sectorWithRealData);
-    } catch (error) {
-      console.error(`Error fetching sector ${req.params.id}:`, error);
+    } catch (error: Error) {
+      console.error(`Error fetching sector ${req.params.id}:`, error.message);
       res.status(500).json({ message: "Failed to fetch sector from database" });
     }
   });
@@ -861,7 +861,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/repositories", async (req, res) => {
     try {
       const { search, category } = req.query;
-      
+
       let repositories;
       if (search) {
         repositories = await storage.getRepositoriesBySearch(search as string);
@@ -870,10 +870,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         repositories = await storage.getAllRepositories();
       }
-      
+
       res.json(repositories);
-    } catch (error) {
-      console.error("Error fetching repositories:", error);
+    } catch (error: Error) {
+      console.error("Error fetching repositories:", error.message);
       res.status(500).json({ message: "Failed to fetch repositories" });
     }
   });
@@ -882,16 +882,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/brands", async (req, res) => {
     try {
       const { search, sectorId, page = '1', limit = '20' } = req.query;
-      
+
       // Input validation
       if (isNaN(Number(page)) || isNaN(Number(limit))) {
         return res.status(400).json({ message: "Invalid page or limit parameter" });
       }
-      
+
       const pageNum = parseInt(page as string);
       const limitNum = Math.min(parseInt(limit as string), 100); // Cap at 100
       const offset = (pageNum - 1) * limitNum;
-      
+
       // Use optimized pagination for better performance
       const result = await storage.getBrandsPaginated(
         offset, 
@@ -899,10 +899,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         search as string || undefined, 
         sectorId ? parseInt(sectorId as string) : undefined
       );
-      
+
       res.json(result.brands);
-    } catch (error) {
-      console.error("Brands API error:", error);
+    } catch (error: Error) {
+      console.error("Brands API error:", error.message);
       res.status(500).json({ message: "Failed to fetch brands" });
     }
   });
@@ -918,8 +918,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const sectorId = parseInt(req.params.sectorId);
       const brands = await storage.getBrandsBySector(sectorId);
       res.json(brands);
-    } catch (error) {
-      console.error("Error fetching brands by sector:", error);
+    } catch (error: Error) {
+      console.error("Error fetching brands by sector:", error.message);
       res.status(500).json({ message: "Failed to fetch brands by sector" });
     }
   });
@@ -927,14 +927,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/brands/:param", async (req, res) => {
     try {
       const param = req.params.param;
-      
+
       // Check if param is a sector filter like "sectorId=1"
       if (param.startsWith("sectorId=")) {
         const sectorId = parseInt(param.split("=")[1]);
         const brands = await storage.getBrandsBySector(sectorId);
         return res.json(brands);
       }
-      
+
       // Otherwise treat as regular brand ID
       const id = parseInt(param);
       const brand = await storage.getBrand(id);
@@ -942,7 +942,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Brand not found" });
       }
       res.json(brand);
-    } catch (error) {
+    } catch (error: Error) {
       res.status(500).json({ message: "Failed to fetch brand" });
     }
   });
@@ -955,7 +955,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Brand not found" });
       }
       res.json(brand);
-    } catch (error) {
+    } catch (error: Error) {
       res.status(500).json({ message: "Failed to fetch brand" });
     }
   });
@@ -965,7 +965,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = insertBrandSchema.parse(req.body);
       const brand = await storage.createBrand(validatedData);
       res.status(201).json(brand);
-    } catch (error) {
+    } catch (error: Error) {
       res.status(400).json({ message: "Invalid brand data" });
     }
   });
@@ -975,8 +975,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const miningBrands = await storage.getBrandsBySector(297); // Sector ID 297 is Mining & Resources
       res.json(miningBrands);
-    } catch (error) {
-      console.error("Error fetching mining brands:", error);
+    } catch (error: Error) {
+      console.error("Error fetching mining brands:", error.message);
       res.status(500).json({ message: "Failed to fetch mining brands" });
     }
   });
@@ -986,7 +986,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const statuses = await storage.getAllSystemStatus();
       res.json(statuses);
-    } catch (error) {
+    } catch (error: Error) {
       res.status(500).json({ message: "Failed to fetch system status" });
     }
   });
@@ -999,7 +999,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Service not found" });
       }
       res.json(status);
-    } catch (error) {
+    } catch (error: Error) {
       res.status(500).json({ message: "Failed to fetch service status" });
     }
   });
@@ -1012,7 +1012,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const docs = await storage.getLegalDocuments();
       res.json(docs);
     } catch (error: any) {
-      console.error("Error fetching legal documents:", error);
+      console.error("Error fetching legal documents:", error.message);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -1023,11 +1023,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!result.success) {
         return res.status(400).json({ message: "Invalid input", errors: result.error.issues });
       }
-      
+
       const doc = await storage.createLegalDocument(result.data);
       res.status(201).json(doc);
     } catch (error: any) {
-      console.error("Error creating legal document:", error);
+      console.error("Error creating legal document:", error.message);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -1036,7 +1036,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/legal-documents/:id/download", async (req, res) => {
     try {
       const { id } = req.params;
-      
+
       // Map document IDs to actual file paths from legal.faa.zone repository
       const documentPaths: Record<string, string> = {
         // Map by document ID for direct access
@@ -1073,7 +1073,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
       res.sendFile(fullPath);
     } catch (error: any) {
-      console.error("Error downloading legal document:", error);
+      console.error("Error downloading legal document:", error.message);
       res.status(500).json({ error: "Failed to download legal document" });
     }
   });
@@ -1082,7 +1082,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/legal-docs/:id", async (req, res) => {
     try {
       const { id } = req.params;
-      
+
       // Map document IDs to actual file paths from legal.faa.zone repository
       const documentPaths: Record<string, string> = {
         // Map by document ID for direct access
@@ -1125,7 +1125,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.sendFile(fullPath);
     } catch (error: any) {
-      console.error("Error serving legal document:", error);
+      console.error("Error serving legal document:", error.message);
       res.status(500).send("<h1>Error loading document</h1>");
     }
   });
@@ -1136,7 +1136,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const repos = await storage.getRepositories();
       res.json(repos);
     } catch (error: any) {
-      console.error("Error fetching repositories:", error);
+      console.error("Error fetching repositories:", error.message);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -1145,7 +1145,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/baobab/environmental-metrics", async (req, res) => {
     try {
       const continent = req.query.continent as string || "All";
-      
+
       // Real environmental metrics based on continent
       const globalMetrics = {
         forestCover: 31.2,
@@ -1171,7 +1171,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       let adjustedMetrics = { ...globalMetrics };
-      
+
       if (continent !== "All" && continentMultipliers[continent]) {
         const multipliers = continentMultipliers[continent];
         Object.keys(multipliers).forEach(key => {
@@ -1194,8 +1194,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           "World Air Quality Index"
         ]
       });
-    } catch (error) {
-      console.error("Error fetching environmental metrics:", error);
+    } catch (error: Error) {
+      console.error("Error fetching environmental metrics:", error.message);
       res.status(500).json({ message: "Failed to fetch environmental data" });
     }
   });
@@ -1221,8 +1221,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       res.json(eskomData);
-    } catch (error) {
-      console.error("Error fetching Eskom data:", error);
+    } catch (error: Error) {
+      console.error("Error fetching Eskom data:", error.message);
       res.status(500).json({ message: "Failed to fetch Eskom status" });
     }
   });
@@ -1245,8 +1245,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       ];
 
       res.json(themes);
-    } catch (error) {
-      console.error("Error fetching dashboard themes:", error);
+    } catch (error: Error) {
+      console.error("Error fetching dashboard themes:", error.message);
       res.status(500).json({ message: "Failed to fetch dashboard themes" });
     }
   });
@@ -1328,8 +1328,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       res.json(miningDashboard);
-    } catch (error) {
-      console.error("Error fetching mining dashboard:", error);
+    } catch (error: Error) {
+      console.error("Error fetching mining dashboard:", error.message);
       res.status(500).json({ message: "Failed to fetch mining dashboard" });
     }
   });
@@ -1437,8 +1437,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       ];
 
       res.json(minecoreBrands);
-    } catch (error) {
-      console.error("Error fetching MineCore™ brands:", error);
+    } catch (error: Error) {
+      console.error("Error fetching MineCore™ brands:", error.message);
       res.status(500).json({ message: "Failed to fetch MineCore™ brands" });
     }
   });
@@ -1449,11 +1449,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!result.success) {
         return res.status(400).json({ message: "Invalid input", errors: result.error.issues });
       }
-      
+
       const repo = await storage.createRepository(result.data);
       res.status(201).json(repo);
     } catch (error: any) {
-      console.error("Error creating repository:", error);
+      console.error("Error creating repository:", error.message);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -1464,7 +1464,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const payments = await storage.getPayments();
       res.json(payments);
     } catch (error: any) {
-      console.error("Error fetching payments:", error);
+      console.error("Error fetching payments:", error.message);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -1478,11 +1478,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!result.success) {
         return res.status(400).json({ message: "Invalid input", errors: result.error.issues });
       }
-      
+
       const payment = await storage.createPayment(result.data);
       res.status(201).json(payment);
     } catch (error: any) {
-      console.error("Error creating payment:", error);
+      console.error("Error creating payment:", error.message);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -1492,8 +1492,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const transactions = await storage.getBanimalTransactions();
       res.json(transactions);
-    } catch (error) {
-      console.error("Error fetching Banimal transactions:", error);
+    } catch (error: Error) {
+      console.error("Error fetching Banimal transactions:", error.message);
       res.status(500).json({ message: "Failed to fetch transactions" });
     }
   });
@@ -1501,7 +1501,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/banimal/transactions", async (req, res) => {
     try {
       const transaction = await storage.createBanimalTransaction(req.body);
-      
+
       // Create automatic charitable distributions
       const distributionRules = {
         charity: 35,
@@ -1510,7 +1510,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         sonicGrid: 10,
         vault: 10
       };
-      
+
       const amount = parseFloat(req.body.amount);
       for (const [type, percentage] of Object.entries(distributionRules)) {
         const distributionAmount = (amount * percentage) / 100;
@@ -1523,10 +1523,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           status: "completed"
         });
       }
-      
+
       res.json(transaction);
-    } catch (error) {
-      console.error("Error creating Banimal transaction:", error);
+    } catch (error: Error) {
+      console.error("Error creating Banimal transaction:", error.message);
       res.status(500).json({ message: "Failed to create transaction" });
     }
   });
@@ -1535,8 +1535,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const distributions = await storage.getCharitableDistributions();
       res.json(distributions);
-    } catch (error) {
-      console.error("Error fetching distributions:", error);
+    } catch (error: Error) {
+      console.error("Error fetching distributions:", error.message);
       res.status(500).json({ message: "Failed to fetch distributions" });
     }
   });
@@ -1545,8 +1545,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const connections = await storage.getSonicGridConnections();
       res.json(connections);
-    } catch (error) {
-      console.error("Error fetching SonicGrid connections:", error);
+    } catch (error: Error) {
+      console.error("Error fetching SonicGrid connections:", error.message);
       res.status(500).json({ message: "Failed to fetch SonicGrid connections" });
     }
   });
@@ -1555,8 +1555,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const actions = await storage.getVaultActions();
       res.json(actions);
-    } catch (error) {
-      console.error("Error fetching vault actions:", error);
+    } catch (error: Error) {
+      console.error("Error fetching vault actions:", error.message);
       res.status(500).json({ message: "Failed to fetch vault actions" });
     }
   });
@@ -1570,8 +1570,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         mediaProjects: 0, // Will be populated later
         processingEngines: 0, // Will be populated later
       });
-    } catch (error) {
-      console.error("Error fetching dashboard stats:", error);
+    } catch (error: Error) {
+      console.error("Error fetching dashboard stats:", error.message);
       res.status(500).json({ message: "Failed to fetch dashboard stats" });
     }
   });
@@ -1581,7 +1581,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Simulate checkout processing
       const { product, customer } = req.body;
-      
+
       // In a real application, this would integrate with PayPal SDK
       const payment = await storage.createPayment({
         userId: 1,
@@ -1598,7 +1598,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: "Checkout completed successfully"
       });
     } catch (error: any) {
-      console.error("Error processing VaultMesh checkout:", error);
+      console.error("Error processing VaultMesh checkout:", error.message);
       res.status(500).json({ message: "Checkout processing failed" });
     }
   });
@@ -1608,10 +1608,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { sectorName, brands, nodes, tier, region, monthlyFee } = req.body;
       const userId = req.user.claims.sub;
-      
+
       // Generate unique deployment ID
       const deploymentId = `DEP-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      
+
       // Real deployment logic - store in database
       const deploymentData = {
         deploymentId,
@@ -1630,7 +1630,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create deployment record in system
       console.log(`Deploying sector: ${sectorName} for user: ${userId}`);
       console.log(`Deployment ID: ${deploymentId}`);
-      
+
       res.json({
         sectorName,
         deploymentId,
@@ -1638,9 +1638,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         activated: true,
         message: `${sectorName} sector deployed with ${brands} brands and ${nodes.toLocaleString()} nodes`
       });
-      
-    } catch (error) {
-      console.error("Deployment failed:", error);
+
+    } catch (error: Error) {
+      console.error("Deployment failed:", error.message);
       res.status(500).json({ 
         message: "Deployment failed", 
         error: error.message 
@@ -1654,30 +1654,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const systemStatuses = await storage.getAllSystemStatus();
       const brands = await storage.getAllBrands();
       const sectors = await storage.getAllSectors();
-      
+
       // Calculate real performance metrics from database data
       const activeServices = systemStatuses.filter(s => s.status === 'active').length;
       const totalServices = systemStatuses.length;
       const performance = totalServices > 0 ? Math.round((activeServices / totalServices) * 100) : 0;
-      
+
       // Calculate security metrics from brand integration status
       const secureIntegrations = brands.filter(b => b.integration?.includes('VaultMesh')).length;
       const security = brands.length > 0 ? Math.round((secureIntegrations / brands.length) * 100) : 0;
-      
+
       // Calculate efficiency from sector distribution
       const efficiency = sectors.length > 0 ? Math.min(100, sectors.length * 7) : 0;
-      
+
       // Calculate uptime from system status
       const uptime = performance > 90 ? 99 + (performance - 90) / 10 : performance;
-      
+
       res.json({
         performance,
         security,
         efficiency,
         uptime: Math.round(uptime * 10) / 10
       });
-    } catch (error) {
-      console.error("Error fetching system metrics:", error);
+    } catch (error: Error) {
+      console.error("Error fetching system metrics:", error.message);
       res.status(500).json({ message: "Failed to fetch system metrics" });
     }
   });
@@ -1689,7 +1689,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const services = await integrationManager.getServicesHealth();
       res.json(services);
-    } catch (error) {
+    } catch (error: Error) {
       res.status(500).json({ message: "Failed to check services health" });
     }
   });
@@ -1698,7 +1698,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const urls = integrationManager.getOAuthUrls();
       res.json(urls);
-    } catch (error) {
+    } catch (error: Error) {
       res.status(500).json({ message: "Failed to get OAuth URLs" });
     }
   });
@@ -1724,7 +1724,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       };
       res.json(publicConfig);
-    } catch (error) {
+    } catch (error: Error) {
       res.status(500).json({ message: "Failed to get configuration" });
     }
   });
@@ -1734,7 +1734,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { id } = req.params;
       const userId = req.user?.claims?.sub;
-      
+
       res.send(`
         <!DOCTYPE html>
         <html>
@@ -1761,7 +1761,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             <p><strong>Document ID:</strong> ${id}</p>
             <p><strong>User ID:</strong> ${userId}</p>
             <p><strong>Status:</strong> <span class="status">✅ Ready for Signing</span></p>
-            
+
             <h3>Available Actions:</h3>
             <div class="integration-item">
               <strong>Digital Signature Verification</strong><br>
@@ -1779,20 +1779,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
               <strong>VaultMesh™ Compliance</strong><br>
               Integrated with legal documentation system
             </div>
-            
+
             <div class="actions">
               <button class="btn" onclick="alert('Signature workflow initiated! Document ${id} ready for signing.')">Start Signing Process</button>
               <button class="btn" onclick="alert('Document verification complete! All signatures valid.')">Verify Document</button>
               <button class="btn" onclick="window.close()">Close Window</button>
             </div>
-            
+
             <p><em>This integration connects with the VaultMesh™ legal documentation system to provide enterprise-grade document signing capabilities powered by SecureSign™ technology.</em></p>
           </div>
         </body>
         </html>
       `);
-    } catch (error) {
-      console.error("Error accessing SecureSign:", error);
+    } catch (error: Error) {
+      console.error("Error accessing SecureSign:", error.message);
       res.status(500).json({ message: "Failed to access SecureSign integration" });
     }
   });
@@ -1802,8 +1802,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const projects = await storage.getMediaProjects();
       res.json(projects);
-    } catch (error) {
-      console.error("Error fetching media projects:", error);
+    } catch (error: Error) {
+      console.error("Error fetching media projects:", error.message);
       res.status(500).json({ message: "Failed to fetch media projects" });
     }
   });
@@ -1812,8 +1812,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const project = await storage.createMediaProject(req.body);
       res.json(project);
-    } catch (error) {
-      console.error("Error creating media project:", error);
+    } catch (error: Error) {
+      console.error("Error creating media project:", error.message);
       res.status(500).json({ message: "Failed to create media project" });
     }
   });
@@ -1823,8 +1823,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { id } = req.params;
       const result = await storage.processMediaProject(id, req.body);
       res.json(result);
-    } catch (error) {
-      console.error("Error processing media project:", error);
+    } catch (error: Error) {
+      console.error("Error processing media project:", error.message);
       res.status(500).json({ message: "Failed to process media project" });
     }
   });
@@ -1833,8 +1833,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const engines = await storage.getProcessingEngines();
       res.json(engines);
-    } catch (error) {
-      console.error("Error fetching processing engines:", error);
+    } catch (error: Error) {
+      console.error("Error fetching processing engines:", error.message);
       res.status(500).json({ message: "Failed to fetch processing engines" });
     }
   });
@@ -1844,8 +1844,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const nodes = await storage.getInterstellarNodes();
       res.json(nodes);
-    } catch (error) {
-      console.error('Error fetching interstellar nodes:', error);
+    } catch (error: Error) {
+      console.error('Error fetching interstellar nodes:', error.message);
       res.status(500).json({ message: 'Failed to fetch interstellar nodes' });
     }
   });
@@ -1854,8 +1854,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const node = await storage.createInterstellarNode(req.body);
       res.json(node);
-    } catch (error) {
-      console.error('Error creating interstellar node:', error);
+    } catch (error: Error) {
+      console.error('Error creating interstellar node:', error.message);
       res.status(500).json({ message: 'Failed to create interstellar node' });
     }
   });
@@ -1865,8 +1865,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { nodeId } = req.params;
       const result = await storage.synchronizeNode(nodeId);
       res.json(result);
-    } catch (error) {
-      console.error('Error synchronizing node:', error);
+    } catch (error: Error) {
+      console.error('Error synchronizing node:', error.message);
       res.status(500).json({ message: 'Failed to synchronize node' });
     }
   });
@@ -1875,8 +1875,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const metrics = await storage.getCosmicMetrics();
       res.json(metrics);
-    } catch (error) {
-      console.error('Error fetching cosmic metrics:', error);
+    } catch (error: Error) {
+      console.error('Error fetching cosmic metrics:', error.message);
       res.status(500).json({ message: 'Failed to fetch cosmic metrics' });
     }
   });
@@ -1885,8 +1885,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const config = await storage.getGlobalLogicConfig();
       res.json(config);
-    } catch (error) {
-      console.error('Error fetching global config:', error);
+    } catch (error: Error) {
+      console.error('Error fetching global config:', error.message);
       res.status(500).json({ message: 'Failed to fetch global config' });
     }
   });
@@ -1895,8 +1895,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const config = await storage.updateGlobalLogicConfig(req.body);
       res.json(config);
-    } catch (error) {
-      console.error('Error updating global config:', error);
+    } catch (error: Error) {
+      console.error('Error updating global config:', error.message);
       res.status(500).json({ message: 'Failed to update global config' });
     }
   });
@@ -1908,8 +1908,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const extensions = await extensionScanner.scanInstalledExtensions();
       res.json(extensions);
-    } catch (error) {
-      console.error("Error scanning extensions:", error);
+    } catch (error: Error) {
+      console.error("Error scanning extensions:", error.message);
       res.status(500).json({ message: "Failed to scan extensions" });
     }
   });
@@ -1918,8 +1918,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const stats = await extensionScanner.getExtensionStats();
       res.json(stats);
-    } catch (error) {
-      console.error("Error getting extension stats:", error);
+    } catch (error: Error) {
+      console.error("Error getting extension stats:", error.message);
       res.status(500).json({ message: "Failed to get extension stats" });
     }
   });
@@ -1934,8 +1934,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         extensions,
         stats
       });
-    } catch (error) {
-      console.error("Error refreshing extensions:", error);
+    } catch (error: Error) {
+      console.error("Error refreshing extensions:", error.message);
       res.status(500).json({ message: "Failed to refresh extensions" });
     }
   });
@@ -1944,7 +1944,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/purchases", async (req, res) => {
     try {
       const { productId, productName, price, category, timestamp } = req.body;
-      
+
       // Create real PayPal payment using existing integration
       const paymentData = {
         intent: "sale",
@@ -1983,7 +1983,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       console.log(`💰 REAL PAYMENT: ${productName} for $${price} - Payment ID: ${payment.id}`);
-      
+
       // Return PayPal payment URL for real money processing
       res.json({
         id: payment.id,
@@ -1997,8 +1997,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         paymentUrl: `/payment/paypal/${payment.id}`,
         deploymentStatus: "awaiting_payment"
       });
-    } catch (error) {
-      console.error("Real payment error:", error);
+    } catch (error: Error) {
+      console.error("Real payment error:", error.message);
       res.status(500).json({ message: "Payment processing failed", error: error.message });
     }
   });
@@ -2013,10 +2013,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Redirect to PayPal for actual payment
       const paypalUrl = `https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${process.env.PAYPAL_BUSINESS_EMAIL}&item_name=${encodeURIComponent(payment.description)}&amount=${payment.amount}&currency_code=${payment.currency}&return=${req.protocol}://${req.get('host')}/payment/success&cancel_return=${req.protocol}://${req.get('host')}/payment/cancel`;
-      
+
       res.redirect(paypalUrl);
-    } catch (error) {
-      console.error("PayPal redirect error:", error);
+    } catch (error: Error) {
+      console.error("PayPal redirect error:", error.message);
       res.status(500).json({ message: "PayPal redirect failed" });
     }
   });
@@ -2025,7 +2025,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/payment/success", async (req, res) => {
     try {
       const { paymentId } = req.query;
-      
+
       if (paymentId) {
         // Update payment status to completed
         const paymentIdInt = parseInt(paymentId as string);
@@ -2033,13 +2033,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (payment) {
           await storage.updatePayment(paymentIdInt, { ...payment, status: "completed" });
         }
-        
+
         // REAL DEPLOYMENT: Deploy product to production server
         console.log(`🚀 DEPLOYING TO PRODUCTION: Payment ${paymentId} completed`);
-        
+
         // Deploy to actual server infrastructure
         const deploymentResult = await deployToProduction(paymentId as string);
-        
+
         res.json({
           message: "Payment successful and product deployed!",
           paymentId,
@@ -2049,8 +2049,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         res.json({ message: "Payment successful" });
       }
-    } catch (error) {
-      console.error("Payment success error:", error);
+    } catch (error: Error) {
+      console.error("Payment success error:", error.message);
       res.status(500).json({ message: "Deployment failed after payment" });
     }
   });
@@ -2059,11 +2059,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   async function deployToProduction(paymentId: string) {
     const deploymentId = `DEPLOY-${Date.now()}`;
     const subdomain = deploymentId.toLowerCase().replace(/[^a-z0-9]/g, '');
-    
+
     try {
       // Deploy to Replit's production infrastructure
       const deploymentUrl = `https://${subdomain}.replit.app`;
-      
+
       // Create actual deployment configuration
       const deploymentConfig = {
         name: subdomain,
@@ -2072,15 +2072,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         customDomain: `${subdomain}.fruitfulcratedance.com`,
         timestamp: new Date().toISOString()
       };
-      
+
       console.log(`🚀 REAL DEPLOYMENT STARTED: ${deploymentUrl}`);
       console.log(`📋 Config:`, JSON.stringify(deploymentConfig, null, 2));
-      
+
       // Simulate actual deployment process
       await new Promise(resolve => setTimeout(resolve, 3000));
-      
+
       console.log(`✅ DEPLOYMENT COMPLETE: Live at ${deploymentUrl}`);
-      
+
       return {
         id: deploymentId,
         url: deploymentUrl,
@@ -2089,8 +2089,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         server: "replit-production",
         deployedAt: new Date().toISOString()
       };
-    } catch (error) {
-      console.error(`❌ DEPLOYMENT FAILED:`, error);
+    } catch (error: Error) {
+      console.error(`❌ DEPLOYMENT FAILED:`, error.message);
       throw new Error(`Deployment failed: ${error.message}`);
     }
   }
@@ -2100,7 +2100,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log('🚀 Starting COMPLETE brand data synchronization from comprehensive file...');
       const result = await syncAllComprehensiveBrands();
-      
+
       if (result.success) {
         console.log(`✅ Complete sync finished: ${result.totalAdded} brands added across ${result.sectorsProcessed} sectors`);
         res.json({
@@ -2121,8 +2121,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           error: result.error
         });
       }
-    } catch (error) {
-      console.error('❌ API Error during complete sync:', error);
+    } catch (error: Error) {
+      console.error('❌ API Error during complete sync:', error.message);
       res.status(500).json({
         success: false,
         message: 'Internal server error during complete brand synchronization',
@@ -2138,11 +2138,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
-      
+
       const familyMembers = await storage.getAllFamilyMembers(userId);
       res.json(familyMembers);
-    } catch (error) {
-      console.error("Error fetching family members:", error);
+    } catch (error: Error) {
+      console.error("Error fetching family members:", error.message);
       res.status(500).json({ error: "Failed to fetch family members" });
     }
   });
@@ -2153,12 +2153,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
-      
+
       const memberData = { ...req.body, userId };
       const newMember = await storage.createFamilyMember(memberData);
       res.json(newMember);
-    } catch (error) {
-      console.error("Error creating family member:", error);
+    } catch (error: Error) {
+      console.error("Error creating family member:", error.message);
       res.status(500).json({ error: "Failed to create family member" });
     }
   });
@@ -2169,8 +2169,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const updates = req.body;
       const updatedMember = await storage.updateFamilyMember(id, updates);
       res.json(updatedMember);
-    } catch (error) {
-      console.error("Error updating family member:", error);
+    } catch (error: Error) {
+      console.error("Error updating family member:", error.message);
       res.status(500).json({ error: "Failed to update family member" });
     }
   });
@@ -2180,8 +2180,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       await storage.deleteFamilyMember(id);
       res.json({ success: true });
-    } catch (error) {
-      console.error("Error deleting family member:", error);
+    } catch (error: Error) {
+      console.error("Error deleting family member:", error.message);
       res.status(500).json({ error: "Failed to delete family member" });
     }
   });
@@ -2193,19 +2193,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
-      
+
       const query = req.query.search as string;
       let documents;
-      
+
       if (query) {
         documents = await storage.searchHeritageDocuments(userId, query);
       } else {
         documents = await storage.getAllHeritageDocuments(userId);
       }
-      
+
       res.json(documents);
-    } catch (error) {
-      console.error("Error fetching heritage documents:", error);
+    } catch (error: Error) {
+      console.error("Error fetching heritage documents:", error.message);
       res.status(500).json({ error: "Failed to fetch heritage documents" });
     }
   });
@@ -2216,12 +2216,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
-      
+
       const documentData = { ...req.body, userId };
       const newDocument = await storage.createHeritageDocument(documentData);
       res.json(newDocument);
-    } catch (error) {
-      console.error("Error creating heritage document:", error);
+    } catch (error: Error) {
+      console.error("Error creating heritage document:", error.message);
       res.status(500).json({ error: "Failed to create heritage document" });
     }
   });
@@ -2232,8 +2232,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const updates = req.body;
       const updatedDocument = await storage.updateHeritageDocument(id, updates);
       res.json(updatedDocument);
-    } catch (error) {
-      console.error("Error updating heritage document:", error);
+    } catch (error: Error) {
+      console.error("Error updating heritage document:", error.message);
       res.status(500).json({ error: "Failed to update heritage document" });
     }
   });
@@ -2243,8 +2243,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       await storage.deleteHeritageDocument(id);
       res.json({ success: true });
-    } catch (error) {
-      console.error("Error deleting heritage document:", error);
+    } catch (error: Error) {
+      console.error("Error deleting heritage document:", error.message);
       res.status(500).json({ error: "Failed to delete heritage document" });
     }
   });
@@ -2256,11 +2256,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
-      
+
       const events = await storage.getAllFamilyEvents(userId);
       res.json(events);
-    } catch (error) {
-      console.error("Error fetching family events:", error);
+    } catch (error: Error) {
+      console.error("Error fetching family events:", error.message);
       res.status(500).json({ error: "Failed to fetch family events" });
     }
   });
@@ -2271,12 +2271,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
-      
+
       const eventData = { ...req.body, userId };
       const newEvent = await storage.createFamilyEvent(eventData);
       res.json(newEvent);
-    } catch (error) {
-      console.error("Error creating family event:", error);
+    } catch (error: Error) {
+      console.error("Error creating family event:", error.message);
       res.status(500).json({ error: "Failed to create family event" });
     }
   });
@@ -2287,8 +2287,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const updates = req.body;
       const updatedEvent = await storage.updateFamilyEvent(id, updates);
       res.json(updatedEvent);
-    } catch (error) {
-      console.error("Error updating family event:", error);
+    } catch (error: Error) {
+      console.error("Error updating family event:", error.message);
       res.status(500).json({ error: "Failed to update family event" });
     }
   });
@@ -2298,8 +2298,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       await storage.deleteFamilyEvent(id);
       res.json({ success: true });
-    } catch (error) {
-      console.error("Error deleting family event:", error);
+    } catch (error: Error) {
+      console.error("Error deleting family event:", error.message);
       res.status(500).json({ error: "Failed to delete family event" });
     }
   });
@@ -2311,7 +2311,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
-      
+
       const metrics = await storage.getHeritageMetrics(userId);
       res.json(metrics || {
         totalTags: 0,
@@ -2321,8 +2321,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ritualsTagged: 0,
         artifactsPreserved: 0
       });
-    } catch (error) {
-      console.error("Error fetching heritage metrics:", error);
+    } catch (error: Error) {
+      console.error("Error fetching heritage metrics:", error.message);
       res.status(500).json({ error: "Failed to fetch heritage metrics" });
     }
   });
@@ -2333,11 +2333,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
-      
+
       const updatedMetrics = await storage.updateHeritageMetrics(userId, req.body);
       res.json(updatedMetrics);
-    } catch (error) {
-      console.error("Error updating heritage metrics:", error);
+    } catch (error: Error) {
+      console.error("Error updating heritage metrics:", error.message);
       res.status(500).json({ error: "Failed to update heritage metrics" });
     }
   });
@@ -2345,14 +2345,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // =================================================================
   // SAMFOX STUDIO STANDALONE API ROUTES
   // =================================================================
-  
+
   // Portfolio projects API
   app.get("/api/samfox/portfolio", async (req, res) => {
     try {
       const projects = await storage.getAllPortfolioProjects();
       res.json(projects);
-    } catch (error) {
-      console.error("Error fetching portfolio projects:", error);
+    } catch (error: Error) {
+      console.error("Error fetching portfolio projects:", error.message);
       res.status(500).json({ error: "Failed to fetch portfolio projects" });
     }
   });
@@ -2361,8 +2361,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const projects = await storage.getFeaturedPortfolioProjects();
       res.json(projects);
-    } catch (error) {
-      console.error("Error fetching featured portfolio:", error);
+    } catch (error: Error) {
+      console.error("Error fetching featured portfolio:", error.message);
       res.status(500).json({ error: "Failed to fetch featured portfolio" });
     }
   });
@@ -2375,8 +2375,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Portfolio project not found" });
       }
       res.json(project);
-    } catch (error) {
-      console.error("Error fetching portfolio project:", error);
+    } catch (error: Error) {
+      console.error("Error fetching portfolio project:", error.message);
       res.status(500).json({ error: "Failed to fetch portfolio project" });
     }
   });
@@ -2385,7 +2385,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/samfox/artworks", async (req, res) => {
     try {
       const { category, featured, available } = req.query;
-      
+
       let artworks;
       if (category) {
         artworks = await storage.getArtworksByCategory(category as string);
@@ -2396,10 +2396,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         artworks = await storage.getAllArtworks();
       }
-      
+
       res.json(artworks);
-    } catch (error) {
-      console.error("Error fetching artworks:", error);
+    } catch (error: Error) {
+      console.error("Error fetching artworks:", error.message);
       res.status(500).json({ error: "Failed to fetch artworks" });
     }
   });
@@ -2410,11 +2410,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!q) {
         return res.status(400).json({ error: "Search query required" });
       }
-      
+
       const artworks = await storage.searchArtworks(q as string);
       res.json(artworks);
-    } catch (error) {
-      console.error("Error searching artworks:", error);
+    } catch (error: Error) {
+      console.error("Error searching artworks:", error.message);
       res.status(500).json({ error: "Failed to search artworks" });
     }
   });
@@ -2427,8 +2427,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Artwork not found" });
       }
       res.json(artwork);
-    } catch (error) {
-      console.error("Error fetching artwork:", error);
+    } catch (error: Error) {
+      console.error("Error fetching artwork:", error.message);
       res.status(500).json({ error: "Failed to fetch artwork" });
     }
   });
@@ -2438,8 +2438,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const categories = await storage.getActiveArtworkCategories();
       res.json(categories);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
+    } catch (error: Error) {
+      console.error("Error fetching categories:", error.message);
       res.status(500).json({ error: "Failed to fetch categories" });
     }
   });
@@ -2449,8 +2449,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const orders = await storage.getAllArtworkOrders();
       res.json(orders);
-    } catch (error) {
-      console.error("Error fetching orders:", error);
+    } catch (error: Error) {
+      console.error("Error fetching orders:", error.message);
       res.status(500).json({ error: "Failed to fetch orders" });
     }
   });
@@ -2463,8 +2463,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Order not found" });
       }
       res.json(order);
-    } catch (error) {
-      console.error("Error fetching order:", error);
+    } catch (error: Error) {
+      console.error("Error fetching order:", error.message);
       res.status(500).json({ error: "Failed to fetch order" });
     }
   });
@@ -2480,8 +2480,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         artistBio: "Digital artist specializing in character design, cultural art, and brand development",
         contactEmail: "hello@samfox.studio"
       });
-    } catch (error) {
-      console.error("Error fetching studio settings:", error);
+    } catch (error: Error) {
+      console.error("Error fetching studio settings:", error.message);
       res.status(500).json({ error: "Failed to fetch studio settings" });
     }
   });
@@ -2491,8 +2491,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const stats = await storage.getSamFoxDashboardStats();
       res.json(stats);
-    } catch (error) {
-      console.error("Error fetching SamFox dashboard stats:", error);
+    } catch (error: Error) {
+      console.error("Error fetching SamFox dashboard stats:", error.message);
       res.status(500).json({ error: "Failed to fetch dashboard stats" });
     }
   });
@@ -2502,8 +2502,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const artwork = await storage.createArtwork(req.body);
       res.json(artwork);
-    } catch (error) {
-      console.error("Error creating artwork:", error);
+    } catch (error: Error) {
+      console.error("Error creating artwork:", error.message);
       res.status(500).json({ error: "Failed to create artwork" });
     }
   });
@@ -2513,8 +2513,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       const artwork = await storage.updateArtwork(id, req.body);
       res.json(artwork);
-    } catch (error) {
-      console.error("Error updating artwork:", error);
+    } catch (error: Error) {
+      console.error("Error updating artwork:", error.message);
       res.status(500).json({ error: "Failed to update artwork" });
     }
   });
@@ -2524,8 +2524,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       await storage.deleteArtwork(id);
       res.json({ success: true });
-    } catch (error) {
-      console.error("Error deleting artwork:", error);
+    } catch (error: Error) {
+      console.error("Error deleting artwork:", error.message);
       res.status(500).json({ error: "Failed to delete artwork" });
     }
   });
@@ -2533,8 +2533,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize SamFox data on server startup
   try {
     await storage.seedSamFoxData();
-  } catch (error) {
-    console.error("Error initializing SamFox Studio data:", error);
+  } catch (error: Error) {
+    console.error("Error initializing SamFox Studio data:", error.message);
   }
 
   // Register ChatGPT Integration Routes
@@ -2555,8 +2555,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         status: status.status,
         results: status
       });
-    } catch (error) {
-      console.error("Button validation scan failed:", error);
+    } catch (error: Error) {
+      console.error("Button validation scan failed:", error.message);
       res.status(500).json({ 
         error: "Button validation scan failed", 
         details: (error as Error).message 
@@ -2574,8 +2574,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         repaired: status.repairedCount,
         status: status.status
       });
-    } catch (error) {
-      console.error("Button auto-repair failed:", error);
+    } catch (error: Error) {
+      console.error("Button auto-repair failed:", error.message);
       res.status(500).json({ 
         error: "Button auto-repair failed", 
         details: (error as Error).message 
@@ -2587,8 +2587,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const status = buttonValidator.getStatus();
       res.json(status);
-    } catch (error) {
-      console.error("Error fetching button validation status:", error);
+    } catch (error: Error) {
+      console.error("Error fetching button validation status:", error.message);
       res.status(500).json({ 
         error: "Failed to fetch button validation status", 
         details: (error as Error).message 
