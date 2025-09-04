@@ -16,7 +16,7 @@ export const sessions = pgTable(
 
 // User storage table for Replit Auth
 export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
+  id: varchar("id").primaryKey().notNull(),
   email: varchar("email").unique(),
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
@@ -64,7 +64,7 @@ export const legalDocuments = pgTable("legal_documents", {
   url: text("url").notNull(),
   icon: text("icon").default("📄"),
   category: text("category").notNull().default("legal"),
-  tags: text("tags").array().default([]),
+  tags: jsonb("tags").$type<string[]>().default([]),
   createdAt: text("created_at").default("now()"),
 });
 
@@ -282,11 +282,11 @@ export const artworks = pgTable("artworks", {
   imageUrl: text("image_url").notNull(),
   price: decimal("price", { precision: 10, scale: 2 }).notNull(),
   category: text("category").notNull(), // "Character Art", "Typography", "Abstract", etc.
-  tags: text("tags").array().default([]),
+  tags: jsonb("tags").$type<string[]>().default([]),
   medium: text("medium"), // "Digital illustration", "Digital art", etc.
   isAvailable: boolean("is_available").default(true),
   salesCount: integer("sales_count").default(0),
-  featured: boolean("featured").default(true),
+  featured: boolean("featured").default(false),
   artistId: varchar("artist_id").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -299,7 +299,7 @@ export const portfolioProjects = pgTable("portfolio_projects", {
   description: text("description"),
   imageUrl: text("image_url").notNull(),
   category: text("category").notNull(), // "Digital Art", "Brand Design", "Character Design"
-  tags: text("tags").array().default([]),
+  tags: jsonb("tags").$type<string[]>().default([]),
   medium: text("medium"),
   style: text("style"),
   theme: text("theme"),
@@ -418,7 +418,7 @@ export const mediaProjects = pgTable("media_projects", {
   status: varchar("status").default("draft"), // draft, processing, completed, published
   progress: integer("progress").default(0),
   description: text("description"),
-  tags: text("tags").default("[]"),
+  tags: jsonb("tags").default("[]"),
   userId: varchar("user_id").notNull(),
   fileUrl: text("file_url"),
   processingSettings: jsonb("processing_settings"),
@@ -844,7 +844,7 @@ export const heritageDocuments = pgTable("heritage_documents", {
   title: text("title").notNull(),
   description: text("description"),
   contentType: text("content_type").notNull(), // "Document", "Oral History", "Ritual Description", "Artifact", "Visual Record"
-  tags: text("tags").array().default([]),
+  tags: jsonb("tags").$type<string[]>().default([]),
   fileUrl: text("file_url"), // URL to stored file
   ancestorName: text("ancestor_name"), // for filtering
   dateRecorded: date("date_recorded"),

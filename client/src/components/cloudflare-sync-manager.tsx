@@ -44,7 +44,9 @@ export function CloudflareSyncManager() {
   const forceSyncMutation = useMutation({
     mutationFn: async () => {
       setSyncStatus('syncing')
-      return await apiRequest('POST', '/api/cloudflare/force-sync')
+      return await apiRequest('/api/cloudflare/force-sync', {
+        method: 'POST'
+      })
     },
     onSuccess: (data) => {
       setSyncStatus('success')
