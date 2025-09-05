@@ -18,12 +18,12 @@ import { Request, Response } from "express";
 /* PayPal Controllers Setup */
 
 // Use the embedded PayPal credentials from your database/environment
-const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID || "BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q";
-const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET;
+const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID || "BAA8AUA8GP2Tx22g4fbtusDJW_ds4luuHrG1veJhaS2Xy5BmPi8RL46pTt3EnVg7JP156tD8SQ0Ch6TXGk";
+const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET || "EDSlaqtreVQbGhaGFUnkoSKZ2zqQTvcRXBMJOH5qlGEacVAgKKcKktz-00nZJj3J88f9rnvaNx-k-f6G";
 
 if (!PAYPAL_CLIENT_ID) {
   console.warn("PayPal Client ID not configured");
-  process.env.PAYPAL_CLIENT_ID = "BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q";
+  process.env.PAYPAL_CLIENT_ID = "BAA8AUA8GP2Tx22g4fbtusDJW_ds4luuHrG1veJhaS2Xy5BmPi8RL46pTt3EnVg7JP156tD8SQ0Ch6TXGk";
 }
 if (!PAYPAL_CLIENT_SECRET) {
   console.warn("PayPal Client Secret not configured - using environment variable");

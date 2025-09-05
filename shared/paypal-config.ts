@@ -3,7 +3,7 @@
 // This ensures consistent PayPal integration across all sectors and components
 
 export const PAYPAL_CONFIG = {
-  CLIENT_ID: "BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q",
+  CLIENT_ID: "BAA8AUA8GP2Tx22g4fbtusDJW_ds4luuHrG1veJhaS2Xy5BmPi8RL46pTt3EnVg7JP156tD8SQ0Ch6TXGk",
   
   // Hosted Button IDs for different products/services
   HOSTED_BUTTONS: {
