@@ -51,6 +51,7 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
     { id: "vaultmesh-products", label: "📦 VaultMesh™ Products", icon: "🛠️", badge: "8 Solutions" },
     { id: "vaultmesh-brands", label: "🎯 Brand Packages", icon: "📊", badge: "610 Brands" },
     { id: "vaultmesh-checkout", label: "🔐 VaultMesh™ Checkout", icon: "💳", badge: "Enterprise" },
+    { id: "paypal-ecosystem", label: "💳 PayPal Ecosystem", icon: "💰", badge: "548 Containers" },
   ]
 
   const ecosystemItems = [

@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Loader2, CreditCard, Package, Building, Users, DollarSign, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
@@ -39,9 +40,7 @@ export function PayPalEcosystemManager() {
   // Initialize ecosystem mutation
   const initializeEcosystem = useMutation({
     mutationFn: async () => {
-      return await apiRequest('/api/paypal/initialize-ecosystem', {
-        method: 'POST',
-      });
+      return await apiRequest('/api/paypal/initialize-ecosystem', 'POST');
     },
     onSuccess: (data) => {
       toast({
@@ -62,9 +61,7 @@ export function PayPalEcosystemManager() {
   // Generate sector containers mutation
   const generateSectorContainers = useMutation({
     mutationFn: async (sectorId: number) => {
-      return await apiRequest(`/api/paypal/sector/${sectorId}/containers`, {
-        method: 'POST',
-      });
+      return await apiRequest(`/api/paypal/sector/${sectorId}/containers`, 'POST');
     },
     onSuccess: (data) => {
       toast({

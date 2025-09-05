@@ -55,6 +55,7 @@ import Landing from "@/pages/landing"
 import SectorDashboard from "@/pages/sector-dashboard"
 import SectorIndividualPage from "@/pages/sector-individual"
 import { GlobalSyncIndicator } from "@/components/global-sync-indicator"
+import { PayPalEcosystemManager } from '@/components/PayPalEcosystemManager'
 import SectorList from "@/pages/sector-list"
 import SettingsPage from "@/pages/settings"
 import AnalyticsPage from "@/pages/analytics"
@@ -216,6 +217,12 @@ function PageRouter({ activePage }: { activePage: string }) {
       return (
         <div className="p-8">
           <VaultMeshCheckout />
+        </div>
+      )
+    case "paypal-ecosystem":
+      return (
+        <div className="p-8">
+          <PayPalEcosystemManager />
         </div>
       )
     case "interns":
