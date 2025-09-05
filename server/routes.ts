@@ -24,6 +24,7 @@ import databaseSchemaRoutes from './routes/database-schema';
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { buttonRepairEngine } from "./dynamic-button-repair";
 import { cloudflareDataSync } from "./cloudflare-data-sync";
+import { paypalEcosystemGenerator, PayPalContainer } from "./paypal-ecosystem-generator";
 
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -339,6 +340,135 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/paypal/order/:orderID/capture", async (req, res) => {
     await capturePaypalOrder(req, res);
+  });
+
+  // ========================================
+  // PAYPAL ECOSYSTEM CONTAINER SYSTEM - 7,000+ PRODUCTS
+  // ========================================
+  
+  // Initialize PayPal containers for entire ecosystem
+  app.post("/api/paypal/initialize-ecosystem", async (req, res) => {
+    try {
+      console.log("🚀 Initializing PayPal ecosystem for 7,000+ products...");
+      const containers = await paypalEcosystemGenerator.generateEcosystemContainers();
+      
+      res.json({
+        success: true,
+        message: `Initialized ${containers.length} PayPal containers`,
+        totalContainers: containers.length,
+        sectorContainers: containers.filter(c => !c.brandId).length,
+        brandContainers: containers.filter(c => c.brandId).length,
+        containers: containers.slice(0, 10) // Return first 10 for preview
+      });
+    } catch (error) {
+      console.error("PayPal ecosystem initialization failed:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to initialize PayPal ecosystem",
+        error: error.message 
+      });
+    }
+  });
+
+  // Get PayPal button HTML for specific container
+  app.get("/api/paypal/container/:containerId/button", async (req, res) => {
+    try {
+      const containerId = req.params.containerId;
+      const buttonHTML = paypalEcosystemGenerator.generatePayPalButtonHTML(containerId);
+      
+      res.json({
+        containerId,
+        buttonHTML,
+        status: "ready"
+      });
+    } catch (error) {
+      console.error("Failed to generate PayPal button:", error);
+      res.status(500).json({ 
+        message: "Failed to generate PayPal button",
+        error: error.message 
+      });
+    }
+  });
+
+  // Bulk generate containers for specific sector
+  app.post("/api/paypal/sector/:sectorId/containers", async (req, res) => {
+    try {
+      const sectorId = parseInt(req.params.sectorId);
+      const containers = await paypalEcosystemGenerator.generateSectorContainers(sectorId);
+      
+      res.json({
+        success: true,
+        sectorId,
+        containersGenerated: containers.length,
+        containers
+      });
+    } catch (error) {
+      console.error("Failed to generate sector containers:", error);
+      res.status(500).json({ 
+        message: "Failed to generate sector containers",
+        error: error.message 
+      });
+    }
+  });
+
+  // Get all PayPal containers for admin panel
+  app.get("/api/paypal/containers", async (req, res) => {
+    try {
+      const containers = paypalEcosystemGenerator.getAllContainers();
+      
+      res.json({
+        totalContainers: containers.length,
+        containers: containers.slice(0, 50), // Paginate for performance
+        stats: {
+          sectorContainers: containers.filter(c => !c.brandId).length,
+          brandContainers: containers.filter(c => c.brandId).length,
+          averagePrice: containers.reduce((sum, c) => sum + parseFloat(c.price), 0) / containers.length
+        }
+      });
+    } catch (error) {
+      console.error("Failed to retrieve containers:", error);
+      res.status(500).json({ 
+        message: "Failed to retrieve containers",
+        error: error.message 
+      });
+    }
+  });
+
+  // Enhanced PayPal order creation with container support
+  app.post("/api/paypal/order/create", async (req, res) => {
+    try {
+      const { containerId, productType, productId, amount, currency = "USD" } = req.body;
+      
+      // Get container details if provided
+      let container;
+      if (containerId) {
+        container = paypalEcosystemGenerator.getContainer(containerId);
+        if (!container) {
+          return res.status(404).json({ message: "Container not found" });
+        }
+      }
+      
+      // Create PayPal order
+      const orderData = {
+        intent: "CAPTURE",
+        amount: container ? container.price : amount,
+        currency: container ? container.currency : currency,
+        containerId,
+        productType,
+        productId
+      };
+      
+      // Use existing PayPal order creation
+      req.body = orderData;
+      await createPaypalOrder(req, res);
+      
+    } catch (error) {
+      console.error("Enhanced PayPal order creation failed:", error);
+      res.status(500).json({ 
+        message: "Failed to create PayPal order",
+        error: error.message 
+      });
+    }
   });
   
   // DISABLED: Heavy sync operations causing CPU bottleneck
