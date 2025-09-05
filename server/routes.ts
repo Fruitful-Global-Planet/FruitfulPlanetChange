@@ -13,18 +13,14 @@ import {
 } from "@shared/schema";
 import { IntegrationManager } from "./services/integration-manager";
 import { getAPIConfig } from "../shared/api-config";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth, isAuthenticated } from "./replitAuth"
 import { registerSectorRoutes } from "./routes/sectors";
-import { dnsIntegration } from "./services/dns-integration";
 import { ExtensionScanner } from "./extension-scanner";
 import { registerAdminPanelRoutes } from './routes-admin-panel';
 import adminPanelRoutes from './routes/admin-panel';
 import syncRoutes from './routes/sync';
 import databaseSchemaRoutes from './routes/database-schema';
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
-import { buttonRepairEngine } from "./dynamic-button-repair";
-import { cloudflareDataSync } from "./cloudflare-data-sync";
-import { paypalEcosystemGenerator, PayPalContainer } from "./paypal-ecosystem-generator";
 
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -75,70 +71,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Register database schema routes for comprehensive data integration
   app.use('/api/database', databaseSchemaRoutes);
-
-  // Register public summary routes for triple-sync integration
-  const { registerPublicSummaryRoutes } = await import('./routes/public-summary');
-  registerPublicSummaryRoutes(app);
-
-  // Register frontend summary routes for DOM truth validation
-  const { registerFrontendSummaryRoutes } = await import('./routes/frontend-summary');
-  registerFrontendSummaryRoutes(app);
-
-  // Register frontend trace routes for live component auditing
-  const { registerFrontendTraceRoutes } = await import('./routes/frontend-trace');
-  registerFrontendTraceRoutes(app);
-
-  // Register dynamic sidebar items API for programmatic consumption
-  const { registerSidebarItemsRoutes } = await import('./routes/sidebar-items');
-  registerSidebarItemsRoutes(app);
-
-  // Register sectors visibility routes for filtering logic reconciliation
-  const { registerSectorsVisibilityRoutes } = await import('./routes/sectors-visibility');
-  registerSectorsVisibilityRoutes(app);
-
-  // Register ecosystem coordinator routes for Fruitful Planet Change integration
-  const { registerEcosystemCoordinatorRoutes } = await import('./routes/ecosystem-coordinator');
-  registerEcosystemCoordinatorRoutes(app);
-
-  // ========================================
-  // DNS MONITORING SYSTEM ROUTES
-  // ========================================
-  
-  // Get current DNS status
-  app.get('/api/dns/status', async (req, res) => {
-    try {
-      const status = await dnsIntegration.checkDNSStatus();
-      res.json(status);
-    } catch (error) {
-      console.error('Error checking DNS status:', error);
-      res.status(500).json({ error: 'Failed to check DNS status' });
-    }
-  });
-
-  // Get Genesis Layer sync status with DNS
-  app.get('/api/dns/genesis-sync', async (req, res) => {
-    try {
-      const syncStatus = await dnsIntegration.syncWithGenesisLayer();
-      res.json(syncStatus);
-    } catch (error) {
-      console.error('Error getting Genesis Layer sync status:', error);
-      res.status(500).json({ error: 'Failed to get Genesis Layer sync status' });
-    }
-  });
-
-  // Start DNS monitoring (for manual trigger)
-  app.post('/api/dns/start-monitoring', async (req, res) => {
-    try {
-      await dnsIntegration.startDNSMonitoring();
-      res.json({ 
-        success: true, 
-        message: 'DNS monitoring started for fruitfulplanet.com' 
-      });
-    } catch (error) {
-      console.error('Error starting DNS monitoring:', error);
-      res.status(500).json({ error: 'Failed to start DNS monitoring' });
-    }
-  });
 
   // ========================================
   // INTERACTIVE SECTOR MAPPING SYSTEM ROUTES
@@ -234,100 +166,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ========================================
-  // TRIPLE-SYNC INTEGRATION ENDPOINTS
-  // ========================================
-  
-  // Triple-sync validation endpoint
-  app.get('/api/triple-sync/validate', async (req, res) => {
-    try {
-      const { tripleSyncValidator } = await import('./triple-sync-validator');
-      const validation = await tripleSyncValidator.validateTripleSync();
-      res.json(validation);
-    } catch (error) {
-      console.error('Error validating triple-sync:', error);
-      res.status(500).json({ error: 'Triple-sync validation failed' });
-    }
-  });
-
-  // Quick sync status check
-  app.get('/api/triple-sync/status', async (req, res) => {
-    try {
-      const { tripleSyncValidator } = await import('./triple-sync-validator');
-      const status = await tripleSyncValidator.getQuickSyncStatus();
-      res.json({
-        syncAllowed: status.allowed,
-        reason: status.reason,
-        timestamp: new Date().toISOString(),
-        appName: 'HSOMNI9000'
-      });
-    } catch (error) {
-      console.error('Error checking sync status:', error);
-      res.status(500).json({ 
-        syncAllowed: false, 
-        reason: 'Status check failed',
-        error: error.message 
-      });
-    }
-  });
-
-  // ========================================
-  // LIVE AUDIT SYSTEM ENDPOINTS
-  // ========================================
-  
-  // Activate canonical source of display truth
-  app.post('/api/audit/activate-canonical', async (req, res) => {
-    try {
-      const { liveAuditSystem } = await import('./live-audit-system');
-      const canonicalState = await liveAuditSystem.activateCanonicalSource();
-      
-      console.log('🔒 Canonical Source of Display Truth ACTIVATED');
-      res.json({
-        success: true,
-        canonicalState,
-        message: 'Canonical source activated - Backend is now truth authority'
-      });
-    } catch (error) {
-      console.error('Error activating canonical source:', error);
-      res.status(500).json({ 
-        success: false, 
-        error: 'Failed to activate canonical source' 
-      });
-    }
-  });
-
-  // Force sync from backend to frontend
-  app.post('/api/audit/force-sync', async (req, res) => {
-    try {
-      const { liveAuditSystem } = await import('./live-audit-system');
-      const syncResult = await liveAuditSystem.forceSyncFromBackend();
-      
-      res.json(syncResult);
-    } catch (error) {
-      console.error('Error forcing sync:', error);
-      res.status(500).json({ 
-        success: false, 
-        error: 'Force sync failed' 
-      });
-    }
-  });
-
-  // Check if rerender is needed
-  app.get('/api/audit/rerender-check', async (req, res) => {
-    try {
-      const { liveAuditSystem } = await import('./live-audit-system');
-      const rerenderCheck = await liveAuditSystem.checkRerenderNeeded();
-      
-      res.json(rerenderCheck);
-    } catch (error) {
-      console.error('Error checking rerender status:', error);
-      res.status(500).json({ 
-        rerenderNeeded: true, 
-        reason: 'Rerender check failed' 
-      });
-    }
-  });
-
   // PayPal payment routes
   app.get("/paypal/setup", async (req, res) => {
       await loadPaypalDefault(req, res);
@@ -340,135 +178,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/paypal/order/:orderID/capture", async (req, res) => {
     await capturePaypalOrder(req, res);
-  });
-
-  // ========================================
-  // PAYPAL ECOSYSTEM CONTAINER SYSTEM - 7,000+ PRODUCTS
-  // ========================================
-  
-  // Initialize PayPal containers for entire ecosystem
-  app.post("/api/paypal/initialize-ecosystem", async (req, res) => {
-    try {
-      console.log("🚀 Initializing PayPal ecosystem for 7,000+ products...");
-      const containers = await paypalEcosystemGenerator.generateEcosystemContainers();
-      
-      res.json({
-        success: true,
-        message: `Initialized ${containers.length} PayPal containers`,
-        totalContainers: containers.length,
-        sectorContainers: containers.filter(c => !c.brandId).length,
-        brandContainers: containers.filter(c => c.brandId).length,
-        containers: containers.slice(0, 10) // Return first 10 for preview
-      });
-    } catch (error) {
-      console.error("PayPal ecosystem initialization failed:", error);
-      res.status(500).json({ 
-        success: false, 
-        message: "Failed to initialize PayPal ecosystem",
-        error: error.message 
-      });
-    }
-  });
-
-  // Get PayPal button HTML for specific container
-  app.get("/api/paypal/container/:containerId/button", async (req, res) => {
-    try {
-      const containerId = req.params.containerId;
-      const buttonHTML = paypalEcosystemGenerator.generatePayPalButtonHTML(containerId);
-      
-      res.json({
-        containerId,
-        buttonHTML,
-        status: "ready"
-      });
-    } catch (error) {
-      console.error("Failed to generate PayPal button:", error);
-      res.status(500).json({ 
-        message: "Failed to generate PayPal button",
-        error: error.message 
-      });
-    }
-  });
-
-  // Bulk generate containers for specific sector
-  app.post("/api/paypal/sector/:sectorId/containers", async (req, res) => {
-    try {
-      const sectorId = parseInt(req.params.sectorId);
-      const containers = await paypalEcosystemGenerator.generateSectorContainers(sectorId);
-      
-      res.json({
-        success: true,
-        sectorId,
-        containersGenerated: containers.length,
-        containers
-      });
-    } catch (error) {
-      console.error("Failed to generate sector containers:", error);
-      res.status(500).json({ 
-        message: "Failed to generate sector containers",
-        error: error.message 
-      });
-    }
-  });
-
-  // Get all PayPal containers for admin panel
-  app.get("/api/paypal/containers", async (req, res) => {
-    try {
-      const containers = paypalEcosystemGenerator.getAllContainers();
-      
-      res.json({
-        totalContainers: containers.length,
-        containers: containers.slice(0, 50), // Paginate for performance
-        stats: {
-          sectorContainers: containers.filter(c => !c.brandId).length,
-          brandContainers: containers.filter(c => c.brandId).length,
-          averagePrice: containers.reduce((sum, c) => sum + parseFloat(c.price), 0) / containers.length
-        }
-      });
-    } catch (error) {
-      console.error("Failed to retrieve containers:", error);
-      res.status(500).json({ 
-        message: "Failed to retrieve containers",
-        error: error.message 
-      });
-    }
-  });
-
-  // Enhanced PayPal order creation with container support
-  app.post("/api/paypal/order/create", async (req, res) => {
-    try {
-      const { containerId, productType, productId, amount, currency = "USD" } = req.body;
-      
-      // Get container details if provided
-      let container;
-      if (containerId) {
-        container = paypalEcosystemGenerator.getContainer(containerId);
-        if (!container) {
-          return res.status(404).json({ message: "Container not found" });
-        }
-      }
-      
-      // Create PayPal order
-      const orderData = {
-        intent: "CAPTURE",
-        amount: container ? container.price : amount,
-        currency: container ? container.currency : currency,
-        containerId,
-        productType,
-        productId
-      };
-      
-      // Use existing PayPal order creation
-      req.body = orderData;
-      await createPaypalOrder(req, res);
-      
-    } catch (error) {
-      console.error("Enhanced PayPal order creation failed:", error);
-      res.status(500).json({ 
-        message: "Failed to create PayPal order",
-        error: error.message 
-      });
-    }
   });
   
   // DISABLED: Heavy sync operations causing CPU bottleneck
@@ -545,417 +254,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching sectors:", error);
       res.status(500).json({ message: "Failed to fetch sectors from database" });
-    }
-  });
-
-  // Add missing sectors/display endpoint to fix deployment error
-  app.get("/api/sectors/display", async (req, res) => {
-    try {
-      const sectors = await storage.getAllSectors();
-      const brands = await storage.getAllBrands();
-      
-      // Calculate real brand counts per sector from database
-      const sectorsWithRealData = sectors.map(sector => {
-        const sectorBrands = brands.filter(brand => brand.sectorId === sector.id);
-        const coreBrands = sectorBrands.filter(brand => !brand.parentId);
-        const subNodes = sectorBrands.filter(brand => brand.parentId);
-        
-        return {
-          ...sector,
-          brandCount: coreBrands.length,
-          subnodeCount: subNodes.length,
-          totalElements: sectorBrands.length,
-          displayReady: true
-        };
-      });
-      
-      res.json({
-        timestamp: new Date().toISOString(),
-        source: "display-optimized",
-        totalCount: sectorsWithRealData.length,
-        description: "Sectors optimized for display rendering",
-        sectors: sectorsWithRealData
-      });
-    } catch (error) {
-      console.error("Error fetching sectors for display:", error);
-      res.status(500).json({ message: "Failed to fetch sectors for display" });
-    }
-  });
-
-  // VOORWAARD MARS - Seedling Intake API
-  app.post("/api/seedling/intake", async (req, res) => {
-    try {
-      const { appName, deploymentType, scrollCompliance } = req.body;
-      
-      const seedlingData = {
-        appName: appName || "Untitled Seedling",
-        deploymentType: deploymentType || "scroll-compliant",
-        scrollCompliance: scrollCompliance !== false,
-        timestamp: new Date().toISOString(),
-        status: "intake-ready",
-        treatySync: true,
-        vaultMeshCompliant: true,
-        claimRootLicensed: true
-      };
-      
-      res.json({
-        success: true,
-        message: "Seedling intake activated under VOORWAARD MARS protocol",
-        seedling: seedlingData,
-        nextSteps: [
-          "CoreBuilder Engine pre-warming",
-          "Scroll compliance validation",
-          "VaultMesh integration",
-          "ClaimRoot licensing"
-        ]
-      });
-    } catch (error) {
-      console.error("Error in seedling intake:", error);
-      res.status(500).json({ message: "Seedling intake failed" });
-    }
-  });
-
-  // VOORWAARD MARS - Treaty Status Check
-  app.get("/api/voorwaard/status", async (req, res) => {
-    try {
-      res.json({
-        voorwaardMars: "ACTIVE",
-        conditionalTriggers: "CLEARED",
-        sovereignChannels: "OPERATIONAL",
-        planetaryMotion: "AUTHORIZED",
-        scrollPulseInterval: "9s",
-        claimRootCertification: "LOCKED_IN",
-        seedBackedLicensing: "COMPLETE",
-        faaSignature: "EMBEDDED",
-        seedlingIntake: "ACTIVATED",
-        coreBuilderEngine: "PRE_WARMED",
-        fundingGate: "ACCEPTS_50K_MINIMUM",
-        lastSync: new Date().toISOString()
-      });
-    } catch (error) {
-      console.error("Error checking VOORWAARD status:", error);
-      res.status(500).json({ message: "Treaty status check failed" });
-    }
-  });
-
-  // Button Validation Scan Endpoint - Fix for scan failure
-  app.post("/api/button-validation/scan", async (req, res) => {
-    try {
-      // Simulate comprehensive button scanning across UI/CAD/scroll layers
-      const scanResults = {
-        totalScanned: 11786,
-        functionalCount: 11486,
-        brokenCount: 300,
-        repairedCount: 0,
-        functionalPercentage: Math.round((11486 / 11786) * 100),
-        status: "scan_complete",
-        timestamp: new Date().toISOString(),
-        layers: {
-          uiButtons: 8924,
-          cadInterfaces: 1582,
-          scrollTriggers: 1280
-        },
-        scanDuration: "2.3s"
-      };
-
-      res.json({
-        success: true,
-        message: "Omniuniversal button scan completed successfully",
-        results: scanResults
-      });
-    } catch (error) {
-      console.error("Error in button validation scan:", error);
-      res.status(500).json({ message: "Button validation scan failed" });
-    }
-  });
-
-  // Button Validation Repair Endpoint
-  app.post("/api/button-validation/repair", async (req, res) => {
-    try {
-      // Simulate comprehensive auto-repair of broken buttons
-      const repairResults = {
-        repairedCount: 300,
-        totalFixed: 300,
-        remainingIssues: 0,
-        repairActions: [
-          "Injected temporary onclick handlers for 127 buttons",
-          "Fixed missing import statements in 89 components", 
-          "Restored broken event bindings in 84 elements"
-        ],
-        timestamp: new Date().toISOString(),
-        status: "repair_complete"
-      };
-
-      res.json({
-        success: true,
-        message: "Auto-repair completed successfully",
-        repaired: repairResults.repairedCount,
-        results: repairResults
-      });
-    } catch (error) {
-      console.error("Error in button validation repair:", error);
-      res.status(500).json({ message: "Button validation repair failed" });
-    }
-  });
-
-  // VaultLevel 7 - ClaimRoot License Checkout System
-  app.post("/api/claimroot/checkout", async (req, res) => {
-    try {
-      const { scroll_id = "codeflow", sector = "Technology", quantity = 1 } = req.body;
-
-      // Dynamic pricing based on sector and scroll type
-      const basePriceMatrix = {
-        "Technology": 1140.00,
-        "Infrastructure": 1590.00,
-        "Enterprise": 1990.00,
-        "Eco": 590.00
-      };
-
-      const pricePerLicense = basePriceMatrix[sector] || 790.00;
-      const totalPrice = pricePerLicense * quantity;
-
-      // Static PayPal hosted button (from ClaimRoot configuration)
-      const paypalLink = "https://www.paypal.com/ncp/payment/K9BPET82JDRQ4";
-
-      res.json({
-        status: "ok",
-        scroll: scroll_id,
-        sector: sector,
-        quantity: quantity,
-        price: totalPrice,
-        paypal_url: paypalLink,
-        checkout_id: `claimroot_${Date.now()}`,
-        treaty_compliant: true,
-        vault_level: 7
-      });
-    } catch (error) {
-      console.error("Error creating ClaimRoot checkout:", error);
-      res.status(500).json({ message: "ClaimRoot checkout failed" });
-    }
-  });
-
-  // TreatyFlame License Logging
-  app.post("/api/treaty/log", async (req, res) => {
-    try {
-      const { sector, brand, scroll, payer_email, paypal_txn_id } = req.body;
-      
-      const treatyLog = {
-        sector: sector,
-        brand: brand,
-        scroll: scroll,
-        payer: payer_email,
-        tx: paypal_txn_id,
-        timestamp: new Date().toISOString(),
-        vault_level: 7,
-        treaty_signature: "FAA-X13-COMPLIANT",
-        flame_seal: `FLAME_${Date.now()}`
-      };
-
-      // Log to console for now (integrate with database later)
-      console.log("🔥 TreatyFlame Log:", treatyLog);
-
-      res.json({
-        status: "logged",
-        flame_id: treatyLog.flame_seal,
-        treaty_compliant: true
-      });
-    } catch (error) {
-      console.error("Error logging treaty claim:", error);
-      res.status(500).json({ message: "TreatyFlame logging failed" });
-    }
-  });
-
-  // ClaimRoot PayPal Button Generator
-  app.get("/api/claimroot/button/:sector", async (req, res) => {
-    try {
-      const sector = req.params.sector;
-      
-      const buttonHtml = `
-<div id="paypal-container-K9BPET82JDRQ4-${sector}"></div>
-<script 
-  src="https://www.paypal.com/sdk/js?client-id=BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q&components=hosted-buttons&disable-funding=venmo&currency=USD">
-</script>
-<script>
-  paypal.HostedButtons({
-    hostedButtonId: "K9BPET82JDRQ4",
-  }).render("#paypal-container-K9BPET82JDRQ4-${sector}");
-</script>`;
-
-      res.json({
-        sector: sector,
-        button_html: buttonHtml,
-        paypal_link: "https://www.paypal.com/ncp/payment/K9BPET82JDRQ4",
-        vault_level: 7,
-        status: "ready"
-      });
-    } catch (error) {
-      console.error("Error generating ClaimRoot button:", error);
-      res.status(500).json({ message: "Button generation failed" });
-    }
-  });
-
-  // Standalone HTML Checkout Page Endpoint
-  app.get("/checkout.html", async (req, res) => {
-    res.sendFile('public/claimroot-checkout.html', { root: process.cwd() });
-  });
-
-  // Dynamic Button Repair Engine Endpoints
-  // =================================================================
-  // CLOUDFLARE WORKERS DATA SYNCHRONIZATION ROUTES
-  // =================================================================
-  
-  // Get current ecosystem data for Cloudflare Workers
-  app.get('/api/cloudflare/ecosystem-data', async (req, res) => {
-    try {
-      const ecosystemData = await cloudflareDataSync.getEcosystemData();
-      res.json(ecosystemData);
-    } catch (error) {
-      console.error('Error getting ecosystem data:', error);
-      res.status(500).json({ message: 'Failed to get ecosystem data' });
-    }
-  });
-
-  // Force sync real HSOMNI9000 data to Cloudflare Workers
-  app.post('/api/cloudflare/force-sync', async (req, res) => {
-    try {
-      console.log('🚨 FORCE SYNC TRIGGERED: Aligning Cloudflare Workers with HSOMNI9000 data...');
-      const result = await cloudflareDataSync.forceDataAlignment();
-      res.json(result);
-    } catch (error) {
-      console.error('Error forcing Cloudflare sync:', error);
-      res.status(500).json({ message: 'Failed to force sync with Cloudflare Workers' });
-    }
-  });
-
-  // Standard sync to Cloudflare Workers
-  app.post('/api/cloudflare/sync', async (req, res) => {
-    try {
-      const result = await cloudflareDataSync.syncToCloudflareWorkers();
-      res.json(result);
-    } catch (error) {
-      console.error('Error syncing to Cloudflare Workers:', error);
-      res.status(500).json({ message: 'Failed to sync to Cloudflare Workers' });
-    }
-  });
-
-  // =================================================================
-  // DYNAMIC BUTTON REPAIR ENGINE ROUTES
-  // =================================================================
-
-  app.get("/api/button-repair/scan", async (req, res) => {
-    try {
-      const page_url = req.query.page_url as string || "/";
-      const issues = await buttonRepairEngine.scanForButtonIssues(page_url);
-      
-      res.json({
-        scan_timestamp: new Date().toISOString(),
-        page_url,
-        issues_detected: issues.length,
-        issues: issues,
-        status: "scan_complete"
-      });
-    } catch (error) {
-      console.error("Error scanning buttons:", error);
-      res.status(500).json({ message: "Button scan failed" });
-    }
-  });
-
-  app.get("/api/button-repair/suggestions/:issue_id", async (req, res) => {
-    try {
-      const issue_id = req.params.issue_id;
-      const issue = buttonRepairEngine['detectedIssues'].find(i => i.id === issue_id);
-      
-      if (!issue) {
-        return res.status(404).json({ message: "Issue not found" });
-      }
-      
-      const suggestion = buttonRepairEngine.generateRepairSuggestion(issue);
-      
-      res.json({
-        issue,
-        suggestion,
-        timestamp: new Date().toISOString()
-      });
-    } catch (error) {
-      console.error("Error generating suggestion:", error);
-      res.status(500).json({ message: "Suggestion generation failed" });
-    }
-  });
-
-  app.post("/api/button-repair/execute", async (req, res) => {
-    try {
-      const { issue_id, user_confirmed } = req.body;
-      
-      if (!user_confirmed) {
-        return res.status(400).json({ message: "User confirmation required for repair execution" });
-      }
-      
-      const issue = buttonRepairEngine['detectedIssues'].find(i => i.id === issue_id);
-      if (!issue) {
-        return res.status(404).json({ message: "Issue not found" });
-      }
-      
-      const suggestion = buttonRepairEngine.generateRepairSuggestion(issue);
-      const result = await buttonRepairEngine.executeRepair(suggestion);
-      
-      res.json({
-        issue_id,
-        repair_executed: result.success,
-        message: result.message,
-        timestamp: new Date().toISOString()
-      });
-    } catch (error) {
-      console.error("Error executing repair:", error);
-      res.status(500).json({ message: "Repair execution failed" });
-    }
-  });
-
-  app.get("/api/button-repair/analytics", async (req, res) => {
-    try {
-      const analytics = buttonRepairEngine.getRepairAnalytics();
-      
-      res.json({
-        ...analytics,
-        vault_status: "active",
-        monitoring_status: "operational",
-        timestamp: new Date().toISOString()
-      });
-    } catch (error) {
-      console.error("Error fetching repair analytics:", error);
-      res.status(500).json({ message: "Analytics fetch failed" });
-    }
-  });
-
-  app.post("/api/button-repair/start-monitoring", async (req, res) => {
-    try {
-      const { interval_seconds = 30 } = req.body;
-      
-      await buttonRepairEngine.startContinuousMonitoring(interval_seconds);
-      
-      res.json({
-        monitoring_started: true,
-        interval_seconds,
-        message: "VaultMesh continuous button monitoring activated",
-        timestamp: new Date().toISOString()
-      });
-    } catch (error) {
-      console.error("Error starting monitoring:", error);
-      res.status(500).json({ message: "Monitoring start failed" });
-    }
-  });
-
-  app.post("/api/button-repair/stop-monitoring", async (req, res) => {
-    try {
-      buttonRepairEngine.stopMonitoring();
-      
-      res.json({
-        monitoring_stopped: true,
-        message: "Button monitoring stopped",
-        timestamp: new Date().toISOString()
-      });
-    } catch (error) {
-      console.error("Error stopping monitoring:", error);
-      res.status(500).json({ message: "Monitoring stop failed" });
     }
   });
 
@@ -1694,6 +992,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // OPTIMIZED Dashboard Stats - Uses database aggregation for 10x speed improvement
   app.get("/api/dashboard/stats", async (req, res) => {
     try {
+
+
+  // Comprehensive Brand and Sector Counting Verification API
+  app.get("/api/comprehensive/counts", async (req, res) => {
+    try {
+      const [sectors, brands] = await Promise.all([
+        storage.getAllSectors(),
+        storage.getAllBrands()
+      ]);
+      
+      // Calculate detailed counts
+      const sectorCounts: { [sectorId: number]: { coreBrands: number, subNodes: number, total: number } } = {};
+      
+      sectors.forEach(sector => {
+        sectorCounts[sector.id] = { coreBrands: 0, subNodes: 0, total: 0 };
+      });
+      
+      let totalCoreBrands = 0;
+      let totalSubNodes = 0;
+      
+      brands.forEach(brand => {
+        if (brand.sectorId && sectorCounts[brand.sectorId]) {
+          if (brand.isCore && !brand.parentId) {
+            sectorCounts[brand.sectorId].coreBrands++;
+            totalCoreBrands++;
+          } else if (brand.parentId) {
+            sectorCounts[brand.sectorId].subNodes++;
+            totalSubNodes++;
+          }
+          sectorCounts[brand.sectorId].total++;
+        }
+      });
+      
+      // Calculate sector totals
+      const sectorSummary = sectors.map(sector => ({
+        id: sector.id,
+        name: sector.name,
+        emoji: sector.emoji,
+        coreBrands: sectorCounts[sector.id]?.coreBrands || 0,
+        subNodes: sectorCounts[sector.id]?.subNodes || 0,
+        totalBrands: sectorCounts[sector.id]?.total || 0,
+        metadataBrandCount: sector.brandCount || 0,
+        metadataSubnodeCount: sector.subnodeCount || 0
+      }));
+      
+      res.json({
+        overview: {
+          totalSectors: sectors.length,
+          totalCoreBrands,
+          totalSubNodes,
+          totalElements: totalCoreBrands + totalSubNodes,
+          totalBrandsInDatabase: brands.length
+        },
+        sectorBreakdown: sectorSummary,
+        dataSource: brands.length > 0 ? "database" : "fallback_comprehensive_data",
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error generating comprehensive counts:", error);
+      res.status(500).json({ 
+        message: "Failed to generate comprehensive counts",
+        error: error.message 
+      });
+    }
+  });
+
+
       const stats = await storage.getDashboardStats();
       res.json({
         ...stats,
@@ -2670,61 +2035,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Register ChatGPT Integration Routes
   const { registerChatGPTRoutes } = await import("./routes/chatgpt-extraction");
   registerChatGPTRoutes(app);
-
-  // Import button validation engine after other imports to avoid errors
-  const { buttonValidator } = await import("./button-validation-engine");
-
-  // Button Validation API Routes
-  app.post("/api/button-validation/scan", async (req, res) => {
-    try {
-      console.log('🔍 OMNIUNIVERSAL BUTTON SCAN REQUESTED...');
-      await buttonValidator.scanAllFiles();
-      const status = buttonValidator.getStatus();
-      res.json({
-        message: "Button validation scan completed",
-        status: status.status,
-        results: status
-      });
-    } catch (error) {
-      console.error("Button validation scan failed:", error);
-      res.status(500).json({ 
-        error: "Button validation scan failed", 
-        details: (error as Error).message 
-      });
-    }
-  });
-
-  app.post("/api/button-validation/repair", async (req, res) => {
-    try {
-      console.log('🔧 AUTO-REPAIR SYSTEM REQUESTED...');
-      await buttonValidator.autoRepairButtons();
-      const status = buttonValidator.getStatus();
-      res.json({
-        message: "Button auto-repair completed",
-        repaired: status.repairedCount,
-        status: status.status
-      });
-    } catch (error) {
-      console.error("Button auto-repair failed:", error);
-      res.status(500).json({ 
-        error: "Button auto-repair failed", 
-        details: (error as Error).message 
-      });
-    }
-  });
-
-  app.get("/api/button-validation/status", (req, res) => {
-    try {
-      const status = buttonValidator.getStatus();
-      res.json(status);
-    } catch (error) {
-      console.error("Error fetching button validation status:", error);
-      res.status(500).json({ 
-        error: "Failed to fetch button validation status", 
-        details: (error as Error).message 
-      });
-    }
-  });
 
   const httpServer = createServer(app);
   return httpServer;
