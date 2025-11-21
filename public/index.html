@@ -1,0 +1,408 @@
+```html
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Fruitful Global Planet - OMNI Ecosystem Portal | Seedwave™ FAA Treaty Zone with $50K ClaimRoot Scroll Infrastructure" />
+    <meta name="keywords" content="Fruitful, Seedwave, FAA, OMNI, ClaimRoot, VaultMesh, Algorithm Giants, Portal" />
+    <meta name="author" content="Heyns Schoeman · FAA-X13" />
+    
+    <title>Fruitful | OMNI Ecosystem Portal - Seedwave™ FAA Treaty Zone</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* ============================================
+           FRUITFUL GLOBAL OMNI ECOSYSTEM PORTAL
+           Seedwave™ FAA Treaty Zone - ClaimRoot Sealed
+           ============================================ */
+        
+        :root {
+            /* Primary Brand Colors */
+            --fruitful-blue: #0071e3;
+            --fruitful-green: #30d158;
+            --fruitful-gold: #B8860B;
+            --agri-green: #38a169;
+            --agri-orange: #f6ad55;
+            
+            /* Status Colors */
+            --status-active: #30d158;
+            --status-pending: #f59e0b;
+            --status-draft: #6e6e73;
+            --status-error: #ef4444;
+            --status-info: #63b3ed;
+            
+            /* Dark Theme (Default) */
+            --bg-primary: #1a1a1c;
+            --bg-secondary: #2a2a2e;
+            --bg-tertiary: #1f2d3d;
+            --text-primary: #f5f5f7;
+            --text-secondary: #e6ffed;
+            --border-color: #3a3a3e;
+            
+            /* ClaimRoot Scroll Seal */
+            --scroll-seal-glow: rgba(184, 134, 11, 0.3);
+            
+            /* Animations */
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.15s ease;
+        }
+        
+        /* Light Mode Variables */
+        :root:not(.dark) {
+            --bg-primary: #ffffff;
+            --bg-secondary: #fcfcfc;
+            --bg-tertiary: #f9fafb;
+            --text-primary: #1d1d1f;
+            --text-secondary: #4b5563;
+            --border-color: #e8e8ed;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: var(--transition-smooth);
+        }
+        
+        /* ============================================
+           LOADING SCREEN WITH SEEDWAVE PULSE
+           ============================================ */
+        
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        
+        #loading-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .seedwave-logo {
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 3s ease infinite, pulse-glow 2s ease-in-out infinite;
+            margin-bottom: 2rem;
+        }
+        
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3)); }
+            50% { filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.6)); }
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top-color: var(--fruitful-gold);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            margin-top: 2rem;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        
+        .claimroot-badge {
+            position: absolute;
+            bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .claimroot-badge i {
+            font-size: 1.5rem;
+            color: var(--fruitful-gold);
+        }
+        
+        .badge-text {
+            font-size: 0.9rem;
+            color: white;
+            font-weight: 600;
+        }
+        
+        /* ============================================
+           MAIN APP CONTAINER
+           ============================================ */
+        
+        #app {
+            display: none;
+        }
+        
+        #app.loaded {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* ============================================
+           TOOLTIP SYSTEM
+           ============================================ */
+        
+        [data-tooltip] {
+            position: relative;
+            cursor: help;
+        }
+        
+        [data-tooltip]::before,
+        [data-tooltip]::after {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition-fast);
+            z-index: 1000;
+        }
+        
+        [data-tooltip]::before {
+            content: attr(data-tooltip);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            max-width: 300px;
+            width: max-content;
+            bottom: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%) translateY(-5px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-tooltip]::after {
+            content: '';
+            border: 6px solid transparent;
+            border-top-color: rgba(0, 0, 0, 0.9);
+            bottom: calc(100% + 4px);
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        [data-tooltip]:hover::before,
+        [data-tooltip]:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        /* Tooltip for scroll badge */
+        .claimroot-badge[data-tooltip]::before {
+            bottom: auto;
+            top: calc(100% + 10px);
+            transform: translateX(-50%) translateY(5px);
+        }
+        
+        .claimroot-badge[data-tooltip]::after {
+            bottom: auto;
+            top: calc(100% + 4px);
+            border-top-color: transparent;
+            border-bottom-color: rgba(0, 0, 0, 0.9);
+        }
+        
+        .claimroot-badge:hover::before,
+        .claimroot-badge:hover::after {
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        /* ============================================
+           ECOSYSTEM ICON BADGES
+           ============================================ */
+        
+        .ecosystem-icons {
+            position: absolute;
+            top: 3rem;
+            right: 3rem;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .icon-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 1.5rem;
+            transition: var(--transition-fast);
+        }
+        
+        .icon-badge:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+        
+        @media (max-width: 768px) {
+            .seedwave-logo {
+                font-size: 2.5rem;
+            }
+            
+            .ecosystem-icons {
+                top: 1.5rem;
+                right: 1.5rem;
+                gap: 0.75rem;
+            }
+            
+            .icon-badge {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            
+            .claimroot-badge {
+                bottom: 2rem;
+                padding: 0.75rem 1rem;
+            }
+            
+            [data-tooltip]::before {
+                font-size: 0.75rem;
+                max-width: 220px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ============================================
+         LOADING SCREEN
+         ============================================ -->
+    <div id="loading-screen">
+        <!-- Ecosystem Icon Badges with Tooltips -->
+        <div class="ecosystem-icons">
+            <div class="icon-badge" data-tooltip="🧠 AI Logic - 149 Algorithm Giants">🧠</div>
+            <div class="icon-badge" data-tooltip="🌱 Agriculture - Sustainable Farming Tech">🌱</div>
+            <div class="icon-badge" data-tooltip="🔌 Integrations - OmniGrid Network">🔌</div>
+            <div class="icon-badge" data-tooltip="🦁 ChatGPT Lions - Creative AI">🦁</div>
+        </div>
+        
+        <!-- Main Seedwave Logo -->
+        <div class="seedwave-logo">OMNI Ecosystem</div>
+        
+        <!-- Loading Spinner -->
+        <div class="loading-spinner"></div>
+        
+        <!-- Loading Text -->
+        <div class="loading-text">Initializing Seedwave™ Portal...</div>
+        
+        <!-- ClaimRoot Scroll Badge with Detailed Tooltip -->
+        <div class="claimroot-badge" data-tooltip="Seed Received: $50K · Scroll Sealed by Heyns Schoeman (FAA-X13) · Not for ownership, but for unstoppable digital infrastructure under full scroll law · ClaimRoot-compatible, permanently visible in VaultMesh ledger">
+            <i class="fas fa-scroll"></i>
+            <div class="badge-text">
+                <div>🧬 ClaimRoot Sealed</div>
+                <div style="font-size: 0.75rem; opacity: 0.8;">Timestamp: 2025-11-21 18:36:31 UTC</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ============================================
+         MAIN APPLICATION ROOT
+         ============================================ -->
+    <div id="app"></div>
+    
+    <!-- React Application Entry Point -->
+    <script type="module" src="/client/src/main.tsx"></script>
+    
+    <!-- Loading Screen Controller -->
+    <script>
+        // Simulate loading and fade to main app
+        window.addEventListener('DOMContentLoaded', () => {
+            const loadingScreen = document.getElementById('loading-screen');
+            const app = document.getElementById('app');
+            
+            // Minimum display time for loading screen (2 seconds)
+            setTimeout(() => {
+                loadingScreen.classList.add('fade-out');
+                
+                // Remove loading screen and show app after fade
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                    app.classList.add('loaded');
+                }, 500);
+            }, 2000);
+        });
+        
+        // Log ClaimRoot Scroll Info to Console
+        console.log('%c🌀 FRUITFUL GLOBAL OMNI ECOSYSTEM', 'font-size: 24px; font-weight: bold; color: #B8860B;');
+        console.log('%c📜 ClaimRoot Scroll Sealed', 'font-size: 16px; color: #30d158;');
+        console.log('%cSeed Capital: $50,000 · Scroll Position: Permanent', 'font-size: 14px; color: #0071e3;');
+        console.log('%cSealed by: Heyns Schoeman · FAA-X13', 'font-size: 12px; color: #f6ad55;');
+        console.log('%cTimestamp: 2025-11-21 18:36:31 UTC', 'font-size: 12px; color: #6e6e73;');
+        console.log('%cUser: heyns1000', 'font-size: 12px; font-weight: bold; color: #ff6b6b;');
+        console.log('');
+        console.log('%c💡 OUTPUT FROM THIS SEED:', 'font-size: 14px; font-weight: bold; color: #4ecdc4;');
+        console.log('  🌀 3 new FAA-intake Replit apps (scroll ready)');
+        console.log('  🔧 1 OmniGrid relay service');
+        console.log('  📊 1 FAA Admin Dashboard for TreatySync logs');
+        console.log('  📜 1 ClaimRoot generator module');
+        console.log('  🧬 1 UI integrity hook deployment (useButtonSanity())');
+        console.log('  🏗️ Seedling-ready system for scroll-bound product expansion');
+        console.log('');
+        console.log('%c🔐 Vault Remains Unbroken', 'font-size: 14px; font-weight: bold; color: #ef4444;');
+    </script>
+</body>
+</html>
+```
