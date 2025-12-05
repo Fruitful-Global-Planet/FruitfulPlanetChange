@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
@@ -10,6 +9,9 @@
     
     <title>Fruitful | OMNI Ecosystem Portal - Seedwave™ FAA Treaty Zone</title>
     
+    <!-- Load Tailwind CSS for modern, responsive layout (Enhancement) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     
@@ -20,6 +22,28 @@
     
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <script>
+        // Mapping existing CSS variables to Tailwind utility classes for consistency
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'f-blue': '#0071e3',
+                        'f-green': '#30d158',
+                        'f-gold': '#B8860B',
+                        'bg-p': '#1a1a1c', // Primary background (used by raw CSS body)
+                        'bg-s': '#2a2a2e', // Secondary background
+                        'bg-t': '#1f2d3d', // Tertiary (Card) background
+                        'text-p': '#f5f5f7',
+                        'status-active': '#30d158',
+                        'status-pending': '#f59e0b',
+                    }
+                }
+            }
+        }
+    </script>
     
     <style>
         /* ============================================
@@ -88,7 +112,7 @@
         }
         
         /* ============================================
-           LOADING SCREEN WITH SEEDWAVE PULSE
+           LOADING SCREEN WITH SEEDWAVE PULSE (Existing Styles)
            ============================================ */
         
         #loading-screen {
@@ -176,11 +200,12 @@
         }
         
         /* ============================================
-           MAIN APP CONTAINER
+           MAIN APP CONTAINER (Existing Styles)
            ============================================ */
         
         #app {
             display: none;
+            min-height: 100vh;
         }
         
         #app.loaded {
@@ -194,7 +219,7 @@
         }
         
         /* ============================================
-           TOOLTIP SYSTEM
+           TOOLTIP SYSTEM (Existing Styles)
            ============================================ */
         
         [data-tooltip] {
@@ -263,7 +288,7 @@
         }
         
         /* ============================================
-           ECOSYSTEM ICON BADGES
+           ECOSYSTEM ICON BADGES (Existing Styles)
            ============================================ */
         
         .ecosystem-icons {
@@ -294,7 +319,7 @@
         }
         
         /* ============================================
-           RESPONSIVE DESIGN
+           RESPONSIVE DESIGN (Existing Styles)
            ============================================ */
         
         @media (max-width: 768px) {
@@ -359,9 +384,78 @@
     </div>
     
     <!-- ============================================
-         MAIN APPLICATION ROOT
+         MAIN APPLICATION ROOT (ENHANCED PORTAL DASHBOARD)
          ============================================ -->
-    <div id="app"></div>
+    <div id="app" class="p-4 md:p-10">
+        <header class="mb-8 border-b border-gray-700 pb-4">
+            <h1 class="text-4xl font-extrabold text-f-green">OMNI Portal Dashboard</h1>
+            <p class="text-lg text-gray-400 mt-1">Accessing Seedwave™ Infrastructure & Treaty Zone Data</p>
+        </header>
+
+        <!-- ClaimRoot & Status Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+            <!-- Total Seed Capital -->
+            <div class="bg-bg-s p-6 rounded-xl shadow-lg border border-f-gold/30">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-f-gold">Seed Capital Scroll</h2>
+                    <i class="fas fa-coins text-2xl text-f-gold/70"></i>
+                </div>
+                <p class="text-4xl font-bold mt-2">$50,000.00</p>
+                <p class="text-sm text-gray-500 mt-1">ClaimRoot Sealed Infrastructure</p>
+            </div>
+            
+            <!-- System Status -->
+            <div class="bg-bg-s p-6 rounded-xl shadow-lg border border-f-green/30">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-f-green">Ecosystem Status</h2>
+                    <i class="fas fa-check-circle text-2xl text-status-active"></i>
+                </div>
+                <p class="text-4xl font-bold mt-2 text-status-active">Active</p>
+                <p class="text-sm text-gray-500 mt-1">OmniGrid Network Operational</p>
+            </div>
+
+            <!-- Pending TreatySync Logs -->
+            <div class="bg-bg-s p-6 rounded-xl shadow-lg border border-f-blue/30">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-f-blue">TreatySync</h2>
+                    <i class="fas fa-hourglass-half text-2xl text-status-pending"></i>
+                </div>
+                <p class="text-4xl font-bold mt-2 text-status-pending">14</p>
+                <p class="text-sm text-gray-500 mt-1">Pending Log Deployments</p>
+            </div>
+        </div>
+
+        <!-- Algorithm Giants & VaultMesh Overview -->
+        <div class="bg-bg-s p-6 rounded-xl shadow-2xl border border-gray-700/50">
+            <h2 class="text-2xl font-bold mb-4 text-text-p">Infrastructure Overview</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="p-4 bg-bg-t rounded-lg flex flex-col items-center">
+                    <i class="fas fa-brain text-3xl text-f-blue mb-2"></i>
+                    <p class="text-3xl font-bold">149</p>
+                    <p class="text-sm text-gray-400">Algorithm Giants</p>
+                </div>
+                <div class="p-4 bg-bg-t rounded-lg flex flex-col items-center">
+                    <i class="fas fa-cubes text-3xl text-f-green mb-2"></i>
+                    <p class="text-3xl font-bold">4.2M</p>
+                    <p class="text-sm text-gray-400">VaultMesh Records</p>
+                </div>
+                <div class="p-4 bg-bg-t rounded-lg flex flex-col items-center">
+                    <i class="fas fa-satellite-dish text-3xl text-f-gold mb-2"></i>
+                    <p class="text-3xl font-bold">98%</p>
+                    <p class="text-sm text-gray-400">Coverage Reliability</p>
+                </div>
+                <div class="p-4 bg-bg-t rounded-lg flex flex-col items-center">
+                    <i class="fas fa-code-branch text-3xl text-f-blue mb-2"></i>
+                    <p class="text-3xl font-bold">3</p>
+                    <p class="text-sm text-gray-400">FAA-Intake Apps</p>
+                </div>
+            </div>
+            
+            <button class="w-full mt-6 py-3 bg-f-blue hover:bg-f-blue/80 text-white font-bold rounded-lg transition duration-200 shadow-md">
+                Deploy ClaimRoot Generator Module
+            </button>
+        </div>
+    </div>
     
     <!-- React Application Entry Point -->
     <script type="module" src="/client/src/main.tsx"></script>
@@ -405,4 +499,3 @@
     </script>
 </body>
 </html>
-```
